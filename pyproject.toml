@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = 'func-validator'
-description = "MATLAB-style function argument validation for Python - clean, concise, and reliable."
+description = "MATLAB-style function argument validation for Python - clean, simple, and reliable."
 authors = [{ name = "Patrick Boateng", email = "boatengpato.pb@gmail.com" }]
 readme = { file = "README.md", content-type = "text/markdown" }
 license = { file = "LICENSE" }
@@ -17,6 +17,9 @@ classifiers = [
     'License :: OSI Approved :: MIT License',
     'Natural Language :: English',
     'Operating System :: OS Independent',
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     'Programming Language :: Python :: Implementation :: CPython',
 ]
 dynamic = ["version"]
