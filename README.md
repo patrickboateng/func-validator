@@ -8,4 +8,35 @@
 
 </div>
 
-**_Project actively under development_**
+MATLAB-style function argument validation for Python.
+
+
+## Installation
+
+```sh
+
+$ pip install func-validator
+
+```
+
+## Usage
+
+```py
+
+from typing import Annotated
+from func_validator import validator, MustBePositive, MustBeNegative
+
+@validator
+def func(a: Annotated[int, MustBePositive], 
+         b: Annotated[float, MustBeNegative]):
+    pass
+
+func(10, -10) # ✅
+func(-10, 10) # ❌ 
+func(0, -10)  # ❌ Wrong 0 is not positive
+
+```
+
+## License
+
+MIT License
