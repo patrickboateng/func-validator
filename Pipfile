@@ -9,6 +9,7 @@ twine = "*"
 
 [dev-packages]
 build = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.13"
