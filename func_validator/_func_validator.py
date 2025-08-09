@@ -1,10 +1,47 @@
-from typing import Callable
+import inspect
+from functools import wraps
+from typing import Callable, ParamSpec, TypeVar, get_type_hints, \
+    get_args
+
+P = ParamSpec('P')
+R = TypeVar('R')
 
 
-class validator:
+def validator(func=None, /):
+    def dec(fn: Callable[P, R]) -> Callable[P, R]:
+        @wraps(fn)
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+            sig = inspect.signature(fn)
+            bound_args = sig.bind(*args, **kwargs)
+            bound_args.apply_defaults()
+            arguments = bound_args.arguments
+            func_type_hints = get_type_hints(func, include_extras=True)
 
-    def __init__(self) -> None:
-        pass
+            for arg_name, arg_annotation in func_type_hints.items():
+                if arg_name == 'return':
+                    continue
 
-    def __call__(self, func: Callable) -> Callable:
-        return func
+                _, *arg_validators_fn = get_args(arg_annotation)
+                arg_value = arguments[arg_name]
+
+                for arg_validator_fn in arg_validators_fn:
+                    if not callable(arg_validator_fn):
+                        raise TypeError(
+                            f"Validator for argument '{arg_name}' is not callable: {arg_validator_fn}"
+                        )
+
+                    arg_validator_fn(arg_value)
+
+            return fn(*args, **kwargs)
+
+        return wrapper
+
+    # If no function is provided, return the decorator
+    if func is None:
+        return dec
+
+    # If a function is provided, apply the decorator directly
+    if callable(func):
+        return dec(func)
+
+    raise TypeError("The first argument must be a callable function or None.")
