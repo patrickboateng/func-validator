@@ -4,5 +4,5 @@ from ._validator import (MustBePositive, MustBeNegative, MustBeNonNegative,
                          MustBeLessThan, MustBeIn, MustBeGreaterThanOrEqual,
                          MustBeLessThanOrEqual, MustBeBetween)
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 __all__ = ["validator"]
