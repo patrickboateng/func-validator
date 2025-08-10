@@ -1,4 +1,4 @@
-from ._func_validator import validator
+from ._func_validator import validate
 from ._validator import (MustBePositive, MustBeNegative, MustBeNonNegative,
                          MustBeNonPositive, MustBeEqual, MustBeGreaterThan,
                          MustBeLessThan, MustBeIn, MustBeGreaterThanOrEqual,
@@ -17,5 +17,5 @@ __all__ = [
     "MustBeLessThanOrEqual",
     "MustBeIn",
     "MustBeBetween",
-    "validator"
+    "validate"
 ]

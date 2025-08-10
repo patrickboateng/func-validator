@@ -7,7 +7,7 @@ P = ParamSpec('P')
 R = TypeVar('R')
 
 
-def validator(func=None, /):
+def validate(func=None, /):
     def dec(fn: Callable[P, R]) -> Callable[P, R]:
         @wraps(fn)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:

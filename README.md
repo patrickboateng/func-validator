@@ -10,7 +10,6 @@
 
 MATLAB-style function argument validation for Python.
 
-
 ## Installation
 
 ```sh
@@ -24,15 +23,17 @@ $ pip install func-validator
 ```py
 
 from typing import Annotated
-from func_validator import validator, MustBePositive, MustBeNegative
+from func_validator import validate, MustBePositive, MustBeNegative
 
-@validator
-def func(a: Annotated[int, MustBePositive], 
+
+@validate
+def func(a: Annotated[int, MustBePositive],
          b: Annotated[float, MustBeNegative]):
     pass
 
-func(10, -10) # ✅
-func(-10, 10) # ❌ 
+
+func(10, -10)  # ✅
+func(-10, 10)  # ❌ 
 func(0, -10)  # ❌ Wrong 0 is not positive
 
 ```
