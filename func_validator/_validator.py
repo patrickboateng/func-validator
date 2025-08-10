@@ -69,5 +69,12 @@ def MustBeBetween(*, min_value, max_value):
 
     return f
 
+
+# Size validation functions
+
+def MustBeNonEmpty(value, /):
+    exc_msg = f"Value {value} must not be empty."
+    if not value: raise ValueError(exc_msg)
+
 # TODO: Add more validation functions as needed
 # TODO: Add support for datatypes
