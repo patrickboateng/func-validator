@@ -21,7 +21,7 @@ def validate(func=None, /,
             bound_args = sig.bind(*args, **kwargs)
             bound_args.apply_defaults()
             arguments = bound_args.arguments
-            func_type_hints = get_type_hints(func, include_extras=True)
+            func_type_hints = get_type_hints(fn, include_extras=True)
 
             for arg_name, arg_annotation in func_type_hints.items():
                 if arg_name == 'return':
