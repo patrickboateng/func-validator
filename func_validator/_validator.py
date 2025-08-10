@@ -60,7 +60,7 @@ def MustBeIn(value_set, /):
     return f
 
 
-def MustBeBetween(*, min_value, max_value, /):
+def MustBeBetween(*, min_value, max_value):
     def f(value):
         exc_msg = (f"Value {value} must be between "
                    f"{min_value} and {max_value}.")
