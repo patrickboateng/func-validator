@@ -1,6 +1,6 @@
 import inspect
 from functools import wraps
-from typing import Callable, ParamSpec, TypeVar, get_type_hints, \
+from typing import Callable, ParamSpec, Sequence, TypeVar, get_type_hints, \
     get_args
 
 P = ParamSpec('P')
@@ -30,7 +30,11 @@ def validate(func=None, /):
                             f"Validator for argument '{arg_name}' is not callable: {arg_validator_fn}"
                         )
 
-                    arg_validator_fn(arg_value)
+                    if isinstance(arg_value, Sequence):
+                        for v in arg_value:
+                            arg_validator_fn(v)
+                    else:
+                        arg_validator_fn(arg_value)
 
             return fn(*args, **kwargs)
 
