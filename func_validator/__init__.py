@@ -5,18 +5,16 @@ from ._validator import (MustBePositive, MustBeNegative, MustBeNonNegative,
                          MustBeLessThanOrEqual, MustBeBetween, MustBeNonEmpty)
 
 __version__ = "0.7.0"
-__all__ = [
-    "MustBePositive",
-    "MustBeNonPositive",
-    "MustBeNonNegative",
-    "MustBeNegative",
-    "MustBeEqual",
-    "MustBeGreaterThan",
-    "MustBeLessThan",
-    "MustBeGreaterThanOrEqual",
-    "MustBeLessThanOrEqual",
-    "MustBeIn",
-    "MustBeBetween",
-    "MustBeNonEmpty",
-    "validate"
-]
+__all__ = ["MustBePositive",
+           "MustBeNonPositive",
+           "MustBeNonNegative",
+           "MustBeNegative",
+           "MustBeEqual",
+           "MustBeGreaterThan",
+           "MustBeLessThan",
+           "MustBeGreaterThanOrEqual",
+           "MustBeLessThanOrEqual",
+           "MustBeIn",
+           "MustBeBetween",
+           "MustBeNonEmpty",
+           "validate"]
