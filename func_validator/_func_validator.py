@@ -1,13 +1,19 @@
 import inspect
 from functools import wraps
-from typing import (Callable, ParamSpec, List, Tuple, Set,
-                    TypeVar, get_type_hints, get_args)
+from typing import Callable, ParamSpec, TypeVar, get_type_hints, get_args
+
+import operator
 
 P = ParamSpec('P')
 R = TypeVar('R')
 
 
-def validate(func=None, /):
+# TODO: add a support for iterables
+
+def validate(func=None, /,
+             min_length: int | None = None,
+             max_length: int | None = None,
+             check_iterable_values=False):
     def dec(fn: Callable[P, R]) -> Callable[P, R]:
         @wraps(fn)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
@@ -26,11 +32,22 @@ def validate(func=None, /):
 
                 for arg_validator_fn in arg_validators_fn:
                     if not callable(arg_validator_fn):
-                        raise TypeError(
-                            f"Validator for argument '{arg_name}' is not callable: {arg_validator_fn}"
-                        )
+                        raise TypeError(f"Validator for argument '{arg_name}' "
+                                        f"is not callable: {arg_validator_fn}")
 
-                    if isinstance(arg_value, List | Tuple | Set):
+                    if min_length is not None:
+                        exc_msg = (f"Length of argument '{arg_name}' "
+                                   f"must be at least {min_length}.")
+                        if len(arg_value) < min_length:
+                            raise ValueError(exc_msg)
+
+                    if max_length is not None:
+                        exc_msg = (f"Length of argument '{arg_name}' "
+                                   f"must be at most {max_length}.")
+                        if len(arg_value) > max_length:
+                            raise ValueError(exc_msg)
+
+                    if check_iterable_values:
                         for v in arg_value:
                             arg_validator_fn(v)
                     else:
