@@ -2,7 +2,7 @@ from ._func_validator import validate
 from ._validator import (MustBePositive, MustBeNegative, MustBeNonNegative,
                          MustBeNonPositive, MustBeEqual, MustBeGreaterThan,
                          MustBeLessThan, MustBeIn, MustBeGreaterThanOrEqual,
-                         MustBeLessThanOrEqual, MustBeBetween)
+                         MustBeLessThanOrEqual, MustBeBetween, MustBeNonEmpty)
 
 __version__ = "0.6.0"
 __all__ = [
@@ -17,5 +17,6 @@ __all__ = [
     "MustBeLessThanOrEqual",
     "MustBeIn",
     "MustBeBetween",
+    "MustBeNonEmpty",
     "validate"
 ]
