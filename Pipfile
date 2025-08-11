@@ -10,6 +10,7 @@ twine = "*"
 [dev-packages]
 build = "*"
 pytest-cov = "*"
+black = "*"
 
 [requires]
 python_version = "3.13"
