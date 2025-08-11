@@ -4,30 +4,32 @@ from operator import ge, le, gt, lt, eq, contains
 
 # Numeric validation functions
 def MustBePositive(value, /):
-    exc_msg = f"Value {value} must be greater than 0."
-    if not gt(value, 0): raise ValueError(exc_msg)
+    if not gt(value, 0):
+        raise ValueError(f"Value {value} must be greater than 0.")
 
 
 def MustBeNonPositive(value, /):
-    exc_msg = f"Value {value} must be less than or equal to 0."
-    if not le(value, 0): raise ValueError(exc_msg)
+    if not le(value, 0):
+        raise ValueError(f"Value {value} must be less than or equal to 0.")
 
 
 def MustBeNonNegative(value, /):
-    exc_msg = f"Value {value} must be greater than or equal to 0."
-    if not ge(value, 0): raise ValueError(exc_msg)
+    if not ge(value, 0):
+        exc_msg = f"Value {value} must be greater than or equal to 0."
+        raise ValueError(exc_msg)
 
 
 def MustBeNegative(value, /):
-    exc_msg = f"Value {value} must be less than 0."
-    if not lt(value, 0): raise ValueError(exc_msg)
+    if not lt(value, 0):
+        raise ValueError(f"Value {value} must be less than 0.")
 
 
 # Comparison validation functions
 
+
 def _comparison_validator(value, *, to, fn, symbol):
-    exc_msg = f"Value {value} must be {symbol} {to}."
-    if not fn(value, to): raise ValueError(exc_msg)
+    if not fn(value, to):
+        raise ValueError(f"Value {value} must be {symbol} {to}.")
 
 
 def MustBeEqual(value, /):
@@ -52,19 +54,19 @@ def MustBeLessThanOrEqual(value, /):
 
 # Membership and range validation functions
 
+
 def MustBeIn(value_set, /):
     def f(value):
-        exc_msg = f"Value {value} must be in {value_set}"
-        if not contains(set(value_set), value): raise ValueError(exc_msg)
+        if not contains(set(value_set), value):
+            raise ValueError(f"Value {value} must be in {set(value_set)}")
 
     return f
 
 
 def MustBeBetween(*, min_value, max_value):
     def f(value):
-        exc_msg = (f"Value {value} must be between "
-                   f"{min_value} and {max_value}.")
         if not (ge(value, min_value) and le(value, max_value)):
+            exc_msg = f"Value {value} must be between " f"{min_value} and {max_value}."
             raise ValueError(exc_msg)
 
     return f
@@ -72,9 +74,10 @@ def MustBeBetween(*, min_value, max_value):
 
 # Size validation functions
 
+
 def MustBeNonEmpty(value, /):
-    exc_msg = f"Value {value} must not be empty."
-    if not value: raise ValueError(exc_msg)
+    if not value:
+        raise ValueError(f"Value {value} must not be empty.")
 
 # TODO: Add more validation functions as needed
 # TODO: Add support for datatypes
