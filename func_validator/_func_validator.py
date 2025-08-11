@@ -21,9 +21,9 @@ def validate(func=None, /,
             func_type_hints = get_type_hints(fn, include_extras=True)
 
             for arg_name, arg_annotation in func_type_hints.items():
-                args = get_args(arg_annotation)
+                arg_metadata = get_args(arg_annotation)
 
-                if arg_name == 'return' or len(args) < 2:
+                if arg_name == 'return' or len(arg_metadata) < 2:
                     continue
 
                 _, *arg_validator_funcs = args
