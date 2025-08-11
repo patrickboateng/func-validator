@@ -2,13 +2,9 @@ import inspect
 from functools import wraps
 from typing import Callable, ParamSpec, TypeVar, get_type_hints, get_args
 
-import operator
-
 P = ParamSpec('P')
 R = TypeVar('R')
 
-
-# TODO: add a support for iterables
 
 def validate(func=None, /,
              min_length: int | None = None,
@@ -27,10 +23,10 @@ def validate(func=None, /,
                 if arg_name == 'return':
                     continue
 
-                _, *arg_validators_fn = get_args(arg_annotation)
+                _, *arg_validator_funcs = get_args(arg_annotation)
                 arg_value = arguments[arg_name]
 
-                for arg_validator_fn in arg_validators_fn:
+                for arg_validator_fn in arg_validator_funcs:
                     if not callable(arg_validator_fn):
                         raise TypeError(f"Validator for argument '{arg_name}' "
                                         f"is not callable: {arg_validator_fn}")
@@ -61,7 +57,8 @@ def validate(func=None, /,
     if func is None:
         return dec
 
-    # If a function is provided, apply the decorator directly
+    # If a function is provided, apply the decorator directly and return the
+    # wrapper function
     if callable(func):
         return dec(func)
 
