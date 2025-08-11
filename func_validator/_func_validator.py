@@ -1,6 +1,7 @@
 import inspect
 from functools import wraps
-from typing import Callable, ParamSpec, TypeVar, get_type_hints, get_args
+from typing import Callable, ParamSpec, TypeVar, get_type_hints, get_args, \
+    Annotated
 
 P = ParamSpec('P')
 R = TypeVar('R')
@@ -20,10 +21,12 @@ def validate(func=None, /,
             func_type_hints = get_type_hints(fn, include_extras=True)
 
             for arg_name, arg_annotation in func_type_hints.items():
-                if arg_name == 'return':
+                args = get_args(arg_annotation)
+
+                if arg_name == 'return' or len(args) < 2:
                     continue
 
-                _, *arg_validator_funcs = get_args(arg_annotation)
+                _, *arg_validator_funcs = args
                 arg_value = arguments[arg_name]
 
                 for arg_validator_fn in arg_validator_funcs:
@@ -63,3 +66,16 @@ def validate(func=None, /,
         return dec(func)
 
     raise TypeError("The first argument must be a callable function or None.")
+
+
+if __name__ == "__main__":
+    # Example usage of the validate decorator
+    @validate
+    def example_function(
+            arg1: list[int],
+            # arg2: Annotated[str, lambda x: x]
+    ):
+        pass
+
+
+    example_function("test")
