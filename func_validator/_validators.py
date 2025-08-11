@@ -55,7 +55,7 @@ def MustBeLessThanOrEqual(value, /):
 def MustBeIn(value_set, /):
     def f(value):
         exc_msg = f"Value {value} must be in {value_set}"
-        if not contains(value_set, value): raise ValueError(exc_msg)
+        if not contains(set(value_set), value): raise ValueError(exc_msg)
 
     return f
 
