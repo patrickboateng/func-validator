@@ -26,7 +26,7 @@ def validate(func=None, /,
                 if arg_name == 'return' or len(arg_metadata) < 2:
                     continue
 
-                _, *arg_validator_funcs = args
+                _, *arg_validator_funcs = arg_metadata
                 arg_value = arguments[arg_name]
 
                 for arg_validator_fn in arg_validator_funcs:
