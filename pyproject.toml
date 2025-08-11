@@ -35,3 +35,10 @@ packages = ['func_validator']
 
 [project.optional-dependencies]
 dev = ['wheel', 'black', 'pytest', 'mypy', 'setuptools']
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.coverage.run]
+branch = true
