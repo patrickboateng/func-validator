@@ -1,7 +1,7 @@
 import pytest
 from typing import Annotated
 from func_validator import (
-    validate,
+    validate_func_args_at_runtime,
     MustBePositive,
     MustBeNonEmpty,
     MustBeIn,
@@ -9,7 +9,7 @@ from func_validator import (
 
 
 def test_validate_positive():
-    @validate
+    @validate_func_args_at_runtime
     def foo(x: Annotated[int, MustBePositive]):
         return x * 2
 
@@ -19,7 +19,7 @@ def test_validate_positive():
 
 
 def test_validate_nonempty():
-    @validate
+    @validate_func_args_at_runtime
     def bar(s: Annotated[str, MustBeNonEmpty]):
         return s.upper()
 
@@ -29,7 +29,7 @@ def test_validate_nonempty():
 
 
 def test_validate_in():
-    @validate
+    @validate_func_args_at_runtime
     def baz(x: Annotated[int, MustBeIn([1, 2, 3])]):
         return x
 
@@ -39,7 +39,7 @@ def test_validate_in():
 
 
 def test_validate_min_length():
-    @validate(min_length=2)
+    @validate_func_args_at_runtime(min_length=2)
     def qux(s: Annotated[str, MustBeNonEmpty]):
         return s
 
@@ -49,7 +49,7 @@ def test_validate_min_length():
 
 
 def test_validate_max_length():
-    @validate(max_length=3)
+    @validate_func_args_at_runtime(max_length=3)
     def quux(s: Annotated[str, MustBeNonEmpty]):
         return s
 
@@ -60,7 +60,8 @@ def test_validate_max_length():
 
 def test_validator_not_callable():
     with pytest.raises(TypeError):
-        @validate
+
+        @validate_func_args_at_runtime
         def foo(x: Annotated[int, 123]):  # 123 is not callable
             return x
 
@@ -69,7 +70,7 @@ def test_validator_not_callable():
 
 def test_decorator_invalid_usage():
     with pytest.raises(TypeError):
-        validate(123)  # Not a function or None
+        validate_func_args_at_runtime(123)  # Not a function or None
 
 
 def test_check_iterable_values():
@@ -78,7 +79,7 @@ def test_check_iterable_values():
             if x % 2 != 0:
                 raise ValueError("Not even")
 
-    @validate(check_iterable_values=True)
+    @validate_func_args_at_runtime(check_iterable_values=True)
     def foo(xs: Annotated[list[int], MustBeEven()]):
         return sum(xs)
 
@@ -88,7 +89,7 @@ def test_check_iterable_values():
 
 
 def test_length_check_on_non_iterable():
-    @validate(min_length=2)
+    @validate_func_args_at_runtime(min_length=2)
     def foo(x: Annotated[int, lambda x: None]):
         return x
 

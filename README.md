@@ -23,17 +23,18 @@ $ pip install func-validator
 ```py
 
 from typing import Annotated
-from func_validator import validate, MustBePositive, MustBeNegative
+from func_validator import (validate_func_args_at_runtime, MustBePositive,
+                            MustBeNegative)
 
 
-@validate
+@validate_func_args_at_runtime
 def func(a: Annotated[int, MustBePositive],
          b: Annotated[float, MustBeNegative]):
     pass
 
 
-func(10, -10)  # ✅
-func(-10, 10)  # ❌ 
+func(10, -10)  # ✅ Correct
+func(-10, 10)  # ❌ Wrong -10 is not positive and 10 is not negative
 func(0, -10)  # ❌ Wrong 0 is not positive
 
 ```

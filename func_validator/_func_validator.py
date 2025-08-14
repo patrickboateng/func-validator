@@ -14,12 +14,12 @@ P = ParamSpec("P")
 R = TypeVar("R")
 
 
-def validate(
-        func=None,
-        /,
-        min_length: int | None = None,
-        max_length: int | None = None,
-        check_iterable_values=False,
+def validate_func_args_at_runtime(
+    func=None,
+    /,
+    min_length: int | None = None,
+    max_length: int | None = None,
+    check_iterable_values=False,
 ):
     def dec(fn: Callable[P, R]) -> Callable[P, R]:
         @wraps(fn)
@@ -31,8 +31,7 @@ def validate(
             func_type_hints = get_type_hints(fn, include_extras=True)
 
             for arg_name, arg_annotation in func_type_hints.items():
-                if arg_name == "return" or get_origin(
-                        arg_annotation) is not Annotated:
+                if arg_name == "return" or get_origin(arg_annotation) is not Annotated:
                     continue
 
                 _, *arg_validator_funcs = get_args(arg_annotation)
