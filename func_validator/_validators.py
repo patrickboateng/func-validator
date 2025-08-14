@@ -79,5 +79,6 @@ def MustBeNonEmpty(value, /):
     if not value:
         raise ValueError(f"Value {value} must not be empty.")
 
+
 # TODO: Add more validation functions as needed
 # TODO: Add support for datatypes
