@@ -91,7 +91,15 @@ def MustBeNonEmpty(value, /):
 def MustHaveLengthEqual(value, /):
     def f(val):
         if len(val) != value:
-            raise ValueError(f"Length of {val} should be {value}.")
+            raise ValueError(f"Length of {val} must be equal to {value}.")
+    return f
+
+
+def MustHaveLengthGreaterThan(value, /):
+    def f(val):
+        if not (len(val) > value):
+            raise ValueError(f"Length of {val} must be equal to {value}")
+
     return f
 
 
