@@ -105,7 +105,7 @@ func(0, -10)  # ❌ Wrong 0 is not positive
     </tr>
 </table>
 
-### Size Validation
+### Collection/Iterable Validation
 
 <table>
     <tr>
@@ -117,8 +117,16 @@ func(0, -10)  # ❌ Wrong 0 is not positive
         <td>Validate that a collection is non-empty</td>
     </tr>
     <tr>
-        <td>MustHaveLength</td>
+        <td>MustHaveLengthEqual</td>
         <td>Validate that a collection has a specific length</td>
+    </tr>
+    <r>
+        <td>MustHaveLengthGreaterThan</td>
+        <td>Validate that a collection has length greater than a specific value</td>
+    </tr>
+    <tr>
+        <td>MustHaveValuesBetween</td>
+        <td>Validate that all values in a collection are between two other values</td>
     </tr>
 </table>
 
