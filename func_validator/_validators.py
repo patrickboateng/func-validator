@@ -1,5 +1,5 @@
 from functools import partial
-from operator import ge, le, gt, lt, eq, contains
+from operator import ge, le, gt, lt, eq, ne, contains
 
 
 # Numeric validation functions
@@ -13,15 +13,15 @@ def MustBeNonPositive(value, /):
         raise ValueError(f"Value {value} must be less than or equal to 0.")
 
 
+def MustBeNegative(value, /):
+    if not lt(value, 0):
+        raise ValueError(f"Value {value} must be less than 0.")
+
+
 def MustBeNonNegative(value, /):
     if not ge(value, 0):
         exc_msg = f"Value {value} must be greater than or equal to 0."
         raise ValueError(exc_msg)
-
-
-def MustBeNegative(value, /):
-    if not lt(value, 0):
-        raise ValueError(f"Value {value} must be less than 0.")
 
 
 # Comparison validation functions
@@ -36,16 +36,20 @@ def MustBeEqual(value, /):
     return partial(_comparison_validator, to=value, fn=eq, symbol="==")
 
 
+def MustBeNotEqual(value, /):
+    return partial(_comparison_validator, to=value, fn=ne, symbol="!=")
+
+
 def MustBeGreaterThan(value, /):
     return partial(_comparison_validator, to=value, fn=gt, symbol=">")
 
 
-def MustBeLessThan(value, /):
-    return partial(_comparison_validator, to=value, fn=lt, symbol="<")
-
-
 def MustBeGreaterThanOrEqual(value, /):
     return partial(_comparison_validator, to=value, fn=ge, symbol=">=")
+
+
+def MustBeLessThan(value, /):
+    return partial(_comparison_validator, to=value, fn=lt, symbol="<")
 
 
 def MustBeLessThanOrEqual(value, /):
@@ -74,10 +78,23 @@ def MustBeBetween(*, min_value, max_value):
 
 # Size validation functions
 
+def MustBeEmpty(value, /):
+    if value:
+        raise ValueError(f"Value {value} must be empty.")
+
 
 def MustBeNonEmpty(value, /):
     if not value:
         raise ValueError(f"Value {value} must not be empty.")
+
+
+def MustHaveLength(value, /):
+    def f(val):
+        if len(val) != value:
+            raise ValueError(f"Length of {val} should be {value}.")
+    return f
+
+# TODO: Add MustHaveLengthBetween
 
 
 # TODO: Add more validation functions as needed
