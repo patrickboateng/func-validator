@@ -88,14 +88,23 @@ def MustBeNonEmpty(value, /):
         raise ValueError(f"Value {value} must not be empty.")
 
 
-def MustHaveLength(value, /):
+def MustHaveLengthEqual(value, /):
     def f(val):
         if len(val) != value:
             raise ValueError(f"Length of {val} should be {value}.")
     return f
 
-# TODO: Add MustHaveLengthBetween
 
+def MustHaveValuesBetween(*, min_value, max_value):
+    def f(values):
+        for val in values:
+            if not (ge(val, min_value) and le(val, max_value)):
+                exc_msg = f"Value {val} must be between " f"{min_value} and {max_value}."
+                raise ValueError(exc_msg)
+
+    return f
+
+# TODO: Add MustHaveLengthBetween
 
 # TODO: Add more validation functions as needed
 # TODO: Add support for datatypes
