@@ -97,11 +97,11 @@ func(0, -10)  # ❌ Wrong 0 is not positive
 <table>
     <tr>
         <td>MustBeIn</td>
-        <td>Validate that value is in a collection</td>
+        <td>Validate that argument value is in a collection</td>
     </tr>
     <tr>
         <td>MustBeBetween</td>
-        <td>Validate that value is between two other values</td>
+        <td>Validate that argument value is between two other values</td>
     </tr>
 </table>
 
