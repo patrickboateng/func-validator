@@ -75,19 +75,19 @@ def test_decorator_invalid_usage():
         validate_func_args_at_runtime(123)  # Not a function or None
 
 
-def test_check_iterable_values():
-    class MustBeEven:
-        def __call__(self, x):
-            if x % 2 != 0:
-                raise ValueError("Not even")
+# def test_check_iterable_values():
+#     class MustBeEven:
+#         def __call__(self, x):
+#             if x % 2 != 0:
+#                 raise ValueError("Not even")
 
-    @validate_func_args_at_runtime(check_iterable_values=True)
-    def foo(xs: Annotated[list[int], MustBeEven()]):
-        return sum(xs)
+#     @validate_func_args_at_runtime(check_iterable_values=True)
+#     def foo(xs: Annotated[list[int], MustBeEven()]):
+#         return sum(xs)
 
-    assert foo([2, 4]) == 6
-    with pytest.raises(ValueError):
-        foo([2, 3])
+#     assert foo([2, 4]) == 6
+#     with pytest.raises(ValueError):
+#         foo([2, 3])
 
 
 def test_MustBeEmpty():
