@@ -15,7 +15,8 @@ from ._validators import (
     MustBeEmpty,
     MustBeNonEmpty,
     MustHaveLengthEqual,
-    MustHaveLengthGreaterThan
+    MustHaveLengthGreaterThan,
+    MustHaveValuesBetween
 )
 
 __version__ = "0.9.0"
@@ -36,5 +37,6 @@ __all__ = [
     "MustBeNonEmpty",
     "MustHaveLengthEqual",
     "MustHaveLengthGreaterThan",
+    "MustHaveValuesBetween",
     "validate_func_args_at_runtime",
 ]
