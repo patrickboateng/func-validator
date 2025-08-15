@@ -14,11 +14,7 @@ P = ParamSpec("P")
 R = TypeVar("R")
 
 
-def validate_func_args_at_runtime(
-    func=None,
-    /,
-    check_iterable_values=False,
-):
+def validate_func_args_at_runtime(func=None, /):
     def dec(fn: Callable[P, R]) -> Callable[P, R]:
         @wraps(fn)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
@@ -42,11 +38,7 @@ def validate_func_args_at_runtime(
                             f"is not callable: {arg_validator_fn}"
                         )
 
-                    if check_iterable_values:
-                        for v in arg_value:
-                            arg_validator_fn(v)
-                    else:
-                        arg_validator_fn(arg_value)
+                    arg_validator_fn(arg_value)
 
             return fn(*args, **kwargs)
 
