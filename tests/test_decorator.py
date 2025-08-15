@@ -6,7 +6,7 @@ from func_validator import (
     MustBeEmpty,
     MustBeNonEmpty,
     MustBeIn,
-    MustHaveLength,
+    MustHaveLengthEqual,
 )
 
 
@@ -101,7 +101,7 @@ def test_MustBeEmpty():
 
 
 def test_MustHaveLength():
-    validator = MustHaveLength(3)
+    validator = MustHaveLengthEqual(3)
     validator([1, 2, 3])
     validator("abc")
     with pytest.raises(ValueError):
