@@ -47,19 +47,19 @@ func(0, -10)  # ❌ Wrong 0 is not positive
 <table>
     <tr>
         <td>MustBePositive</td>
-        <td>Validate that value is positive</td>
+        <td>Validate that argument value is positive</td>
     </tr>
     <tr>
         <td>MustBeNonPositive</td>
-        <td>Validate that value is non-positive</td>
+        <td>Validate that argument value is non-positive</td>
     </tr>
     <tr>
         <td>MustBeNegative</td>
-        <td>Validate that value is negative</td>
+        <td>Validate that argument value is negative</td>
     </tr>
     <tr>
         <td>MustBeNonNegative</td>
-        <td>Validate that value is non-negative</td>
+        <td>Validate that argument value is non-negative</td>
     </tr>
 </table>
 
@@ -68,27 +68,27 @@ func(0, -10)  # ❌ Wrong 0 is not positive
 <table>
     <tr>
         <td>MustBeEqual</td>
-        <td>Validate that value is equal to another value</td>
+        <td>Validate that argument value is equal to another value</td>
     </tr>
     <tr>
         <td>MustBeNotEqual</td>
-        <td>Validate that value is not equal to another value</td>
+        <td>Validate that argument value is not equal to another value</td>
     </tr>
     <tr>
         <td>MustBeGreaterThan</td>
-        <td>Validate that value is greater than another value</td>
+        <td>Validate that argument value is greater than another value</td>
     </tr>
     <tr>
         <td>MustBeGreaterThanOrEqual</td>
-        <td>Validate that value is greater than or equal to another value</td>
+        <td>Validate that argument value is greater than or equal to another value</td>
     </tr>
     <tr>
         <td>MustBeLessThan</td>
-        <td>Validate that value is less than another value</td>
+        <td>Validate that argument value is less than another value</td>
     </tr>
     <tr>
         <td>MustBeLessThanOrEqual</td>
-        <td>Validate that value is less than or equal to another value</td>
+        <td>Validate that argument value is less than or equal to another value</td>
     </tr>
 </table>
 
