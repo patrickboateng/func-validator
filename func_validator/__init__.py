@@ -14,7 +14,7 @@ from ._validators import (
     MustBeBetween,
     MustBeEmpty,
     MustBeNonEmpty,
-    MustHaveLength
+    MustHaveLengthEqual
 )
 
 __version__ = "0.9.0"
@@ -33,6 +33,6 @@ __all__ = [
     "MustBeBetween",
     "MustBeEmpty",
     "MustBeNonEmpty",
-    "MustHaveLength",
+    "MustHaveLengthEqual",
     "validate_func_args_at_runtime",
 ]
