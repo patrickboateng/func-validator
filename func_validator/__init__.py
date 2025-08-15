@@ -5,28 +5,34 @@ from ._validators import (
     MustBeNonNegative,
     MustBeNonPositive,
     MustBeEqual,
+    MustBeNotEqual,
     MustBeGreaterThan,
     MustBeLessThan,
     MustBeIn,
     MustBeGreaterThanOrEqual,
     MustBeLessThanOrEqual,
     MustBeBetween,
+    MustBeEmpty,
     MustBeNonEmpty,
+    MustHaveLength
 )
 
-__version__ = "0.8.0"
+__version__ = "0.9.0"
 __all__ = [
     "MustBePositive",
     "MustBeNonPositive",
     "MustBeNonNegative",
     "MustBeNegative",
     "MustBeEqual",
+    "MustBeNotEqual",
     "MustBeGreaterThan",
     "MustBeLessThan",
     "MustBeGreaterThanOrEqual",
     "MustBeLessThanOrEqual",
     "MustBeIn",
     "MustBeBetween",
+    "MustBeEmpty",
     "MustBeNonEmpty",
+    "MustHaveLength",
     "validate_func_args_at_runtime",
 ]
