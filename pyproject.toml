@@ -43,3 +43,7 @@ skip_covered = true
 
 [tool.coverage.run]
 branch = true
+
+[tool.isort]
+profile = "black"
+src_paths = ["func_validator"]

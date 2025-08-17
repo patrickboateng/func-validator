@@ -1,13 +1,13 @@
 import inspect
 from functools import wraps
 from typing import (
+    Annotated,
     Callable,
     ParamSpec,
     TypeVar,
-    get_type_hints,
-    get_origin,
     get_args,
-    Annotated,
+    get_origin,
+    get_type_hints,
 )
 
 P = ParamSpec("P")

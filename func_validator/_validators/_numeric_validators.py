@@ -1,8 +1,7 @@
-from operator import ge, le, gt, lt, eq, ne
+from operator import eq, ge, gt, le, lt, ne
 from typing import Callable
 
 from ._core import Number, T
-
 
 # Numeric validation functions
 
