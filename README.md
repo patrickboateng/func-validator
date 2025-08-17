@@ -23,7 +23,7 @@ $ pip install func-validator
 ```py
 
 from typing import Annotated
-from func_validator import (validate_func_args_at_runtime, 
+from func_validator import (validate_func_args_at_runtime,
                             MustBePositive,
                             MustBeNegative)
 
@@ -120,16 +120,19 @@ func(0, -10)  # ❌ Wrong 0 is not positive
         <td>MustHaveLengthEqual</td>
         <td>Validate that a collection has a specific length</td>
     </tr>
-    <r>
+    <tr>
         <td>MustHaveLengthGreaterThan</td>
         <td>Validate that a collection has length greater than a specific value</td>
+    </tr>
+    <tr>
+        <td>MustHaveLengthLessThan</td>
+        <td>Validate that a collection has length less than a specific value</td>
     </tr>
     <tr>
         <td>MustHaveValuesBetween</td>
         <td>Validate that all values in a collection are between two other values</td>
     </tr>
 </table>
-
 
 ## License
 

@@ -12,6 +12,7 @@ from func_validator import (
     MustBeIn,
     MustBeBetween,
     MustBeNonEmpty,
+    MustHaveValuesBetween,
 )
 
 
@@ -117,3 +118,8 @@ def test_MustBeNonEmpty():
         MustBeNonEmpty("")
     with pytest.raises(ValueError):
         MustBeNonEmpty([])
+
+
+def test_Must():
+    fn = MustHaveValuesBetween(min_value=1, max_value=3)
+    fn([1, 2, 3])
