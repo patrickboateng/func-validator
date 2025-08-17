@@ -2,8 +2,7 @@ from functools import partial
 from operator import contains, eq, ge, gt, le, lt
 from typing import Callable, Iterable, Sized
 
-from ._core import Number
-from ._numeric_validators import _generic_number_validator
+from ._core import Number, _generic_number_validator
 
 # Membership and range validation functions
 

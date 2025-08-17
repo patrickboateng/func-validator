@@ -1,14 +1,9 @@
 from operator import eq, ge, gt, le, lt, ne
 from typing import Callable
 
-from ._core import Number, T
+from ._core import Number, T, _generic_number_validator
 
 # Numeric validation functions
-
-
-def _generic_number_validator(value: T, *, to: T, fn: Callable, symbol: str):
-    if not fn(value, to):
-        raise ValueError(f"Value {value} must be {symbol} {to}.")
 
 
 def MustBePositive(value: Number, /):
