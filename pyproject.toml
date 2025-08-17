@@ -30,8 +30,9 @@ version = { attr = "func_validator.__version__" }
 [project.urls]
 homepage = "https://github.com/patrickboateng/func-validator"
 
-[tool.setuptools]
-packages = ['func_validator']
+[tool.setuptools.packages.find]
+include = ["func_validator*"]
+namespaces = false
 
 [project.optional-dependencies]
 dev = ['wheel', 'black', 'pytest', 'mypy', 'setuptools']
