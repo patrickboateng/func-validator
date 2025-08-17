@@ -9,17 +9,13 @@ from func_validator import (
     MustBeLessThan,
     MustBeGreaterThanOrEqual,
     MustBeLessThanOrEqual,
-    MustBeIn,
-    MustBeBetween,
-    MustBeNonEmpty,
-    MustHaveValuesBetween,
 )
 
 
 # Numeric validation tests
 
 
-def test_MustBePositive():
+def test_must_be_positive():
     MustBePositive(1)
     MustBePositive(2.5)
 
@@ -27,7 +23,7 @@ def test_MustBePositive():
         MustBePositive(0)
 
 
-def test_MustBeNonPositive():
+def test_must_be_non_positive():
     MustBeNonPositive(0)
     MustBeNonPositive(-1)
     MustBeNonPositive(-10)
@@ -36,7 +32,7 @@ def test_MustBeNonPositive():
         MustBeNonPositive(10)
 
 
-def test_MustBeNonNegative():
+def test_must_be_non_negative():
     MustBeNonNegative(0)
     MustBeNonNegative(10)
 
@@ -44,7 +40,7 @@ def test_MustBeNonNegative():
         MustBeNonNegative(-2.5)
 
 
-def test_MustBeNegative():
+def test_must_be_negative():
     MustBeNegative(-2.5)
     MustBeNegative(-10.0)
 
@@ -53,28 +49,28 @@ def test_MustBeNegative():
 
 
 # Comparison validation tests
-def test_MustBeEqual():
+def test_must_be_equal():
     validator = MustBeEqual(5)
     validator(5)
     with pytest.raises(ValueError):
         validator(4)
 
 
-def test_MustBeGreaterThan():
+def test_must_be_greater_than():
     validator = MustBeGreaterThan(3)
     validator(4)
     with pytest.raises(ValueError):
         validator(2)
 
 
-def test_MustBeLessThan():
+def test_must_be_less_than():
     validator = MustBeLessThan(10)
     validator(5)
     with pytest.raises(ValueError):
         validator(15)
 
 
-def test_MustBeGreaterThanOrEqual():
+def test_must_be_greater_than_or_equal():
     validator = MustBeGreaterThanOrEqual(5)
     validator(5)
     validator(6)
@@ -82,44 +78,9 @@ def test_MustBeGreaterThanOrEqual():
         validator(4)
 
 
-def test_MustBeLessThanOrEqual():
+def test_must_be_less_than_or_equal():
     validator = MustBeLessThanOrEqual(5)
     validator(5)
     validator(4)
     with pytest.raises(ValueError):
         validator(6)
-
-
-# Membership and range validation tests
-
-
-def test_MustBeIn():
-    validator = MustBeIn([1, 2, 3])
-    validator(2)
-    with pytest.raises(ValueError):
-        validator(4)
-
-
-def test_MustBeBetween():
-    validator = MustBeBetween(min_value=1, max_value=5)
-    validator(1)
-    validator(3)
-    validator(5)
-    with pytest.raises(ValueError):
-        validator(0)
-    with pytest.raises(ValueError):
-        validator(6)
-
-
-def test_MustBeNonEmpty():
-    MustBeNonEmpty("a")
-    MustBeNonEmpty([1])
-    with pytest.raises(ValueError):
-        MustBeNonEmpty("")
-    with pytest.raises(ValueError):
-        MustBeNonEmpty([])
-
-
-def test_Must():
-    fn = MustHaveValuesBetween(min_value=1, max_value=3)
-    fn([1, 2, 3])
