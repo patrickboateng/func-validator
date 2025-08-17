@@ -12,6 +12,7 @@ black = "*"
 pytest = "*"
 twine = "*"
 isort = "*"
+mkdocs = "*"
 
 [requires]
 python_version = "3.13"
