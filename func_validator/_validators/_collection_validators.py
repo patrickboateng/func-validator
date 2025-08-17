@@ -3,17 +3,17 @@ from operator import ge, le, gt, lt, eq, contains
 from typing import Iterable, Sized, Callable
 
 from ._numeric_validators import _generic_number_validator
-from ._core import Number, T
+from ._core import Number
 
 
 # Membership and range validation functions
 
 
+# value_set must support the `in` operator
 def MustBeIn(value_set: Iterable, /):
     def f(value):
-        values = set(value_set)
-        if not contains(values, value):
-            raise ValueError(f"Value {value} must be in {values}")
+        if not contains(value_set, value):
+            raise ValueError(f"Value {value} must be in {value_set!r}")
 
     return f
 
@@ -70,6 +70,12 @@ def MustHaveLengthLessThan(value: int, /):
 
 def MustHaveLengthLessThanOrEqual(value: int, /):
     return lambda values: _len_validator(values, to=value, fn=le, symbol="<=")
+
+
+def MustHaveLengthBetween(*, min_value: int, max_value: int):
+    return lambda values: _must_be_between(
+        len(values), min_value=min_value, max_value=max_value
+    )
 
 
 def MustHaveValuesBetween(*, min_value: Number, max_value: Number):
