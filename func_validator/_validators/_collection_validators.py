@@ -1,6 +1,6 @@
 from functools import partial
 from operator import contains, eq, ge, gt, le, lt
-from typing import Callable, Iterable, Sized
+from typing import Callable, Container, Iterable, Sized
 
 from ._core import Number, _generic_number_validator
 
@@ -8,7 +8,7 @@ from ._core import Number, _generic_number_validator
 
 
 # value_set must support the `in` operator
-def MustBeIn(value_set: Iterable, /):
+def MustBeIn(value_set: Container, /):
     def f(value):
         if not contains(value_set, value):
             raise ValueError(f"Value {value} must be in {value_set!r}")
