@@ -4,6 +4,8 @@ Number: TypeAlias = int | float
 T = TypeVar("T")
 
 
-def _generic_number_validator(value: T, *, to: T, fn: Callable, symbol: str):
+def _generic_number_validator(
+        value: T, *, to: T, fn: Callable[[T, T], bool], symbol: str
+):
     if not fn(value, to):
         raise ValueError(f"Value {value} must be {symbol} {to}.")
