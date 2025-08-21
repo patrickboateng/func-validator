@@ -1,4 +1,5 @@
-from ._func_validator import validate_func_args_at_runtime
+from ._func_arg_validator import validate_func_args_at_runtime, \
+    validate_func_args
 from ._validators import (
     MustBeBetween,
     MustBeEmpty,
@@ -55,4 +56,5 @@ __all__ = [
     "MustHaveLengthLessThanOrEqual",
     "MustHaveLengthGreaterThanOrEqual",
     "validate_func_args_at_runtime",
+    "validate_func_args",
 ]

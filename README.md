@@ -23,12 +23,12 @@ $ pip install func-validator
 ```py
 
 from typing import Annotated
-from func_validator import (validate_func_args_at_runtime,
+from func_validator import (validate_func_args,
                             MustBePositive,
                             MustBeNegative)
 
 
-@validate_func_args_at_runtime
+@validate_func_args  # or @validate_func_args_at_runtime
 def func(a: Annotated[int, MustBePositive],
          b: Annotated[float, MustBeNegative]):
     pass
