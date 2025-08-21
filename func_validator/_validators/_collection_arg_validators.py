@@ -4,6 +4,7 @@ from typing import Callable, Container, Iterable, Sized
 
 from ._core import Number, _generic_number_validator
 
+
 # Membership and range validation functions
 
 
