@@ -35,8 +35,8 @@ def _must_be_between(
 # Numeric validation functions
 
 
-def MustBePositive(x: Number, /):
-    _generic_number_validator(x, to=0.0, fn=gt)
+def MustBePositive(value: Number, /):
+    _generic_number_validator(value, to=0.0, fn=gt)
 
 
 def MustBeNonPositive(value: Number, /):
