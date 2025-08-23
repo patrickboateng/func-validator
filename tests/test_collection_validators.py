@@ -1,4 +1,5 @@
 import pytest
+
 from func_validator import (
     MustBeIn,
     MustBeBetween,
