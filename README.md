@@ -23,6 +23,7 @@ $ pip install func-validator
 ```py
 
 from typing import Annotated
+
 from func_validator import (validate_func_args,
                             MustBePositive,
                             MustBeNegative)
