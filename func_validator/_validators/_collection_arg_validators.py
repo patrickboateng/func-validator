@@ -1,8 +1,25 @@
 from functools import partial
-from operator import contains, eq, ge, gt, le, lt
-from typing import Callable, Container, Iterable, Sized
+from operator import contains
+from typing import Container, Iterable, Sized, Callable
 
-from ._core import Number, _generic_number_validator
+from ._core import Number
+from ._numeric_arg_validators import (
+    MustBeLessThan,
+    MustBeLessThanOrEqual,
+    MustBeGreaterThanOrEqual,
+    MustBeGreaterThan,
+    MustBeEqual,
+    MustBeBetween,
+)
+
+
+def _iterable_len_validator(values: Sized, /, *, func: Callable):
+    func(len(values))
+
+
+def _iterable_values_validator(values: Iterable, /, *, func: Callable):
+    for value in values:
+        func(value)
 
 
 # Membership and range validation functions
@@ -17,28 +34,7 @@ def MustBeIn(value_set: Container, /):
     return f
 
 
-def _must_be_between(value, *, min_value: Number, max_value: Number):
-    if not (ge(value, min_value) and le(value, max_value)):
-        exc_msg = f"Value {value} must be between {min_value} and {max_value}."
-        raise ValueError(exc_msg)
-
-
-def MustBeBetween(*, min_value: Number, max_value: Number):
-    return lambda value: _must_be_between(
-        value, min_value=min_value, max_value=max_value
-    )
-
-
 # Size validation functions
-
-
-def _len_validator(values: Sized, /, *, to: int, fn: Callable, symbol: str):
-    _generic_number_validator(len(values), to=to, fn=fn, symbol=symbol)
-
-
-def _iterable_values_validator(values: Iterable, /, *, fn: Callable):
-    for value in values:
-        fn(value)
 
 
 def MustBeEmpty(value: Iterable, /):
@@ -52,61 +48,76 @@ def MustBeNonEmpty(value: Iterable, /):
 
 
 def MustHaveLengthEqual(value: int, /):
-    return lambda values: _len_validator(values, to=value, fn=eq, symbol="==")
+    return partial(_iterable_len_validator, func=MustBeEqual(value))
 
 
 def MustHaveLengthGreaterThan(value: int, /):
-    return lambda values: _len_validator(values, to=value, fn=gt, symbol=">")
+    return partial(_iterable_len_validator, func=MustBeGreaterThan(value))
 
 
 def MustHaveLengthGreaterThanOrEqual(value: int, /):
-    return lambda values: _len_validator(values, to=value, fn=ge, symbol=">=")
+    return partial(_iterable_len_validator,
+                   func=MustBeGreaterThanOrEqual(value))
 
 
 def MustHaveLengthLessThan(value: int, /):
-    return lambda values: _len_validator(values, to=value, fn=lt, symbol="<")
+    return partial(_iterable_len_validator, func=MustBeLessThan(value))
 
 
 def MustHaveLengthLessThanOrEqual(value: int, /):
-    return lambda values: _len_validator(values, to=value, fn=le, symbol="<=")
+    return partial(_iterable_len_validator, func=MustBeLessThanOrEqual(value))
 
 
-def MustHaveLengthBetween(*, min_value: int, max_value: int):
-    return lambda values: _must_be_between(
-        len(values), min_value=min_value, max_value=max_value
+def MustHaveLengthBetween(
+        *,
+        min_value: int,
+        max_value: int,
+        min_inclusive: bool = True,
+        max_inclusive: bool = True,
+):
+    return partial(
+        _iterable_len_validator,
+        func=MustBeBetween(
+            min_value=min_value,
+            max_value=max_value,
+            min_inclusive=min_inclusive,
+            max_inclusive=max_inclusive,
+        ),
     )
 
 
-def MustHaveValuesBetween(*, min_value: Number, max_value: Number):
-    return lambda values: _iterable_values_validator(
-        values,
-        fn=partial(_must_be_between, min_value=min_value, max_value=max_value)
+def MustHaveValuesBetween(
+        *,
+        min_value: Number,
+        max_value: Number,
+        min_inclusive: bool = True,
+        max_inclusive: bool = True,
+):
+    return partial(
+        _iterable_values_validator,
+        func=MustBeBetween(
+            min_value=min_value,
+            max_value=max_value,
+            min_inclusive=min_inclusive,
+            max_inclusive=max_inclusive,
+        ),
     )
 
 
-def MustHaveValuesGreaterThan(*, min_value: Number):
-    return lambda values: _iterable_values_validator(
-        values,
-        fn=partial(_generic_number_validator, to=min_value, fn=gt, symbol=">")
-    )
+def MustHaveValuesGreaterThan(min_value: Number):
+    return partial(_iterable_values_validator,
+                   func=MustBeGreaterThan(min_value))
 
 
-def MustHaveValuesGreaterThanOrEqual(*, min_value: Number):
-    return lambda values: _iterable_values_validator(
-        values,
-        fn=partial(_generic_number_validator, to=min_value, fn=ge, symbol=">=")
-    )
+def MustHaveValuesGreaterThanOrEqual(min_value: Number):
+    return partial(_iterable_values_validator,
+                   func=MustBeGreaterThanOrEqual(min_value))
 
 
-def MustHaveValuesLessThan(*, max_value: Number):
-    return lambda values: _iterable_values_validator(
-        values,
-        fn=partial(_generic_number_validator, to=max_value, fn=lt, symbol="<")
-    )
+def MustHaveValuesLessThan(max_value: Number):
+    return partial(_iterable_values_validator, func=MustBeLessThan(max_value))
 
 
-def MustHaveValuesLessThanOrEqual(*, max_value: Number):
-    return lambda values: _iterable_values_validator(
-        values,
-        fn=partial(_generic_number_validator, to=max_value, fn=le, symbol="<=")
-    )
+def MustHaveValuesLessThanOrEqual(max_value: Number):
+    return partial(_iterable_values_validator,
+                   func=MustBeLessThanOrEqual(max_value))

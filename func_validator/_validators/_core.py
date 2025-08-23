@@ -1,11 +1,13 @@
-from typing import Callable, TypeAlias, TypeVar
+from typing import TypeAlias, TypeVar
 
 Number: TypeAlias = int | float
 T = TypeVar("T")
 
-
-def _generic_number_validator(
-        value: T, *, to: T, fn: Callable[[T, T], bool], symbol: str
-):
-    if not fn(value, to):
-        raise ValueError(f"Value {value} must be {symbol} {to}.")
+OPERATOR_SYMBOLS: dict[str, str] = {
+    "eq": "==",
+    "ge": ">=",
+    "gt": ">",
+    "le": "<=",
+    "lt": "<",
+    "ne": "!=",
+}

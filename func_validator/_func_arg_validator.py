@@ -2,9 +2,9 @@ import inspect
 from functools import wraps
 from typing import (
     Annotated,
-    TypeAlias,
     Callable,
     ParamSpec,
+    TypeAlias,
     TypeVar,
     get_args,
     get_origin,

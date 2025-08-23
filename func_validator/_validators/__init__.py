@@ -1,5 +1,4 @@
 from ._collection_arg_validators import (
-    MustBeBetween,
     MustBeEmpty,
     MustBeIn,
     MustBeNonEmpty,
@@ -16,6 +15,7 @@ from ._collection_arg_validators import (
     MustHaveValuesLessThanOrEqual,
 )
 from ._numeric_arg_validators import (
+    MustBeBetween,
     MustBeEqual,
     MustBeGreaterThan,
     MustBeGreaterThanOrEqual,
