@@ -6,6 +6,7 @@ from typing import (
     ParamSpec,
     TypeAlias,
     TypeVar,
+    Optional,
     get_args,
     get_origin,
     get_type_hints,
@@ -18,8 +19,12 @@ DecoratorOrCallable: TypeAlias = (
 )
 
 
-def validate_func_args(func: Callable[P, R] | None = None,
-                       /) -> DecoratorOrCallable:
+def validate_func_args(
+        func: Callable[P, R] | None = None,
+        /,
+        *,
+        check_arg_types: bool = False,
+) -> DecoratorOrCallable:
     def dec(fn: Callable[P, R]) -> Callable[P, R]:
         @wraps(fn)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
@@ -34,8 +39,14 @@ def validate_func_args(func: Callable[P, R] | None = None,
                         arg_annotation) is not Annotated:
                     continue
 
-                _, *arg_validator_funcs = get_args(arg_annotation)
+                arg_type, *arg_validator_funcs = get_args(arg_annotation)
                 arg_value = arguments[arg_name]
+
+                if check_arg_types and not isinstance(arg_value, arg_type):
+                    raise TypeError(
+                        f"Argument '{arg_name}' must be of type "
+                        f"{arg_type}, got {type(arg_value)} instead."
+                    )
 
                 for arg_validator_fn in arg_validator_funcs:
                     if not callable(arg_validator_fn):
@@ -43,6 +54,9 @@ def validate_func_args(func: Callable[P, R] | None = None,
                             f"Validator for argument '{arg_name}' "
                             f"is not callable: {arg_validator_fn}"
                         )
+
+                    if arg_type is Optional and arg_value is None:
+                        continue
 
                     arg_validator_fn(arg_value)
 
