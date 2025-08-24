@@ -27,6 +27,18 @@ def validate_func_args(
         *,
         check_arg_types: bool = False,
 ) -> DecoratorOrWrapper:
+    """Decorator to validate function arguments at runtime based on
+    their type annotations using `Annotated` and custom validators.
+
+    :param func: The function to be decorated. If None, the decorator
+                 is returned for later application. Default is None.
+    :type func: Callable[P, R] | None
+
+    :param check_arg_types: If True, checks that all argument types
+                            match. Default is False.
+    :type check_arg_types: bool
+    """
+
     def dec(fn: Callable[P, R]) -> Callable[P, R]:
         @wraps(fn)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
