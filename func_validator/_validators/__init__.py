@@ -1,6 +1,6 @@
 from ._collection_arg_validators import (
     MustBeEmpty,
-    MustBeIn,
+    MustBeMemberOf,
     MustBeNonEmpty,
     MustHaveLengthBetween,
     MustHaveLengthEqual,
@@ -14,6 +14,7 @@ from ._collection_arg_validators import (
     MustHaveValuesLessThan,
     MustHaveValuesLessThanOrEqual,
 )
+from ._datatype_arg_validators import MustBeA
 from ._numeric_arg_validators import (
     MustBeBetween,
     MustBeEqual,
@@ -27,6 +28,7 @@ from ._numeric_arg_validators import (
     MustBeNotEqual,
     MustBePositive,
 )
+from ._text_arg_validators import MustMatchRegex
 
 # TODO: Add more validation functions as needed
 # TODO: Add support for datatype checking

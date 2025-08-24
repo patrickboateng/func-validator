@@ -12,9 +12,11 @@ from typing import (
     get_type_hints,
 )
 
+from ._validators import MustBeA
+
 P = ParamSpec("P")
 R = TypeVar("R")
-DecoratorOrCallable: TypeAlias = (
+DecoratorOrWrapper: TypeAlias = (
         Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
 )
 
@@ -24,7 +26,7 @@ def validate_func_args(
         /,
         *,
         check_arg_types: bool = False,
-) -> DecoratorOrCallable:
+) -> DecoratorOrWrapper:
     def dec(fn: Callable[P, R]) -> Callable[P, R]:
         @wraps(fn)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
@@ -54,11 +56,15 @@ def validate_func_args(
                             f"Validator for argument '{arg_name}' "
                             f"is not callable: {arg_validator_fn}"
                         )
-
                     if arg_type is Optional and arg_value is None:
                         continue
 
-                    arg_validator_fn(arg_value)
+                    if isinstance(arg_validator_fn, MustBeA):
+                        if arg_validator_fn.infer:
+                            arg_validator_fn.arg_type = arg_type
+                        arg_validator_fn(arg_value)
+                    else:
+                        arg_validator_fn(arg_value)
 
             return fn(*args, **kwargs)
 

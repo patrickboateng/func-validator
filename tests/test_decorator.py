@@ -7,7 +7,7 @@ from func_validator import (
     MustBePositive,
     MustBeEmpty,
     MustBeNonEmpty,
-    MustBeIn,
+    MustBeMemberOf,
     MustHaveLengthEqual,
 )
 
@@ -34,7 +34,7 @@ def test_validate_nonempty():
 
 def test_validate_in():
     @validate_func_args_at_runtime
-    def baz(x: Annotated[int, MustBeIn([1, 2, 3])]):
+    def baz(x: Annotated[int, MustBeMemberOf([1, 2, 3])]):
         return x
 
     assert baz(2) == 2
@@ -74,3 +74,21 @@ def test_MustHaveLength():
         validator([1, 2])
     with pytest.raises(ValueError):
         validator("")
+
+
+def test_():
+    @validate_func_args_at_runtime
+    def qux(
+            lst: Annotated[
+                list,
+                MustBeNonEmpty,
+                MustHaveLengthEqual(3),
+            ],
+    ):
+        return lst
+
+    assert qux([1, 2, 3]) == [1, 2, 3]
+    with pytest.raises(ValueError):
+        qux([])
+    with pytest.raises(ValueError):
+        qux([1, 2])

@@ -12,13 +12,13 @@ def _generic_number_validator(x: T, /, *, to: T, fn: Callable[[T, T], bool]):
 
 
 def _must_be_between(
-        x,
-        /,
-        *,
-        min_value: Number,
-        max_value: Number,
-        min_inclusive: bool,
-        max_inclusive: bool,
+    x,
+    /,
+    *,
+    min_value: Number,
+    max_value: Number,
+    min_inclusive: bool,
+    max_inclusive: bool,
 ):
     min_fn = ge if min_inclusive else gt
     max_fn = le if max_inclusive else lt
@@ -52,11 +52,11 @@ def MustBeNonNegative(value: Number, /):
 
 
 def MustBeBetween(
-        *,
-        min_value: Number,
-        max_value: Number,
-        min_inclusive: bool = True,
-        max_inclusive: bool = True,
+    *,
+    min_value: Number,
+    max_value: Number,
+    min_inclusive: bool = True,
+    max_inclusive: bool = True,
 ):
     return partial(
         _must_be_between,

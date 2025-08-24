@@ -1,7 +1,7 @@
 import pytest
 
 from func_validator import (
-    MustBeIn,
+    MustBeMemberOf,
     MustBeBetween,
     MustBeNonEmpty,
     MustHaveValuesBetween,
@@ -12,7 +12,7 @@ from func_validator import (
 
 
 def test_must_be_in():
-    validator = MustBeIn([1, 2, 3])
+    validator = MustBeMemberOf([1, 2, 3])
     validator(2)
     with pytest.raises(ValueError):
         validator(4)

@@ -1,11 +1,12 @@
-from ._func_arg_validator import validate_func_args, validate_func_args_at_runtime
+from ._func_arg_validator import validate_func_args, \
+    validate_func_args_at_runtime
 from ._validators import (
     MustBeBetween,
     MustBeEmpty,
     MustBeEqual,
     MustBeGreaterThan,
     MustBeGreaterThanOrEqual,
-    MustBeIn,
+    MustBeMemberOf,
     MustBeLessThan,
     MustBeLessThanOrEqual,
     MustBeNegative,
@@ -25,6 +26,8 @@ from ._validators import (
     MustHaveValuesGreaterThanOrEqual,
     MustHaveValuesLessThan,
     MustHaveValuesLessThanOrEqual,
+    MustMatchRegex,
+    MustBeA,
 )
 
 __version__ = "0.10.0"
@@ -39,7 +42,7 @@ __all__ = [
     "MustBeLessThan",
     "MustBeGreaterThanOrEqual",
     "MustBeLessThanOrEqual",
-    "MustBeIn",
+    "MustBeMemberOf",
     "MustBeBetween",
     "MustBeEmpty",
     "MustBeNonEmpty",
@@ -54,6 +57,8 @@ __all__ = [
     "MustHaveLengthLessThan",
     "MustHaveLengthLessThanOrEqual",
     "MustHaveLengthGreaterThanOrEqual",
+    "MustMatchRegex",
+    "MustBeA",
     "validate_func_args_at_runtime",
     "validate_func_args",
 ]

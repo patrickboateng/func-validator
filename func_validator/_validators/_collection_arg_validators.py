@@ -26,7 +26,7 @@ def _iterable_values_validator(values: Iterable, /, *, func: Callable):
 
 
 # value_set must support the `in` operator
-def MustBeIn(value_set: Container, /):
+def MustBeMemberOf(value_set: Container, /):
     def f(value):
         if not contains(value_set, value):
             raise ValueError(f"Value {value} must be in {value_set!r}")
