@@ -97,7 +97,7 @@ func(0, -10)  # ❌ Wrong 0 is not positive
 
 <table>
     <tr>
-        <td>MustBeIn</td>
+        <td>MustBeMemberOf</td>
         <td>Validate that argument value is in a collection</td>
     </tr>
     <tr>
