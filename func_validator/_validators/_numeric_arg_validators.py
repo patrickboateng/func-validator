@@ -36,22 +36,22 @@ def _must_be_between(
 
 
 def MustBePositive(value: Number, /):
-    """Validates that the number is positive (:math:`x \gt 0`)."""
+    r"""Validates that the number is positive (:math:`x \gt 0`)."""
     _generic_number_validator(value, to=0.0, fn=gt)
 
 
 def MustBeNonPositive(value: Number, /):
-    """Validates that the number is non-positive (:math:`x \le 0`)."""
+    r"""Validates that the number is non-positive (:math:`x \le 0`)."""
     _generic_number_validator(value, to=0.0, fn=le)
 
 
 def MustBeNegative(value: Number, /):
-    """Validates that the number is negative (:math:`x \lt 0`)."""
+    r"""Validates that the number is negative (:math:`x \lt 0`)."""
     _generic_number_validator(value, to=0.0, fn=lt)
 
 
 def MustBeNonNegative(value: Number, /):
-    """Validates that the number is non-negative (:math:`x \ge 0`)."""
+    r"""Validates that the number is non-negative (:math:`x \ge 0`)."""
     _generic_number_validator(value, to=0.0, fn=ge)
 
 
