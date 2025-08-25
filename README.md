@@ -8,7 +8,7 @@
 
 </div>
 
-MATLhAB-style function argument validation for Python - clean, simple, and
+MATLAB-style function argument validation for Python - clean, simple, and
 reliable.
 
 ## Installation
