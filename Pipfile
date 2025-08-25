@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+mkdocstrings = {extras = ["python"], version = "*"}
 
 [dev-packages]
 build = "*"
@@ -12,7 +13,8 @@ black = "*"
 pytest = "*"
 twine = "*"
 isort = "*"
-mkdocs = "*"
+mkdocs = {extras = ["i18n"], version = "*"}
+markdown-katex = "*"
 
 [requires]
 python_version = "3.13"
