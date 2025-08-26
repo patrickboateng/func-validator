@@ -3,34 +3,28 @@ from typing import Literal
 
 
 class MustMatchRegex:
-    def __init__(
-            self,
-            regex: str | re.Pattern,
-            *,
-            match_type: Literal["match", "fullmatch", "search"] = "match",
-            flags: int | re.RegexFlag = 0,
-    ):
-        """Validates that the value matches the provided regular expression.
+    """Validates that the value matches the provided regular expression."""
 
+    def __init__(
+        self,
+        regex: str | re.Pattern,
+        *,
+        match_type: Literal["match", "fullmatch", "search"] = "match",
+        flags: int | re.RegexFlag = 0,
+    ):
+        """
         :param regex: The regular expression to validate.
-        :type regex: str | re.Pattern
 
         :param match_type: The type of match to perform. Must be one of
                            'match', 'fullmatch', or 'search'.
                            Default is 'match'.
-        :type match_type: Literal["match", "fullmatch", "search"]
 
         :param flags: Optional regex flags to modify the regex behavior.
                       Default is 0 (no flags). if `regex` is a compiled
                       Pattern, flags are ignored.
                       See `re` module for available flags.
-        :type flags: int | re.RegexFlag
 
         :raises ValueError: If the value does not match the regex pattern.
-
-        :return: A validator function that accepts a string and raises
-                 ValueError if it does not match.
-        :rtype: Callable[[str], None]
         """
         if not isinstance(regex, re.Pattern):
             regex_pattern = re.compile(regex, flags=flags)

@@ -17,26 +17,30 @@ from ._validators import MustBeA
 P = ParamSpec("P")
 R = TypeVar("R")
 DecoratorOrWrapper: TypeAlias = (
-        Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
+    Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
 )
 
 
 def validate_func_args(
-        func: Callable[P, R] | None = None,
-        /,
-        *,
-        check_arg_types: bool = False,
+    func: Callable[P, R] | None = None,
+    /,
+    *,
+    check_arg_types: bool = False,
 ) -> DecoratorOrWrapper:
     """Decorator to validate function arguments at runtime based on
     their type annotations using `Annotated` and custom validators.
 
     :param func: The function to be decorated. If None, the decorator
                  is returned for later application. Default is None.
-    :type func: Callable[P, R] | None
 
     :param check_arg_types: If True, checks that all argument types
                             match. Default is False.
-    :type check_arg_types: bool
+
+    :raises TypeError: If func is not callable or None, or if
+                       a validator is not callable.
+
+    :return: The decorated function with argument validation, or the
+            decorator itself if func is None.
     """
 
     def dec(fn: Callable[P, R]) -> Callable[P, R]:
@@ -49,8 +53,7 @@ def validate_func_args(
             func_type_hints = get_type_hints(fn, include_extras=True)
 
             for arg_name, arg_annotation in func_type_hints.items():
-                if arg_name == "return" or get_origin(
-                        arg_annotation) is not Annotated:
+                if arg_name == "return" or get_origin(arg_annotation) is not Annotated:
                     continue
 
                 arg_type, *arg_validator_funcs = get_args(arg_annotation)

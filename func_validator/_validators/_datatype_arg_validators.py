@@ -2,18 +2,17 @@ from ._core import T
 
 
 class MustBeA:
-    def __init__(self, arg_type=None, infer=True):
-        """Validates that the value is of the specified type.
+    """Validates that the value is of the specified type."""
 
-        :param arg_type: The type to validate against. If None and infer is True,
-                         the type will be inferred from the value at runtime.
-                         Default is None.
-        :type arg_type: type | None
+    def __init__(self, arg_type=None, infer=True):
+        """
+        :param arg_type: The type to validate against. If None and infer
+                         is True, the type will be inferred from the value
+                         at runtime. Default is None.
 
         :param infer: Whether to infer the type from the typehint from
                       `typing.Annotated`. If infer is true, `arg_type` is
                        ignored. Default is True.
-        :type infer: bool
 
         :raises TypeError: If the value is not of the specified type.
         :raises ValueError: If arg_type is None and infer is False.

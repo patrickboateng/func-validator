@@ -12,13 +12,13 @@ def _generic_number_validator(x: T, /, *, to: T, fn: Callable[[T, T], bool]):
 
 
 def _must_be_between(
-        x,
-        /,
-        *,
-        min_value: Number,
-        max_value: Number,
-        min_inclusive: bool,
-        max_inclusive: bool,
+    x,
+    /,
+    *,
+    min_value: Number,
+    max_value: Number,
+    min_inclusive: bool,
+    max_inclusive: bool,
 ):
     min_fn = ge if min_inclusive else gt
     max_fn = le if max_inclusive else lt
@@ -56,33 +56,28 @@ def MustBeNonNegative(value: Number, /):
 
 
 def MustBeBetween(
-        *,
-        min_value: Number,
-        max_value: Number,
-        min_inclusive: bool = True,
-        max_inclusive: bool = True,
-):
+    *,
+    min_value: Number,
+    max_value: Number,
+    min_inclusive: bool = True,
+    max_inclusive: bool = True,
+) -> Callable[[Number], None]:
     """Validates that the number is between min_value and max_value.
 
     :param min_value: The minimum value (inclusive or exclusive based
                       on min_inclusive).
-    :type min_value: Number
 
     :param max_value: The maximum value (inclusive or exclusive based
                       on max_inclusive).
-    :type max_value: Number
 
     :param min_inclusive: If True, min_value is inclusive. Default is True.
-    :type min_inclusive: bool
 
     :param max_inclusive: If True, max_value is inclusive. Default is True.
-    :type max_inclusive: bool
 
     :raises ValueError: If the number is not within the specified range.
 
     :return: A validator function that accepts a number and raises
                 ValueError if it is not within the specified range.
-    :rtype: Callable[[Number], None]
     """
 
     return partial(
@@ -97,34 +92,34 @@ def MustBeBetween(
 # Comparison validation functions
 
 
-def MustBeEqual(value: Number, /):
+def MustBeEqual(value: Number, /) -> Callable[[Number], None]:
     """Validates that the number is equal to the specified value"""
     return partial(_generic_number_validator, to=value, fn=eq)
 
 
-def MustBeNotEqual(value: Number, /):
+def MustBeNotEqual(value: Number, /) -> Callable[[Number], None]:
     """Validates that the number is not equal to the specified value"""
     return partial(_generic_number_validator, to=value, fn=ne)
 
 
-def MustBeGreaterThan(value: Number, /):
+def MustBeGreaterThan(value: Number, /) -> Callable[[Number], None]:
     """Validates that the number is greater than the specified value"""
     return partial(_generic_number_validator, to=value, fn=gt)
 
 
-def MustBeGreaterThanOrEqual(value: Number, /):
+def MustBeGreaterThanOrEqual(value: Number, /) -> Callable[[Number], None]:
     """Validates that the number is greater than or equal to the
     specified value.
     """
     return partial(_generic_number_validator, to=value, fn=ge)
 
 
-def MustBeLessThan(value: Number, /):
+def MustBeLessThan(value: Number, /) -> Callable[[Number], None]:
     """Validates that the number is less than the specified value"""
     return partial(_generic_number_validator, to=value, fn=lt)
 
 
-def MustBeLessThanOrEqual(value: Number, /):
+def MustBeLessThanOrEqual(value: Number, /) -> Callable[[Number], None]:
     """Validates that the number is less than or equal to the
     specified value.
     """
