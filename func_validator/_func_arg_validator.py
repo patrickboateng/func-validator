@@ -10,6 +10,7 @@ from typing import (
     get_args,
     get_origin,
     get_type_hints,
+    Union,
 )
 
 P = ParamSpec("P")
@@ -60,6 +61,15 @@ def validate_func_args(
                 arg_type, *arg_validator_funcs = get_args(arg_annotation)
                 arg_value = arguments[arg_name]
 
+                is_arg_type_optional = get_origin(arg_type) is Union and \
+                                       get_args(
+                                           arg_type
+                                       )[1] is type(None)
+
+                # If arg_type is Optional, None is allowed as a valid arg_value
+                if is_arg_type_optional and arg_value is None:
+                    continue
+
                 if check_arg_types and not isinstance(arg_value, arg_type):
                     raise TypeError(
                         f"Argument '{arg_name}' must be of type "
@@ -67,16 +77,8 @@ def validate_func_args(
                     )
 
                 for arg_validator_fn in arg_validator_funcs:
-                    if not callable(arg_validator_fn):
-                        raise TypeError(
-                            f"Validator for argument '{arg_name}' "
-                            f"is not callable: {arg_validator_fn}"
-                        )
-                    # If arg_type is Optional, None is allowed as a valid arg_value
-                    if arg_type is Optional and arg_value is None:
-                        continue
-
-                    arg_validator_fn(arg_value)
+                    if callable(arg_validator_fn):
+                        arg_validator_fn(arg_value)
 
             return fn(*args, **kwargs)
 
