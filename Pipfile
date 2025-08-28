@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 mkdocstrings = {extras = ["python"], version = "*"}
+mkdocs-autorefs = "*"
 
 [dev-packages]
 build = "*"
@@ -15,6 +16,10 @@ twine = "*"
 isort = "*"
 mkdocs = {extras = ["i18n"], version = "*"}
 markdown-katex = "*"
+mkdocs-autorefs = "*"
+pymdown-extensions = "*"
+mkdocs-include-markdown-plugin = "*"
+pytest-doctestplus = "*"
 
 [requires]
 python_version = "3.13"
