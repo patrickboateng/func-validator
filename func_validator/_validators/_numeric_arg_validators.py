@@ -2,13 +2,13 @@ from functools import partial
 from operator import eq, ge, gt, le, lt, ne
 from typing import Callable
 
-from ._core import Number, T, OPERATOR_SYMBOLS
+from ._core import Number, T, OPERATOR_SYMBOLS, ValidationError
 
 
 def _generic_number_validator(x: T, /, *, to: T, fn: Callable[[T, T], bool]):
     if not fn(x, to):
         operator_symbol = OPERATOR_SYMBOLS[fn.__name__]
-        raise ValueError(f"{x=} must be {operator_symbol} {to}.")
+        raise ValidationError(f"{x=} must be {operator_symbol} {to}.")
 
 
 def _must_be_between(
@@ -29,7 +29,7 @@ def _must_be_between(
             f"{x=} must be, x {min_operator_symbol} "
             f"{min_value} and x {max_operator_symbol} {max_value}."
         )
-        raise ValueError(exc_msg)
+        raise ValidationError(exc_msg)
 
 
 # Numeric validation functions
@@ -74,10 +74,10 @@ def MustBeBetween(
 
     :param max_inclusive: If True, max_value is inclusive. Default is True.
 
-    :raises ValueError: If the number is not within the specified range.
+    :raises ValidationError: If the number is not within the specified range.
 
     :return: A validator function that accepts a number and raises
-                ValueError if it is not within the specified range.
+                ValidationError if it is not within the specified range.
     """
 
     return partial(

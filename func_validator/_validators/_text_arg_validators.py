@@ -1,62 +1,70 @@
 import re
-from typing import Literal
+from functools import partial
+from typing import Literal, Callable
+
+from ._core import ValidationError
 
 
-class MustMatchRegex:
-    """Validates that the value matches the provided regular expression."""
+def _must_match_regex(
+        value: str, /, *, match_func: Callable, regex_pattern: re.Pattern
+) -> None:
+    if not isinstance(value, str):
+        exc_msg = f"Value must be a string, got {type(value)} instead."
+        raise TypeError(exc_msg)
+    if not match_func(value):
+        exc_msg = (
+            f"Value '{value}' does not match the "
+            f"regex pattern '{regex_pattern.pattern}'."
+        )
+        raise ValidationError(exc_msg)
 
-    def __init__(
-        self,
+
+def MustMatchRegex(
         regex: str | re.Pattern,
+        /,
         *,
         match_type: Literal["match", "fullmatch", "search"] = "match",
         flags: int | re.RegexFlag = 0,
-    ):
-        """
-        :param regex: The regular expression to validate.
+) -> Callable[[str], None]:
+    """
+    Validates that the value matches the provided regular expression.
 
-        :param match_type: The type of match to perform. Must be one of
-                           'match', 'fullmatch', or 'search'.
-                           Default is 'match'.
+    :param regex: The regular expression to validate.
 
-        :param flags: Optional regex flags to modify the regex behavior.
-                      Default is 0 (no flags). if `regex` is a compiled
-                      Pattern, flags are ignored.
-                      See `re` module for available flags.
+    :param match_type: The type of match to perform. Must be one of
+                       'match', 'fullmatch', or 'search'.
+                       Default is 'match'.
 
-        :raises ValueError: If the value does not match the regex pattern.
-        """
-        if not isinstance(regex, re.Pattern):
-            regex_pattern = re.compile(regex, flags=flags)
-        else:
-            regex_pattern = regex
+    :param flags: Optional regex flags to modify the regex behavior.
+                  Default is 0 (no flags). if `regex` is a compiled
+                  Pattern, flags are ignored.
+                  See `re` module for available flags.
 
-        match match_type:
-            case "match":
-                match_func = regex_pattern.match
-            case "fullmatch":
-                match_func = regex_pattern.fullmatch
-            case "search":
-                match_func = regex_pattern.search
-            case _:
-                raise TypeError(
-                    "Invalid match_type. Must be one of 'match', "
-                    "'fullmatch', or 'search'."
-                )
+    :raises ValueError: If the value does not match the regex pattern.
 
-        self.regex_pattern = regex_pattern
-        self.match_func = match_func
+    :return: A validator function that checks if a string matches the
+             regex pattern.
+    """
+    if not isinstance(regex, re.Pattern):
+        regex_pattern = re.compile(regex, flags=flags)
+    else:
+        regex_pattern = regex
 
-    def __call__(self, value: str) -> None:
-        """Validator function to check if the value matches the
-        regex pattern.
-        """
-        if not isinstance(value, str):
-            exc_msg = f"Value must be a string, got {type(value)} instead."
-            raise TypeError(exc_msg)
-        if not self.match_func(value):
-            exc_msg = (
-                f"Value '{value}' does not match the "
-                f"regex pattern '{self.regex_pattern.pattern}'."
+    match match_type:
+        case "match":
+            match_func = regex_pattern.match
+        case "fullmatch":
+            match_func = regex_pattern.fullmatch
+        case "search":
+            match_func = regex_pattern.search
+        case _:
+            raise TypeError(
+                "Invalid match_type. Must be one of 'match', "
+                "'fullmatch', or 'search'."
             )
-            raise ValueError(exc_msg)
+
+    return partial(
+        _must_match_regex,
+        match_func=match_func,
+        regex_pattern=regex_pattern,
+    )
