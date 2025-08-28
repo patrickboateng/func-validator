@@ -2,7 +2,7 @@ from functools import partial
 from operator import contains
 from typing import Container, Iterable, Sized, Callable
 
-from ._core import Number
+from ._core import Number, T
 from ._numeric_arg_validators import (
     MustBeLessThan,
     MustBeLessThanOrEqual,
@@ -25,20 +25,18 @@ def _iterable_values_validator(values: Iterable, /, *, func: Callable):
 # Membership and range validation functions
 
 
-# value_set must support the `in` operator
-class MustBeMemberOf:
-    """Validates that the value is a member of the specified set."""
+def _must_be_member_of(value, /, *, value_set: Container):
+    if not contains(value_set, value):
+        raise ValueError(f"Value {value} must be in {value_set!r}")
 
-    def __init__(self, value_set: Container, /):
-        """
-        :param value_set: The set of values to validate against.
-                          `value_set` must support the `in` operator.
-        """
-        self.value_set = value_set
 
-    def __call__(self, value) -> None:
-        if not contains(self.value_set, value):
-            raise ValueError(f"Value {value} must be in {self.value_set!r}")
+def MustBeMemberOf(value_set: Container, /) -> Callable[[T], None]:
+    """Validates that the value is a member of the specified set.
+
+    :param value_set: The set of values to validate against.
+                      `value_set` must support the `in` operator.
+    """
+    return partial(_must_be_member_of, value_set=value_set)
 
 
 # Size validation functions
@@ -66,11 +64,13 @@ def MustHaveLengthGreaterThan(value: int, /) -> Callable[[Iterable], None]:
     return partial(_iterable_len_validator, func=MustBeGreaterThan(value))
 
 
-def MustHaveLengthGreaterThanOrEqual(value: int, /) -> Callable[[Iterable], None]:
+def MustHaveLengthGreaterThanOrEqual(value: int, /) -> Callable[
+    [Iterable], None]:
     """Validates that the iterable has length greater than or equal to
     the specified value.
     """
-    return partial(_iterable_len_validator, func=MustBeGreaterThanOrEqual(value))
+    return partial(_iterable_len_validator,
+                   func=MustBeGreaterThanOrEqual(value))
 
 
 def MustHaveLengthLessThan(value: int, /) -> Callable[[Iterable], None]:
@@ -86,11 +86,11 @@ def MustHaveLengthLessThanOrEqual(value: int, /) -> Callable[[Iterable], None]:
 
 
 def MustHaveLengthBetween(
-    *,
-    min_value: int,
-    max_value: int,
-    min_inclusive: bool = True,
-    max_inclusive: bool = True,
+        *,
+        min_value: int,
+        max_value: int,
+        min_inclusive: bool = True,
+        max_inclusive: bool = True,
 ) -> Callable[[Iterable], None]:
     """Validates that the iterable has length between the specified
     min_value and max_value.
@@ -122,12 +122,81 @@ def MustHaveLengthBetween(
     )
 
 
+def MustHaveValuesGreaterThan(min_value: Number) -> Callable[[Iterable], None]:
+    """Validates that all values in the iterable are greater than the
+    specified min_value.
+
+    :param min_value: The minimum value (exclusive).
+
+    :raises ValueError: If any value in the iterable is not greater
+                        than min_value.
+
+    :return: A validator function that accepts an iterable and raises
+             ValueError if any of its values are not greater than
+             min_value.
+    """
+    return partial(_iterable_values_validator,
+                   func=MustBeGreaterThan(min_value))
+
+
+def MustHaveValuesGreaterThanOrEqual(min_value: Number) -> Callable[
+    [Iterable], None]:
+    """Validates that all values in the iterable are greater than or
+    equal to the specified min_value.
+
+    :param min_value: The minimum value (inclusive).
+
+    :raises ValueError: If any value in the iterable is not greater
+                        than or equal to min_value.
+
+    :return: A validator function that accepts an iterable and raises
+                ValueError if any of its values are not greater than or
+                equal to min_value.
+    :rtype: Callable[[Iterable], None]
+    """
+    return partial(_iterable_values_validator,
+                   func=MustBeGreaterThanOrEqual(min_value))
+
+
+def MustHaveValuesLessThan(max_value: Number) -> Callable[[Iterable], None]:
+    """Validates that all values in the iterable are less than the
+    specified max_value.
+
+    :param max_value: The maximum value (exclusive).
+
+    :raises ValueError: If any value in the iterable is not less than
+                        max_value.
+
+    :return: A validator function that accepts an iterable and raises
+             ValueError if any of its values are not less than max_value.
+    """
+    return partial(_iterable_values_validator, func=MustBeLessThan(max_value))
+
+
+def MustHaveValuesLessThanOrEqual(max_value: Number) -> Callable[
+    [Iterable], None]:
+    """Validates that all values in the iterable are less than or
+    equal to the specified max_value.
+
+    :param max_value: The maximum value (inclusive).
+
+    :raises ValueError: If any value in the iterable is not less than
+                        or equal to max_value.
+
+    :return: A validator function that accepts an iterable and raises
+                ValueError if any of its values are not less than or equal
+                to max_value.
+    """
+    return partial(_iterable_values_validator,
+                   func=MustBeLessThanOrEqual(max_value))
+
+
 def MustHaveValuesBetween(
-    *,
-    min_value: Number,
-    max_value: Number,
-    min_inclusive: bool = True,
-    max_inclusive: bool = True,
+        *,
+        min_value: Number,
+        max_value: Number,
+        min_inclusive: bool = True,
+        max_inclusive: bool = True,
 ) -> Callable[[Iterable], None]:
     """Validates that all values in the iterable are between the specified
     min_value and max_value.
@@ -157,67 +226,3 @@ def MustHaveValuesBetween(
             max_inclusive=max_inclusive,
         ),
     )
-
-
-def MustHaveValuesGreaterThan(min_value: Number) -> Callable[[Iterable], None]:
-    """Validates that all values in the iterable are greater than the
-    specified min_value.
-
-    :param min_value: The minimum value (exclusive).
-
-    :raises ValueError: If any value in the iterable is not greater
-                        than min_value.
-
-    :return: A validator function that accepts an iterable and raises
-             ValueError if any of its values are not greater than
-             min_value.
-    """
-    return partial(_iterable_values_validator, func=MustBeGreaterThan(min_value))
-
-
-def MustHaveValuesGreaterThanOrEqual(min_value: Number) -> Callable[[Iterable], None]:
-    """Validates that all values in the iterable are greater than or
-    equal to the specified min_value.
-
-    :param min_value: The minimum value (inclusive).
-
-    :raises ValueError: If any value in the iterable is not greater
-                        than or equal to min_value.
-
-    :return: A validator function that accepts an iterable and raises
-                ValueError if any of its values are not greater than or
-                equal to min_value.
-    :rtype: Callable[[Iterable], None]
-    """
-    return partial(_iterable_values_validator, func=MustBeGreaterThanOrEqual(min_value))
-
-
-def MustHaveValuesLessThan(max_value: Number) -> Callable[[Iterable], None]:
-    """Validates that all values in the iterable are less than the
-    specified max_value.
-
-    :param max_value: The maximum value (exclusive).
-
-    :raises ValueError: If any value in the iterable is not less than
-                        max_value.
-
-    :return: A validator function that accepts an iterable and raises
-             ValueError if any of its values are not less than max_value.
-    """
-    return partial(_iterable_values_validator, func=MustBeLessThan(max_value))
-
-
-def MustHaveValuesLessThanOrEqual(max_value: Number) -> Callable[[Iterable], None]:
-    """Validates that all values in the iterable are less than or
-    equal to the specified max_value.
-
-    :param max_value: The maximum value (inclusive).
-
-    :raises ValueError: If any value in the iterable is not less than
-                        or equal to max_value.
-
-    :return: A validator function that accepts an iterable and raises
-                ValueError if any of its values are not less than or equal
-                to max_value.
-    """
-    return partial(_iterable_values_validator, func=MustBeLessThanOrEqual(max_value))
