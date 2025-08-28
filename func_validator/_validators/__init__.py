@@ -18,6 +18,7 @@ from ._datatype_arg_validators import MustBeA
 from ._numeric_arg_validators import (
     MustBeBetween,
     MustBeEqual,
+    MustBeNotEqual,
     MustBeGreaterThan,
     MustBeGreaterThanOrEqual,
     MustBeLessThan,
@@ -29,6 +30,4 @@ from ._numeric_arg_validators import (
     MustBePositive,
 )
 from ._text_arg_validators import MustMatchRegex
-
-# TODO: Add more validation functions as needed
-# TODO: Add support for datatype checking
+from ._core import ValidationError
