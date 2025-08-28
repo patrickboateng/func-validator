@@ -1,8 +1,10 @@
-site_name: func-validator documentation
+site_name: func-validator
 repo_url: https://github.com/patrickboateng/func-validator
-site_description: Ma
+site_description: MATLAB-style function argument validation for Python - clean,
+  simple, and reliable.
 
 nav:
+  - Home: index.md
   - User Guide:
       - Usage: usage.md
   - Reference:
@@ -10,13 +12,14 @@ nav:
   - Contributing:
       - Guidelines: contributing.md
       - Code of Conduct: code_of_conduct.md
+  - Advanced:
+      - Customization: customization.md
 
 theme:
   name: shadcn
-  locales:
-    - fr
 
 plugins:
+  - include-markdown
   - mkdocstrings:
       handlers:
         python:
@@ -26,7 +29,9 @@ plugins:
             show_signature: true
             members_order: source
             merge_init_into_class: true
+            docstring_section_style: spacy
             show_root_heading: false
+            summary: true
             filters:
               - "!^_"
 
