@@ -11,3 +11,7 @@ OPERATOR_SYMBOLS: dict[str, str] = {
     "lt": "<",
     "ne": "!=",
 }
+
+
+class ValidationError(Exception):
+    pass
