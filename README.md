@@ -3,6 +3,7 @@
 
 [![PyPI Latest Release](https://img.shields.io/pypi/v/func-validator?style=flat&logo=pypi)](https://pypi.org/project/func-validator/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/func-validator.svg?logo=python&style=flat)](https://pypi.python.org/pypi/func-validator/)
+[![Coverage Status](https://coveralls.io/repos/github/patrickboateng/func-validator/badge.svg?branch=main)](https://coveralls.io/github/patrickboateng/func-validator?branch=main)
 [![license](https://img.shields.io/pypi/l/func-validator?style=flat&logo=opensourceinitiative)](https://opensource.org/license/mit/)
 
 MATLAB-style function argument validation for Python - clean, simple, and
