@@ -68,7 +68,7 @@ def validate_func_args(
 
                 # If arg_type is Optional, None is allowed as a valid arg_value
                 if is_arg_type_optional and arg_value is None:
-                    continue
+                    continue  # we are skipping the validation of the arg_value
 
                 if check_arg_types and not isinstance(arg_value, arg_type):
                     raise TypeError(
