@@ -9,13 +9,31 @@
 MATLAB-style function argument validation for Python - clean, simple, and
 reliable.
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Imports](#imports)
+- [Usage](#usage)
+- [Validators](#validators)
+- [License](#license)
+
+
 ## Installation
 
 ```sh
-
 $ pip install func-validator
-
 ```
+
+## Imports
+
+- Import for the function decorator
+  ```python
+  >>> from func_validator import validate_func_args # or validate_func_args_at_runtime
+  ```
+- Import for the validators
+  ```python
+  >>> from func_validator import MustBeGreaterThan, MustMatchRegex
+  ```
 
 ## Usage
 
@@ -27,7 +45,7 @@ $ pip install func-validator
 ...                             MustBePositive,
 ...                             MustBeNegative)
 
->>> @validate_func_args  # or @validate_func_args_at_runtime
+>>> @validate_func_args  
 ... def func(a: Annotated[int, MustBePositive],
 ...          b: Annotated[float, MustBeNegative]):
 ...     return (a, b)
@@ -49,57 +67,10 @@ ValidationError: x=0 must be > 0.0.
 
 ## Validators
 
-### Numeric Value Validation
+This is not the exhaustive list for all validators, checkout the docs for more
+examples.
 
-<table>
-    <tr>
-        <td>MustBePositive</td>
-        <td>Validate that argument value is positive</td>
-    </tr>
-    <tr>
-        <td>MustBeNonPositive</td>
-        <td>Validate that argument value is non-positive</td>
-    </tr>
-    <tr>
-        <td>MustBeNegative</td>
-        <td>Validate that argument value is negative</td>
-    </tr>
-    <tr>
-        <td>MustBeNonNegative</td>
-        <td>Validate that argument value is non-negative</td>
-    </tr>
-</table>
-
-### Comparison Validation
-
-<table>
-    <tr>
-        <td>MustBeEqual</td>
-        <td>Validate that argument value is equal to another value</td>
-    </tr>
-    <tr>
-        <td>MustBeNotEqual</td>
-        <td>Validate that argument value is not equal to another value</td>
-    </tr>
-    <tr>
-        <td>MustBeGreaterThan</td>
-        <td>Validate that argument value is greater than another value</td>
-    </tr>
-    <tr>
-        <td>MustBeGreaterThanOrEqual</td>
-        <td>Validate that argument value is greater than or equal to another value</td>
-    </tr>
-    <tr>
-        <td>MustBeLessThan</td>
-        <td>Validate that argument value is less than another value</td>
-    </tr>
-    <tr>
-        <td>MustBeLessThanOrEqual</td>
-        <td>Validate that argument value is less than or equal to another value</td>
-    </tr>
-</table>
-
-### Membership Validation
+### Collection Validators
 
 <table>
     <tr>
@@ -107,37 +78,41 @@ ValidationError: x=0 must be > 0.0.
         <td>Validate that argument value is in a collection</td>
     </tr>
     <tr>
-        <td>MustBeBetween</td>
-        <td>Validate that argument value is between two other values</td>
+        <td>MustBeEmpty</td>
+        <td>Validate that argument value is empty</td>
     </tr>
 </table>
 
-### Collection/Iterable Validation
+### DataType Validators
 
 <table>
     <tr>
-        <td>MustBeEmpty</td>
-        <td>Validate that a collection is empty</td>
+        <td>MustBeA</td>
+        <td>Validates that the value is of the specified type</td>
+    </tr>
+</table>
+
+
+
+### Numeric Validators
+
+<table>
+    <tr>
+        <td>MustBePositive</td>
+        <td>Validate that argument value is positive</td>
     </tr>
     <tr>
-        <td>MustBeNonEmpty</td>
-        <td>Validate that a collection is non-empty</td>
+        <td>MustBeNegative</td>
+        <td>Validate that argument value is negative</td>
     </tr>
+</table>
+
+### Text Validators
+
+<table>
     <tr>
-        <td>MustHaveLengthEqual</td>
-        <td>Validate that a collection has a specific length</td>
-    </tr>
-    <tr>
-        <td>MustHaveLengthGreaterThan</td>
-        <td>Validate that a collection has length greater than a specific value</td>
-    </tr>
-    <tr>
-        <td>MustHaveLengthLessThan</td>
-        <td>Validate that a collection has length less than a specific value</td>
-    </tr>
-    <tr>
-        <td>MustHaveValuesBetween</td>
-        <td>Validate that all values in a collection are between two other values</td>
+        <td>MustMatchRegex</td>
+        <td>Validates that the value matches the provided regular expression.</td>
     </tr>
 </table>
 
