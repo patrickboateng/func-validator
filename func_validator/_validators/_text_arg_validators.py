@@ -6,7 +6,7 @@ from ._core import ValidationError
 
 
 def _must_match_regex(
-    value: str, /, *, match_func: Callable, regex_pattern: re.Pattern
+        value: str, /, *, match_func: Callable, regex_pattern: re.Pattern
 ) -> None:
     if not isinstance(value, str):
         exc_msg = f"Value must be a string, got {type(value)} instead."
@@ -20,14 +20,13 @@ def _must_match_regex(
 
 
 def MustMatchRegex(
-    regex: str | re.Pattern,
-    /,
-    *,
-    match_type: Literal["match", "fullmatch", "search"] = "match",
-    flags: int | re.RegexFlag = 0,
+        regex: str | re.Pattern,
+        /,
+        *,
+        match_type: Literal["match", "fullmatch", "search"] = "match",
+        flags: int | re.RegexFlag = 0,
 ) -> Callable[[str], None]:
-    """
-    Validates that the value matches the provided regular expression.
+    """Validates that the value matches the provided regular expression.
 
     :param regex: The regular expression to validate.
 

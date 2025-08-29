@@ -11,8 +11,7 @@ def _must_be_a_particular_type(value: T, *, arg_type: Type[T]) -> None:
 
 
 def MustBeA(arg_type: Type[T]) -> Callable[[T, Type[T]], None]:
-    """
-    Validates that the value is of the specified type.
+    """Validates that the value is of the specified type.
 
     :param arg_type: The type to validate against.
 
