@@ -28,12 +28,16 @@ $ pip install func-validator
 ## Imports
 
 - Import for the function decorator
+
   ```python
-  >>> from func_validator import validate_func_args # or validate_func_args_at_runtime
+  >>> from func_validator import validate_func_args # doctest: +SKIP
+  >>> from func_validator import validate_func_args_at_runtime # doctest: +SKIP
   ```
+  
 - Import for the validators
+ 
   ```python
-  >>> from func_validator import MustBeGreaterThan, MustMatchRegex
+  >>> from func_validator import MustBeGreaterThan, MustMatchRegex # doctest: +SKIP
   ```
 
 ## Usage
@@ -57,12 +61,18 @@ $ pip install func-validator
 >>> func(-10, -10)  # ❌ Wrong -10 is not positive and 10 is not negative
 Traceback (most recent call last):
 ...
-ValidationError: x=-10 must be > 0.0.
+ValidationError: a:-10 must be > 0.0.
 
 >>> func(0, -10)  # ❌ Wrong 0 is not positive
 Traceback (most recent call last):
 ...
-ValidationError: x=0 must be > 0.0.
+ValidationError: a:0 must be > 0.0.
+
+>>> func(20, 10)  # ❌ Wrong 10 is not negative
+Traceback (most recent call last):
+...
+ValidationError: b:10 must be < 0.0.
+
 
 ```
 
