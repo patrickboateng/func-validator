@@ -54,7 +54,7 @@ def test_must_be_negative_validator():
     assert func(-10) == -10
 
     with pytest.raises(ValidationError):
-        MustBeNegative(5.0)
+        func(5.0)
 
 
 def test_must_be_non_negative_validator():
@@ -66,7 +66,7 @@ def test_must_be_non_negative_validator():
     assert func(0) == 0
 
     with pytest.raises(ValidationError):
-        MustBeNonNegative(-10)
+        func(-10)
 
 
 def test_must_be_between_validator():

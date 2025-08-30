@@ -5,29 +5,33 @@ from typing import Callable
 from ._core import Number, T, OPERATOR_SYMBOLS, ValidationError
 
 
-def _generic_number_validator(x: T, /, *, to: T, fn: Callable[[T, T], bool]):
-    if not fn(x, to):
+def _generic_number_validator(
+        arg_value: T, arg_name: str, /, *, to: T, fn: Callable[[T, T], bool]
+):
+    if not fn(arg_value, to):
         operator_symbol = OPERATOR_SYMBOLS[fn.__name__]
-        raise ValidationError(f"{x=} must be {operator_symbol} {to}.")
+        raise ValidationError(
+            f"{arg_name}:{arg_value} must be {operator_symbol} {to}.")
 
 
 def _must_be_between(
-    x,
-    /,
-    *,
-    min_value: Number,
-    max_value: Number,
-    min_inclusive: bool,
-    max_inclusive: bool,
+        arg_value: T,
+        arg_name: str,
+        /,
+        *,
+        min_value: Number,
+        max_value: Number,
+        min_inclusive: bool,
+        max_inclusive: bool,
 ):
     min_fn = ge if min_inclusive else gt
     max_fn = le if max_inclusive else lt
-    if not (min_fn(x, min_value) and max_fn(x, max_value)):
+    if not (min_fn(arg_value, min_value) and max_fn(arg_value, max_value)):
         min_operator_symbol = OPERATOR_SYMBOLS[min_fn.__name__]
         max_operator_symbol = OPERATOR_SYMBOLS[max_fn.__name__]
         exc_msg = (
-            f"{x=} must be, x {min_operator_symbol} "
-            f"{min_value} and x {max_operator_symbol} {max_value}."
+            f"{arg_name}:{arg_value} must be, {arg_name} {min_operator_symbol} "
+            f"{min_value} and {arg_name} {max_operator_symbol} {max_value}."
         )
         raise ValidationError(exc_msg)
 
@@ -35,32 +39,32 @@ def _must_be_between(
 # Numeric validation functions
 
 
-def MustBePositive(value: Number, /):
+def MustBePositive(arg_value: Number, arg_name: str, /):
     r"""Validates that the number is positive ($`x \gt 0`$)."""
-    _generic_number_validator(value, to=0.0, fn=gt)
+    _generic_number_validator(arg_value, arg_name, to=0.0, fn=gt)
 
 
-def MustBeNonPositive(value: Number, /):
+def MustBeNonPositive(arg_value: Number, arg_name: str, /):
     r"""Validates that the number is non-positive ($`x \le 0`$)."""
-    _generic_number_validator(value, to=0.0, fn=le)
+    _generic_number_validator(arg_value, arg_name, to=0.0, fn=le)
 
 
-def MustBeNegative(value: Number, /):
+def MustBeNegative(arg_value: Number, arg_name: str, /):
     r"""Validates that the number is negative ($`x \lt 0`$)."""
-    _generic_number_validator(value, to=0.0, fn=lt)
+    _generic_number_validator(arg_value, arg_name, to=0.0, fn=lt)
 
 
-def MustBeNonNegative(value: Number, /):
+def MustBeNonNegative(arg_value: Number, arg_name: str, /):
     r"""Validates that the number is non-negative ($`x \ge 0`$)."""
-    _generic_number_validator(value, to=0.0, fn=ge)
+    _generic_number_validator(arg_value, arg_name, to=0.0, fn=ge)
 
 
 def MustBeBetween(
-    *,
-    min_value: Number,
-    max_value: Number,
-    min_inclusive: bool = True,
-    max_inclusive: bool = True,
+        *,
+        min_value: Number,
+        max_value: Number,
+        min_inclusive: bool = True,
+        max_inclusive: bool = True,
 ) -> Callable[[Number], None]:
     """Validates that the number is between min_value and max_value.
 
@@ -77,7 +81,7 @@ def MustBeBetween(
     :raises ValidationError: If the number is not within the specified range.
 
     :return: A validator function that accepts a number and raises
-                ValidationError if it is not within the specified range.
+             ValidationError if it is not within the specified range.
     """
 
     return partial(
