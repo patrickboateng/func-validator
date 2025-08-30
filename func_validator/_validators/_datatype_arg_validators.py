@@ -5,10 +5,10 @@ from ._core import T, ValidationError
 
 
 def _must_be_a_particular_type(
-        arg_value: T,
-        arg_name: str,
-        *,
-        arg_type: Type[T],
+    arg_value: T,
+    arg_name: str,
+    *,
+    arg_type: Type[T],
 ) -> None:
     if not isinstance(arg_value, arg_type):
         exc_msg = (

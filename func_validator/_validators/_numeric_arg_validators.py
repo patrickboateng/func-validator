@@ -6,23 +6,22 @@ from ._core import Number, T, OPERATOR_SYMBOLS, ValidationError
 
 
 def _generic_number_validator(
-        arg_value: T, arg_name: str, /, *, to: T, fn: Callable[[T, T], bool]
+    arg_value: T, arg_name: str, /, *, to: T, fn: Callable[[T, T], bool]
 ):
     if not fn(arg_value, to):
         operator_symbol = OPERATOR_SYMBOLS[fn.__name__]
-        raise ValidationError(
-            f"{arg_name}:{arg_value} must be {operator_symbol} {to}.")
+        raise ValidationError(f"{arg_name}:{arg_value} must be {operator_symbol} {to}.")
 
 
 def _must_be_between(
-        arg_value: T,
-        arg_name: str,
-        /,
-        *,
-        min_value: Number,
-        max_value: Number,
-        min_inclusive: bool,
-        max_inclusive: bool,
+    arg_value: T,
+    arg_name: str,
+    /,
+    *,
+    min_value: Number,
+    max_value: Number,
+    min_inclusive: bool,
+    max_inclusive: bool,
 ):
     min_fn = ge if min_inclusive else gt
     max_fn = le if max_inclusive else lt
@@ -60,11 +59,11 @@ def MustBeNonNegative(arg_value: Number, arg_name: str, /):
 
 
 def MustBeBetween(
-        *,
-        min_value: Number,
-        max_value: Number,
-        min_inclusive: bool = True,
-        max_inclusive: bool = True,
+    *,
+    min_value: Number,
+    max_value: Number,
+    min_inclusive: bool = True,
+    max_inclusive: bool = True,
 ) -> Callable[[Number], None]:
     """Validates that the number is between min_value and max_value.
 

@@ -14,13 +14,13 @@ from ._numeric_arg_validators import (
 
 
 def _iterable_len_validator(
-        values: Sized,
+        arg_values: Sized,
         arg_name: str,
         /,
         *,
         func: Callable,
 ):
-    func(len(values), arg_name)
+    func(len(arg_values), arg_name)
 
 
 def _iterable_values_validator(

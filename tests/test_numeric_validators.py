@@ -86,10 +86,9 @@ def test_must_be_between_validator():
 
     @validate_func_args
     def func_2(
-            x_1: Annotated[
-                int, MustBeBetween(min_value=2, max_value=4,
-                                   min_inclusive=False)
-            ],
+        x_1: Annotated[
+            int, MustBeBetween(min_value=2, max_value=4, min_inclusive=False)
+        ],
     ):
         return x_1
 
@@ -101,10 +100,9 @@ def test_must_be_between_validator():
 
     @validate_func_args
     def func_3(
-            x_1: Annotated[
-                int, MustBeBetween(min_value=2, max_value=4,
-                                   max_inclusive=False)
-            ],
+        x_1: Annotated[
+            int, MustBeBetween(min_value=2, max_value=4, max_inclusive=False)
+        ],
     ):
         return x_1
 
@@ -116,13 +114,12 @@ def test_must_be_between_validator():
 
     @validate_func_args
     def func_4(
-            x_1: Annotated[
-                int,
-                MustBeBetween(
-                    min_value=2, max_value=4, min_inclusive=False,
-                    max_inclusive=False
-                ),
-            ],
+        x_1: Annotated[
+            int,
+            MustBeBetween(
+                min_value=2, max_value=4, min_inclusive=False, max_inclusive=False
+            ),
+        ],
     ):
         return x_1
 
