@@ -13,6 +13,7 @@ from ._validators import (
     MustBeLessThanOrEqual,
     MustBeNegative,
     MustBeNonEmpty,
+    MustBeMemberOf,
     MustBeNonNegative,
     MustBeNonPositive,
     MustBeNotEqual,
@@ -40,6 +41,7 @@ __all__ = [
     # Error
     "ValidationError",
     # Collection Validators
+    "MustBeMemberOf",
     "MustBeEmpty",
     "MustBeNonEmpty",
     "MustHaveLengthEqual",
