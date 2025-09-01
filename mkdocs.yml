@@ -1,14 +1,25 @@
 site_name: func-validator
-repo_url: https://github.com/patrickboateng/func-validator
 site_description: MATLAB-style function argument validation for Python - clean,
   simple, and reliable.
+site_author: Patrick Boateng
+site_url: !ENV READTHEDOCS_CANONICAL_URL
+
+copyright: Copyright &copy; 2023 - 2025 Patrick Boateng
+
+repo_name: patrickboateng/func-validator
+repo_url: https://github.com/patrickboateng/func-validator
+edit_uri: edit/main/docs
 
 nav:
   - Home: index.md
   - User Guide:
       - Usage: usage.md
   - Reference:
-      - API Reference: api.md
+      - reference/index.md
+      - Collection Validators: reference/collection_validators.md
+      - DataType Validators: reference/datatype_validators.md
+      - Numeric Validators: reference/numeric_validators.md
+      - Text Validators: reference/text_validators.md
   - Contributing:
       - Guidelines: contributing.md
       - Code of Conduct: code_of_conduct.md
@@ -16,10 +27,49 @@ nav:
       - Customization: customization.md
 
 theme:
-  name: shadcn
+  name: material
+  custom_dir: docs/overrides
+
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+  features:
+    - content.action.edit
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+    - navigation.footer
+    - toc.follow
+
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
 
 plugins:
-  - include-markdown
   - mkdocstrings:
       handlers:
         python:
@@ -31,11 +81,45 @@ plugins:
             merge_init_into_class: true
             docstring_section_style: spacy
             show_root_heading: false
-            summary: true
+            show_root_toc_entry: false
+            unwrap_annotated: true
+            preload_modules: [ "func_validator" ]
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            inherited_members: true
             filters:
               - "!^_"
+  - search
+  - git-revision-date-localized:
+      enable_creation_date: true
+      enable_git_follow: false
+  - git-committers:
+      repository: patrickboateng/func-validator
+      branch: main
 
 markdown_extensions:
-  - markdown_katex:
-      no_inline_svg: true
-      insert_fonts_css: true
+  - admonition
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      pygments_lang_class: true
+  - pymdownx.arithmatex:
+      generic: true
+  - tables
+
+extra:
+  social:
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/geolysis
+    - icon: fontawesome/brands/github
+      link: https://github.com/patrickboateng/func-validator
+    - icon: fontawesome/solid/envelope
+      link: mailto:patrickboateng@patrickboateng.tech
+
+extra_javascript:
+  - javascript/katex.js
+  - javascript/readthedocs.js
+  - https://unpkg.com/katex@0/dist/katex.min.js
+  - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
+
+extra_css:
+  - https://unpkg.com/katex@0/dist/katex.min.css
