@@ -12,8 +12,6 @@ edit_uri: edit/main/docs
 
 nav:
   - Home: index.md
-  - User Guide:
-      - Usage: usage.md
   - Reference:
       - reference/index.md
       - Collection Validators: reference/collection_validators.md
