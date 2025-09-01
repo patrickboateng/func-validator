@@ -6,7 +6,7 @@ site_url: !ENV READTHEDOCS_CANONICAL_URL
 
 copyright: Copyright &copy; 2023 - 2025 Patrick Boateng
 
-repo_name: patrickboateng/func-validator
+repo_name: func-validator
 repo_url: https://github.com/patrickboateng/func-validator
 edit_uri: edit/main/docs
 
@@ -42,6 +42,7 @@ theme:
   features:
     - content.action.edit
     - content.code.annotate
+    - content.code.copy
     - search.suggest
     - search.highlight
     - navigation.footer
