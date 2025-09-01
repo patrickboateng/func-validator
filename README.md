@@ -37,7 +37,7 @@ $ pip install func-validator
 - Import for the validators
  
   ```python
-  from func_validator import MustBeGreaterThan, MustMatchRegex # doctest: +SKIP
+  from func_validator import MustBeGreaterThan, MustMatchRegex 
   ```
 
 ## Usage
