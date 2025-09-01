@@ -39,22 +39,22 @@ def _must_be_between(
 
 
 def MustBePositive(arg_value: Number, arg_name: str, /):
-    r"""Validates that the number is positive ($`x \gt 0`$)."""
+    r"""Validates that the number is positive ($x \gt 0$)."""
     _generic_number_validator(arg_value, arg_name, to=0.0, fn=gt)
 
 
 def MustBeNonPositive(arg_value: Number, arg_name: str, /):
-    r"""Validates that the number is non-positive ($`x \le 0`$)."""
+    r"""Validates that the number is non-positive ($x \le 0$)."""
     _generic_number_validator(arg_value, arg_name, to=0.0, fn=le)
 
 
 def MustBeNegative(arg_value: Number, arg_name: str, /):
-    r"""Validates that the number is negative ($`x \lt 0`$)."""
+    r"""Validates that the number is negative ($x \lt 0$)."""
     _generic_number_validator(arg_value, arg_name, to=0.0, fn=lt)
 
 
 def MustBeNonNegative(arg_value: Number, arg_name: str, /):
-    r"""Validates that the number is non-negative ($`x \ge 0`$)."""
+    r"""Validates that the number is non-negative ($x \ge 0$)."""
     _generic_number_validator(arg_value, arg_name, to=0.0, fn=ge)
 
 

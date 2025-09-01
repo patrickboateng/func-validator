@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Optional, Type, Callable
+from typing import Type, Callable
 
 from ._core import T, ValidationError
 

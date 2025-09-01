@@ -29,14 +29,10 @@ def MustMatchRegex(
     """Validates that the value matches the provided regular expression.
 
     :param regex: The regular expression to validate.
-
     :param match_type: The type of match to perform. Must be one of
                        'match', 'fullmatch', or 'search'.
-                       Default is 'match'.
-
     :param flags: Optional regex flags to modify the regex behavior.
-                  Default is 0 (no flags). if `regex` is a compiled
-                  Pattern, flags are ignored.
+                  If `regex` is a compiled Pattern, flags are ignored.
                   See `re` module for available flags.
 
     :raises ValueError: If the value does not match the regex pattern.
@@ -57,7 +53,7 @@ def MustMatchRegex(
         case "search":
             match_func = regex_pattern.search
         case _:
-            raise TypeError(
+            raise ValidationError(
                 "Invalid match_type. Must be one of 'match', "
                 "'fullmatch', or 'search'."
             )
