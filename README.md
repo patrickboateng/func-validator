@@ -30,14 +30,14 @@ $ pip install func-validator
 - Import for the function decorator
 
   ```python
-  >>> from func_validator import validate_func_args # doctest: +SKIP
-  >>> from func_validator import validate_func_args_at_runtime # doctest: +SKIP
+  from func_validator import validate_func_args
+  from func_validator import validate_func_args_at_runtime 
   ```
   
 - Import for the validators
  
   ```python
-  >>> from func_validator import MustBeGreaterThan, MustMatchRegex # doctest: +SKIP
+  from func_validator import MustBeGreaterThan, MustMatchRegex # doctest: +SKIP
   ```
 
 ## Usage
