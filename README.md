@@ -21,8 +21,8 @@ reliable.
 
 ## Installation
 
-```sh
-$ pip install func-validator
+```shell
+pip install func-validator
 ```
 
 ## Imports
