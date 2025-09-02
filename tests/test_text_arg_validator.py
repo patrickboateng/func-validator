@@ -19,8 +19,7 @@ def test_must_match_regex_match():
 
 def test_must_match_regex_fullmatch():
     @validate_func_args
-    def func(
-            x: Annotated[str, MustMatchRegex(r"\d+", match_type="fullmatch")]):
+    def func(x: Annotated[str, MustMatchRegex(r"\d+", match_type="fullmatch")]):
         return x
 
     assert func("456") == "456"
@@ -82,10 +81,10 @@ def test_must_match_regex_precompiled_pattern():
 
 def test_must_match_regex_invalid_match_type():
     with pytest.raises(ValidationError):
+
         @validate_func_args
         def func(
-                x: Annotated[
-                    str, MustMatchRegex(r"abc", flags=re.IGNORECASE,
-                                        match_type="invalid")
-                ],
+            x: Annotated[
+                str, MustMatchRegex(r"abc", flags=re.IGNORECASE, match_type="invalid")
+            ],
         ): ...
