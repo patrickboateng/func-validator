@@ -36,9 +36,9 @@ include = ["func_validator*"]
 namespaces = false
 
 [tool.pytest.ini_options]
-addopts = "-ra --verbose --strict-markers --doctest-plus"
+addopts = "-ra --verbose --strict-markers --doctest-plus --doctest-glob '*.md'"
 minversion = "6.0"
-testpaths = ["tests", "func_validator", "./"]
+testpaths = ["tests", "func_validator", "docs"]
 doctest_optionflags = ["NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL", "FLOAT_CMP"]
 
 [project.optional-dependencies]
