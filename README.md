@@ -36,13 +36,13 @@ pip install func-validator
  
   ```python
   from func_validator import MustBeGreaterThan, MustMatchRegex 
-  from func_validator.validators.collection_arg_validators import MustBeMemberOf
+  from func_validator.validators.numeric_arg_validators import MustBeGreaterThan
   ```
   
   There are 3 other modules you can import validators from, namely:
  
+    - [collection_arg_validators](#collection-validators)
     - [datatype_arg_validators](#datatype-validators)
-    - [numeric_arg_validators](#numeric-validators)
     - [text_arg_validators](#text-validators)
 
 > [!NOTE]
