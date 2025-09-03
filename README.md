@@ -1,6 +1,5 @@
 # func-validator
 
-
 [![PyPI Latest Release](https://img.shields.io/pypi/v/func-validator?style=flat&logo=pypi)](https://pypi.org/project/func-validator/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/func-validator.svg?logo=python&style=flat)](https://pypi.python.org/pypi/func-validator/)
 [![Unit-Tests](https://github.com/patrickboateng/func-validator/actions/workflows/func-validator-unit-tests.yml/badge.svg)](https://github.com/patrickboateng/func-validator/actions/workflows/func-validator-unit-tests.yml)
@@ -17,7 +16,6 @@ reliable.
 - [Usage](#usage)
 - [Validators](#validators)
 - [License](#license)
-
 
 ## Installation
 
@@ -38,17 +36,28 @@ pip install func-validator
  
   ```python
   from func_validator import MustBeGreaterThan, MustMatchRegex 
+  from func_validator.validators.collection_arg_validators import MustBeMemberOf
   ```
+  
+  There are 3 other modules you can import validators from, namely:
+ 
+    - [datatype_arg_validators](#datatype-validators)
+    - [numeric_arg_validators](#numeric-validators)
+    - [text_arg_validators](#text-validators)
 
+> [!NOTE]
+> All validator objects (functions/callables) can be imported from the 
+> `func_validator` namespace
+  
 ## Usage
 
 ```python
 
 >>> from typing import Annotated
 
->>> from func_validator import (validate_func_args,
-...                             MustBePositive,
-...                             MustBeNegative)
+>>> from func_validator import validate_func_args
+>>> from func_validator.validators.numeric_arg_validators import (MustBePositive,
+...                                                               MustBeNegative)
 
 >>> @validate_func_args  
 ... def func(a: Annotated[int, MustBePositive],
@@ -72,7 +81,6 @@ ValidationError: a:0 must be > 0.0.
 Traceback (most recent call last):
 ...
 ValidationError: b:10 must be < 0.0.
-
 
 ```
 
@@ -102,8 +110,6 @@ examples.
         <td>Validates that the value is of the specified type</td>
     </tr>
 </table>
-
-
 
 ### Numeric Validators
 
