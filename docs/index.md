@@ -51,7 +51,9 @@ checkout more examples.
 ```python
 
 >>> from typing import Annotated
->>> from func_validator import MustBeMemberOf, MustBeEmpty, validate_func_args
+>>> from func_validator import validate_func_args
+>>> from func_validator.validators.collection_arg_validators import (MustBeMemberOf, 
+...                                                                  MustBeEmpty)
 >>> @validate_func_args
 ... def func(val_1: Annotated[int, MustBeMemberOf([1, 2, 3])]):
 ...        return val_1
@@ -84,6 +86,7 @@ ValidationError: val_2:[1, 2, 3] must be empty.
 </table>
 
 ```python
+
 >>> from typing import Annotated
 >>> from func_validator import MustBeA, validate_func_args
 >>> @validate_func_args
