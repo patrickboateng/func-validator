@@ -2,14 +2,22 @@ import re
 from functools import partial
 from typing import Literal, Callable
 
-from ._core import ValidationError
+from validators.crypto_addresses import bsc_address
+
+from ._core import ValidationError, Error
 
 
 def _must_match_regex(
-    arg_value: str, arg_name: str, /, *, match_func: Callable, regex_pattern: re.Pattern
+    arg_value: str,
+    arg_name: str,
+    /,
+    *,
+    match_func: Callable,
+    regex_pattern: re.Pattern,
 ) -> None:
     if not isinstance(arg_value, str):
-        exc_msg = f"{arg_name} must be a string, got {type(arg_value)} instead."
+        exc_msg = f"{arg_name} must be a string, got {
+            type(arg_value)} instead."
         raise TypeError(exc_msg)
     if not match_func(arg_value):
         exc_msg = (
@@ -63,3 +71,20 @@ def MustMatchRegex(
         match_func=match_func,
         regex_pattern=regex_pattern,
     )
+
+
+def MustMatchBSCAddress(arg_value: str, arg_name: str) -> None:
+    """Validates that the value is a valid binance smart chain address.
+
+    Implementation provided [here](https://yozachar.github.io/pyvalidators/stable/api/crypto_addresses/#validators.crypto_addresses.bsc_address)
+    by [validators](https://github.com/python-validators/validators)
+
+    """
+    try:
+        bsc_address(arg_value, r_ve=True)
+    except Error:
+        msg = (
+            f"{arg_name}: {arg_value} is not a "
+            "valid binance smart chain address"
+        )
+        raise ValidationError(msg)

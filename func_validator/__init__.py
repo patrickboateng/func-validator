@@ -31,6 +31,7 @@ from .validators import (
     MustHaveValuesLessThanOrEqual,
     MustBeNotEqual,
     MustMatchRegex,
+    MustMatchBSCAddress,
     MustBeA,
     ValidationError,
 )

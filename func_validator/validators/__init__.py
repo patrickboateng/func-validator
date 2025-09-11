@@ -29,5 +29,5 @@ from .numeric_arg_validators import (
     MustBeNotEqual,
     MustBePositive,
 )
-from .text_arg_validators import MustMatchRegex
+from .text_arg_validators import MustMatchRegex, MustMatchBSCAddress
 from ._core import ValidationError

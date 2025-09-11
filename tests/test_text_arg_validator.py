@@ -3,7 +3,12 @@ from typing import Annotated
 
 import pytest
 
-from func_validator import validate_func_args, MustMatchRegex, ValidationError
+from func_validator import (
+    validate_func_args,
+    MustMatchRegex,
+    ValidationError,
+    MustMatchBSCAddress,
+)
 
 
 def test_must_match_regex_match():
@@ -19,7 +24,9 @@ def test_must_match_regex_match():
 
 def test_must_match_regex_fullmatch():
     @validate_func_args
-    def func(x: Annotated[str, MustMatchRegex(r"\d+", match_type="fullmatch")]):
+    def func(
+        x: Annotated[str, MustMatchRegex(r"\d+", match_type="fullmatch")],
+    ):
         return x
 
     assert func("456") == "456"
@@ -85,6 +92,20 @@ def test_must_match_regex_invalid_match_type():
         @validate_func_args
         def func(
             x: Annotated[
-                str, MustMatchRegex(r"abc", flags=re.IGNORECASE, match_type="invalid")
+                str,
+                MustMatchRegex(
+                    r"abc", flags=re.IGNORECASE, match_type="invalid"
+                ),
             ],
         ): ...
+
+
+def test_must_be_bsc_address():
+    @validate_func_args
+    def func(address: Annotated[str, MustMatchBSCAddress]):
+        return address
+
+    assert func("0x4e5acf9684652BEa56F2f01b7101a225Ee33d23f")
+
+    with pytest.raises(ValidationError):
+        func("01234")
