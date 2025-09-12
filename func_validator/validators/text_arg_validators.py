@@ -16,8 +16,9 @@ def _must_match_regex(
     regex_pattern: re.Pattern,
 ) -> None:
     if not isinstance(arg_value, str):
-        exc_msg = f"{arg_name} must be a string, got {
-            type(arg_value)} instead."
+        exc_msg = (
+            f"{arg_name} must be a string, got {type(arg_value)} instead."
+        )
         raise TypeError(exc_msg)
     if not match_func(arg_value):
         exc_msg = (
@@ -85,6 +86,6 @@ def MustMatchBSCAddress(arg_value: str, arg_name: str) -> None:
     except Error:
         msg = (
             f"{arg_name}: {arg_value} is not a "
-            "valid binance smart chain address"
+            f"valid binance smart chain address"
         )
         raise ValidationError(msg)
