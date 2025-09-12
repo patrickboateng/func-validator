@@ -11,7 +11,9 @@ authors = [
 readme = { file = "README.md", content-type = "text/markdown" }
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "validators==0.35.0",
+]
 classifiers = [
     'Development Status :: 2 - Pre-Alpha',
     'Intended Audience :: Developers',
@@ -54,3 +56,21 @@ branch = true
 [tool.isort]
 profile = "black"
 src_paths = ["func_validator"]
+
+[tool.black]
+line-length = 79
+
+[dependency-groups]
+dev = [
+    "black==25.1.0",
+    "isort==6.0.1",
+    "mkdocs==1.6.1",
+    "mkdocs-git-committers-plugin-2==2.5.0",
+    "mkdocs-git-revision-date-localized-plugin==1.4.7",
+    "mkdocs-material==9.6.18",
+    "mkdocstrings[python]==0.30.0",
+    "mktestdocs==0.2.5",
+    "pytest==8.4.1",
+    "pytest-cov==6.2.1",
+    "pytest-doctestplus==1.4.0",
+]
