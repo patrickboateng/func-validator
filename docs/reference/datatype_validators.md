@@ -1,1 +1,1 @@
-::: func_validator._validators._datatype_arg_validators
+::: func_validator.validators.datatype_arg_validators

@@ -1,4 +1,4 @@
-# validate_func_args
+# @validate_func_args
 
 ::: func_validator.validate_func_args
     handler: python

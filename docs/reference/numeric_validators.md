@@ -1,1 +1,1 @@
-::: func_validator._validators._numeric_arg_validators
+::: func_validator.validators.numeric_arg_validators
