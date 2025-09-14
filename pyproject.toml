@@ -43,9 +43,6 @@ minversion = "6.0"
 testpaths = ["tests", "func_validator", "docs"]
 doctest_optionflags = ["NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL", "FLOAT_CMP"]
 
-[project.optional-dependencies]
-dev = ['wheel', 'black', 'pytest', 'mypy', 'setuptools']
-
 [tool.coverage.report]
 show_missing = true
 skip_covered = true
@@ -62,6 +59,7 @@ line-length = 79
 
 [dependency-groups]
 dev = [
+    "pytest==8.4.1",
     "black==25.1.0",
     "isort==6.0.1",
     "mkdocs==1.6.1",
@@ -70,7 +68,7 @@ dev = [
     "mkdocs-material==9.6.18",
     "mkdocstrings[python]==0.30.0",
     "mktestdocs==0.2.5",
-    "pytest==8.4.1",
     "pytest-cov==6.2.1",
     "pytest-doctestplus==1.4.0",
 ]
+
