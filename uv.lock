@@ -274,6 +274,7 @@ dev = [
     { name = "mktestdocs" },
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "pytest-doctestplus" },
 ]
 
 [package.metadata]
@@ -289,8 +290,9 @@ dev = [
     { name = "mkdocs-material", specifier = "==9.6.18" },
     { name = "mkdocstrings", extras = ["python"], specifier = "==0.30.0" },
     { name = "mktestdocs", specifier = "==0.2.5" },
-    { name = "pytest" },
+    { name = "pytest", specifier = "==8.4.1" },
     { name = "pytest-cov", specifier = "==6.2.1" },
+    { name = "pytest-doctestplus", specifier = "==1.4.0" },
 ]
 
 [[package]]
@@ -721,6 +723,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/18/99/668cade231f434aaa59bbfbf49469068d2ddd945000621d3d165d2e7dd7b/pytest_cov-6.2.1.tar.gz", hash = "sha256:25cc6cc0a5358204b8108ecedc51a9b57b34cc6b8c967cc2c01a4e00d8a67da2", size = 69432, upload-time = "2025-06-12T10:47:47.684Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bc/16/4ea354101abb1287856baa4af2732be351c7bee728065aed451b678153fd/pytest_cov-6.2.1-py3-none-any.whl", hash = "sha256:f5bc4c23f42f1cdd23c70b1dab1bbaef4fc505ba950d53e0081d0730dd7e86d5", size = 24644, upload-time = "2025-06-12T10:47:45.932Z" },
+]
+
+[[package]]
+name = "pytest-doctestplus"
+version = "1.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fd/e5/97c4bc17e93d5caf6b37ebab0bdfd668c1c62d575e6e1e5040bfa759b4f2/pytest_doctestplus-1.4.0.tar.gz", hash = "sha256:df83832b1d11288572df2ee4c7cccdb421d812b8038a658bb514c9c62bdbd626", size = 47566, upload-time = "2025-01-25T04:18:38.224Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/88/08/0e0e38a6046f91ad6ae352c0639c1b6dd90e2cd53ab2d2282d1d231535fb/pytest_doctestplus-1.4.0-py3-none-any.whl", hash = "sha256:cfbae130ec90d4a2831819bbbfd097121b8e55f1e4d20a47ea992e4eaad2539a", size = 25236, upload-time = "2025-01-25T04:18:36.384Z" },
 ]
 
 [[package]]
