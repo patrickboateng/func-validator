@@ -53,9 +53,7 @@ jobs:
           version: "0.8.16"
 
       - name: Install the project
-        run: >-
-          uv sync --locked --all-extras --dev
-          uv run pip install coverage
+        run: uv run pip install coverage
 
       - name: Test with coverage.py
         run: |
