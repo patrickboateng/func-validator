@@ -12,6 +12,7 @@ from func_validator import (
     MustBeGreaterThan,
     MustBeLessThan,
     MustBeGreaterThanOrEqual,
+    MustBeAlmostEqual,
     MustBeLessThanOrEqual,
     ValidationError,
 )
@@ -117,7 +118,10 @@ def test_must_be_between_validator():
         x_1: Annotated[
             int,
             MustBeBetween(
-                min_value=2, max_value=4, min_inclusive=False, max_inclusive=False
+                min_value=2,
+                max_value=4,
+                min_inclusive=False,
+                max_inclusive=False,
             ),
         ],
     ):
@@ -202,6 +206,17 @@ def test_must_be_less_than_or_equal_validator():
 
     assert func(4) == 4
     assert func(5) == 5
+
+    with pytest.raises(ValidationError):
+        func(6)
+
+
+def test_must_be_almost_equal():
+    @validate_func_args
+    def func(x_1: Annotated[float, MustBeAlmostEqual(5.39, rel_tol=0.01)]):
+        return x_1
+
+    assert func(5.4) == pytest.approx(5.4)
 
     with pytest.raises(ValidationError):
         func(6)

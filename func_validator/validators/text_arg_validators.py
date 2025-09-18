@@ -3,29 +3,34 @@ from functools import partial
 from typing import Literal, Callable
 
 from validators.crypto_addresses import bsc_address
+from validators.email import email
 
-from ._core import ValidationError, Error
+from ._core import ValidationError, Error, T
 
 
-def _must_match_regex(
+def _generic_text_validator(
     arg_value: str,
     arg_name: str,
     /,
     *,
-    match_func: Callable,
-    regex_pattern: re.Pattern,
+    to: T | None = None,
+    fn: Callable,
+    **kwargs,
 ) -> None:
     if not isinstance(arg_value, str):
         exc_msg = (
             f"{arg_name} must be a string, got {type(arg_value)} instead."
         )
         raise TypeError(exc_msg)
-    if not match_func(arg_value):
-        exc_msg = (
-            f"{arg_name}:{arg_value} does not match the "
-            f"regex pattern '{regex_pattern.pattern}'."
-        )
-        raise ValidationError(exc_msg)
+
+    if to is None:
+        if not fn(arg_value, **kwargs):
+            exc_msg = f"{arg_name}:{arg_value} is not valid."
+            raise ValidationError(exc_msg)
+    else:
+        if not fn(to, arg_value, **kwargs):
+            exc_msg = f"{arg_name}:{arg_value} does not match or equal {to}"
+            raise ValidationError(exc_msg)
 
 
 def MustMatchRegex(
@@ -56,22 +61,27 @@ def MustMatchRegex(
 
     match match_type:
         case "match":
-            match_func = regex_pattern.match
+            regex_func = re.match
         case "fullmatch":
-            match_func = regex_pattern.fullmatch
+            regex_func = re.fullmatch
         case "search":
-            match_func = regex_pattern.search
+            regex_func = re.search
         case _:
             raise ValidationError(
                 "Invalid match_type. Must be one of 'match', "
                 "'fullmatch', or 'search'."
             )
 
-    return partial(
-        _must_match_regex,
-        match_func=match_func,
-        regex_pattern=regex_pattern,
-    )
+    return partial(_generic_text_validator, to=regex_pattern, fn=regex_func)
+
+
+def MustMatchEmail(arg_value: str, arg_name: str) -> None:
+    """Validates that the value is a valid email address.
+
+    Implementation provided [here](https://yozachar.github.io/pyvalidators/stable/api/email/#validators.email.email)
+    by [validators](https://github.com/python-validators/validators)
+    """
+    _generic_text_validator(arg_value, arg_name, fn=email)
 
 
 def MustMatchBSCAddress(arg_value: str, arg_name: str) -> None:
@@ -81,11 +91,4 @@ def MustMatchBSCAddress(arg_value: str, arg_name: str) -> None:
     by [validators](https://github.com/python-validators/validators)
 
     """
-    try:
-        bsc_address(arg_value, r_ve=True)
-    except Error:
-        msg = (
-            f"{arg_name}: {arg_value} is not a "
-            f"valid binance smart chain address"
-        )
-        raise ValidationError(msg)
+    _generic_text_validator(arg_value, arg_name, fn=bsc_address)

@@ -1,3 +1,4 @@
+import math
 from functools import partial
 from operator import eq, ge, gt, le, lt, ne
 from typing import Callable
@@ -6,11 +7,19 @@ from ._core import Number, T, OPERATOR_SYMBOLS, ValidationError
 
 
 def _generic_number_validator(
-    arg_value: T, arg_name: str, /, *, to: T, fn: Callable[[T, T], bool]
+    arg_value: T,
+    arg_name: str,
+    /,
+    *,
+    to: T,
+    fn: Callable,
+    **kwargs,
 ):
-    if not fn(arg_value, to):
+    if not fn(arg_value, to, **kwargs):
         operator_symbol = OPERATOR_SYMBOLS[fn.__name__]
-        raise ValidationError(f"{arg_name}:{arg_value} must be {operator_symbol} {to}.")
+        raise ValidationError(
+            f"{arg_name}:{arg_value} must be {operator_symbol} {to}."
+        )
 
 
 def _must_be_between(
@@ -103,6 +112,30 @@ def MustBeEqual(value: Number, /) -> Callable[[Number], None]:
 def MustBeNotEqual(value: Number, /) -> Callable[[Number], None]:
     """Validates that the number is not equal to the specified value"""
     return partial(_generic_number_validator, to=value, fn=ne)
+
+
+def MustBeAlmostEqual(
+    value: float,
+    /,
+    *,
+    rel_tol=1e-9,
+    abs_tol=0.0,
+) -> Callable[[float], None]:
+    """Validates that argument value (float) is almost equal to the
+    specified value.
+
+    Uses `math.isclose` (which means key-word arguments provided are
+    passed to `math.isclose`) for comparison, see its
+    [documentation](https://docs.python.org/3/library/math.html#math.isclose)
+    for details.
+    """
+    return partial(
+        _generic_number_validator,
+        to=value,
+        fn=math.isclose,
+        rel_tol=rel_tol,
+        abs_tol=abs_tol,
+    )
 
 
 def MustBeGreaterThan(value: Number, /) -> Callable[[Number], None]:

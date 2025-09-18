@@ -8,6 +8,7 @@ from func_validator import (
     MustMatchRegex,
     ValidationError,
     MustMatchBSCAddress,
+    MustMatchEmail,
 )
 
 
@@ -100,7 +101,7 @@ def test_must_match_regex_invalid_match_type():
         ): ...
 
 
-def test_must_be_bsc_address():
+def test_must_match_bsc_address():
     @validate_func_args
     def func(address: Annotated[str, MustMatchBSCAddress]):
         return address
@@ -109,3 +110,14 @@ def test_must_be_bsc_address():
 
     with pytest.raises(ValidationError):
         func("01234")
+
+
+def test_must_match_email():
+    @validate_func_args
+    def func(email_addr: Annotated[str, MustMatchEmail]):
+        return email_addr
+
+    assert func("pato@gmail.com") == "pato@gmail.com"
+
+    with pytest.raises(ValidationError):
+        func("not-an-email")
