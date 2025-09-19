@@ -18,11 +18,7 @@ nav:
       - DataType Validators: reference/datatype_validators.md
       - Numeric Validators: reference/numeric_validators.md
       - Text Validators: reference/text_validators.md
-  - Contributing:
-      - Guidelines: contributing.md
-      - Code of Conduct: code_of_conduct.md
-  - Advanced:
-      - Customization: customization.md
+  - Customization: customization.md
 
 theme:
   name: material
