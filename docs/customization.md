@@ -8,7 +8,7 @@ elements, a `bool` indicating if the validation passed, and a `str` containing
 an error message if the validation failed (or an empty string if it passed).
 `arg_name` is provided so that you can include it in your error message.
 You should decorate your function with the `@validator` decorator from the
-`func_validator` module. See the example below.
+`func_validator` package. See the example below.
 
 !!! note
 
