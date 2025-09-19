@@ -12,7 +12,7 @@ You should decorate your function with the `@validator` decorator from the
 
 !!! note
 
-    Parameters will be passed to your validator in the order `arg_value`,
+    Argument values will be passed to your validator in the order `arg_value`,
     `arg_name`, so make sure your function signature matches this order. The 
     specific parameter name does not matter, only the order matters since
     it is positional.
