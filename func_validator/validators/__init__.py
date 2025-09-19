@@ -35,7 +35,7 @@ from .text_arg_validators import (
     MustMatchBSCAddress,
     MustMatchEmail,
 )
-from ._core import ValidationError
+from ._core import ValidationError, validator
 
 __all__ = [
     # Error
@@ -75,4 +75,5 @@ __all__ = [
     "MustMatchRegex",
     "MustMatchBSCAddress",
     "MustMatchEmail",
+    "validator",
 ]
