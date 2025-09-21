@@ -1,5 +1,5 @@
 # func-validator
-
+[![Github](https://img.shields.io/badge/func--validator-000000?style=flat&logo=github&logoColor=white)](https://github.com/patrickboateng/func-validator)
 [![PyPI Latest Release](https://img.shields.io/pypi/v/func-validator?style=flat&logo=pypi)](https://pypi.org/project/func-validator/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/func-validator.svg?logo=python&style=flat)](https://pypi.python.org/pypi/func-validator/)
 [![Unit-Tests](https://github.com/patrickboateng/func-validator/actions/workflows/func-validator-unit-tests.yml/badge.svg)](https://github.com/patrickboateng/func-validator/actions/workflows/func-validator-unit-tests.yml)
