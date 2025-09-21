@@ -22,9 +22,7 @@ T = TypeVar("T")
 
 
 class ValidationError(Exception):
-
-    def __bool__(self) -> bool:
-        return False
+    pass
 
 
 def validator(func: Callable[[T, str], tuple[bool, str]]):
