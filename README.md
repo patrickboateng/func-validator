@@ -61,9 +61,8 @@ pip install func-validator
 ...                                                                MustBeNegative)
 
 >>> @validate_func_args
-... def func(a: Annotated[int, MustBePositive], 
-...      b: Annotated[float, MustBeNegative]):
-        return (a, b)
+... def func(a: Annotated[int, MustBePositive], b: Annotated[float, MustBeNegative]):
+...     return (a, b)
 
 >>> func(10, -10)  # ✅ Correct
 (10, -10)
