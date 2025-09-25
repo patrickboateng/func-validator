@@ -54,34 +54,25 @@ pip install func-validator
 
 ```python
 
->>> from typing import Annotated
+from typing import Annotated
+from func_validator import validate_func_args
+from func_validator.validators.numeric_arg_validators import ( MustBePositive, 
+                                                               MustBeNegative)
 
->>> from func_validator import validate_func_args
->>> from func_validator.validators.numeric_arg_validators import ( MustBePositive, 
-...                                                                MustBeNegative)
+@validate_func_args
+def func(a: Annotated[int, MustBePositive], b: Annotated[float, MustBeNegative]):
+    return (a, b)
 
->>> @validate_func_args
-... def func(a: Annotated[int, MustBePositive], b: Annotated[float, MustBeNegative]):
-...     return (a, b)
+func(10, -10)  # ✅ Correct
 
->>> func(10, -10)  # ✅ Correct
-(10, -10)
+func(-10, -10)  # ❌ Wrong -10 is not positive and 10 is not negative
+                # A validation error is raised with the message.
 
->>> func(-10, -10)  # ❌ Wrong -10 is not positive and 10 is not negative
-Traceback(most recent call last):
-...
-ValidationError: a:-10 must be > 0.0.
-
->>> func(0, -10)  # ❌ Wrong 0 is not positive
-Traceback(most recent call last):
-...
-ValidationError: a:0 must be > 0.0.
-
->>> func(20, 10)  # ❌ Wrong 10 is not negative
-Traceback(most recent call last):
-...
-ValidationError: b:10 must be < 0.0.
-
+func(0, -10)    # ❌ Wrong 0 is not positive
+                # A validation error is raised with the message.
+                
+func(20, 10)    # ❌ Wrong 10 is not negative
+                # A validation error is raised with the message.
 ```
 
 ## Validators
