@@ -1,4 +1,5 @@
 # func-validator
+
 [![Github](https://img.shields.io/badge/func--validator-000000?style=flat&logo=github&logoColor=white)](https://github.com/patrickboateng/func-validator)
 [![PyPI Latest Release](https://img.shields.io/pypi/v/func-validator?style=flat&logo=pypi)](https://pypi.org/project/func-validator/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/func-validator.svg?logo=python&style=flat)](https://pypi.python.org/pypi/func-validator/)
@@ -31,63 +32,92 @@ pip install func-validator
   from func_validator import validate_func_args
   from func_validator import validate_func_args_at_runtime 
   ```
-  
+
 - Import for the validators
- 
+
   ```python
   from func_validator import MustBeGreaterThan, MustMatchRegex 
   from func_validator.validators.numeric_arg_validators import MustBeGreaterThan
   ```
-  
+
   There are 3 other modules you can import validators from, namely:
- 
+
     - [collection_arg_validators](#collection-validators)
     - [datatype_arg_validators](#datatype-validators)
     - [text_arg_validators](#text-validators)
 
 > [!NOTE]
-> All validator objects (functions/callables) can be imported from the 
+> All validator objects (functions/callables) can be imported from the
 > `func_validator` namespace
-  
+
 ## Usage
 
 ```python
 
->>> from typing import Annotated
+>> > from typing import Annotated
 
->>> from func_validator import validate_func_args
->>> from func_validator.validators.numeric_arg_validators import (MustBePositive,
-...                                                               MustBeNegative)
+>> > from func_validator import validate_func_args
+>> > from func_validator.validators.numeric_arg_validators import (
+    MustBePositive,
 
->>> @validate_func_args  
-... def func(a: Annotated[int, MustBePositive],
-...          b: Annotated[float, MustBeNegative]):
-...     return (a, b)
+...
+MustBeNegative)
 
->>> func(10, -10)  # ✅ Correct
+>> >
+
+@validate_func_args
+
+
+...
+
+
+def func(a: Annotated[int, MustBePositive],
+         ...b: Annotated[float, MustBeNegative]
+
+):
+...
+return (a, b)
+
+>> > func(10, -10)  # ✅ Correct
 (10, -10)
 
->>> func(-10, -10)  # ❌ Wrong -10 is not positive and 10 is not negative
-Traceback (most recent call last):
+>> > func(-10, -10)  # ❌ Wrong -10 is not positive and 10 is not negative
+Traceback(most
+recent
+call
+last):
 ...
-ValidationError: a:-10 must be > 0.0.
+ValidationError: a:-10
+must
+be > 0.0.
 
->>> func(0, -10)  # ❌ Wrong 0 is not positive
-Traceback (most recent call last):
+>> > func(0, -10)  # ❌ Wrong 0 is not positive
+Traceback(most
+recent
+call
+last):
 ...
-ValidationError: a:0 must be > 0.0.
+ValidationError: a:0
+must
+be > 0.0.
 
->>> func(20, 10)  # ❌ Wrong 10 is not negative
-Traceback (most recent call last):
+>> > func(20, 10)  # ❌ Wrong 10 is not negative
+Traceback(most
+recent
+call
+last):
 ...
-ValidationError: b:10 must be < 0.0.
+ValidationError: b:10
+must
+be < 0.0.
 
 ```
 
 ## Validators
 
-This is not the exhaustive list for all validators, checkout the docs for more
-examples.
+This is not the exhaustive list for all validators, checkout
+the [docs](https://func-validator.readthedocs.io/en/latest/)
+for more examples.
 
 ### Collection Validators
 

@@ -1,6 +1,7 @@
 from functools import wraps
-from typing import TypeAlias, TypeVar, Callable, Iterable
+from typing import TypeAlias, TypeVar, Callable
 
+# ValidationError from python-validators package
 from validators.utils import ValidationError as Error
 
 __all__ = ["Error", "Number", "OPERATOR_SYMBOLS", "T", "ValidationError"]
@@ -18,8 +19,6 @@ OPERATOR_SYMBOLS: dict[str, str] = {
     "isclose": "≈",
 }
 
-T = TypeVar("T")
-
 
 class ValidationError(Exception):
     pass
@@ -27,7 +26,7 @@ class ValidationError(Exception):
 
 def validator(func: Callable[[T, str], tuple[bool, str]]):
     @wraps(func)
-    def wrapper(arg_val, arg_name: str):
+    def wrapper(arg_val: T, arg_name: str):
         result, msg = func(arg_val, arg_name)
         if not result:
             raise ValidationError(msg)

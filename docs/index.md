@@ -1,6 +1,6 @@
 # func-validator
 
-[![PyPI Latest Release](https://img.shields.io/pypi/v/func-validator?style=flat&logo=pypi)](https://pypi.org/project/func-validator/)
+[![PyPI Latest Release](https://img.shields.io/pypi/v/func-validator?logo=pypi)](https://pypi.org/project/func-validator/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/func-validator.svg?logo=python&style=flat)](https://pypi.python.org/pypi/func-validator/)
 [![Unit-Tests](https://github.com/patrickboateng/func-validator/actions/workflows/func-validator-unit-tests.yml/badge.svg)](https://github.com/patrickboateng/func-validator/actions/workflows/func-validator-unit-tests.yml)
 [![Coverage Status](https://coveralls.io/repos/github/patrickboateng/func-validator/badge.svg?branch=main)](https://coveralls.io/github/patrickboateng/func-validator?branch=main)
@@ -32,8 +32,10 @@ pip install func-validator
 
 ## Validators & Usage
 
-This is not the exhaustive list for all validators, click on each heading to
-checkout more examples.
+!!! note
+
+    This is not the exhaustive list for all validators, click on each heading 
+    to checkout more examples.
 
 ### [Collection Validators](reference/collection_validators.md)
 
@@ -100,8 +102,6 @@ Traceback (most recent call last):
 ValidationError: val_1 must be of type <class 'list'>, got <class 'tuple'> instead.
 
 ```
-
-
 
 ### [Numeric Validators](reference/numeric_validators.md)
 
