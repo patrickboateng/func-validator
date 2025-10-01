@@ -1,7 +1,7 @@
 from typing import Annotated
 import pytest
 from func_validator import (
-    validate_func_args,
+    validate_params,
     MustBePositive,
     MustBeNonPositive,
     MustBeNonNegative,
@@ -22,7 +22,7 @@ from func_validator import (
 
 
 def test_must_be_positive_validator():
-    @validate_func_args
+    @validate_params
     def func(x_1: Annotated[int, MustBePositive]):
         return x_1
 
@@ -36,7 +36,7 @@ def test_must_be_positive_validator():
 
 
 def test_must_be_non_positive_validator():
-    @validate_func_args
+    @validate_params
     def func(x_1: Annotated[int, MustBeNonPositive]):
         return x_1
 
@@ -48,7 +48,7 @@ def test_must_be_non_positive_validator():
 
 
 def test_must_be_negative_validator():
-    @validate_func_args
+    @validate_params
     def func(x_1: Annotated[int, MustBeNegative]):
         return x_1
 
@@ -59,7 +59,7 @@ def test_must_be_negative_validator():
 
 
 def test_must_be_non_negative_validator():
-    @validate_func_args
+    @validate_params
     def func(x_1: Annotated[int, MustBeNonNegative]):
         return x_1
 
@@ -71,7 +71,7 @@ def test_must_be_non_negative_validator():
 
 
 def test_must_be_between_validator():
-    @validate_func_args
+    @validate_params
     def func(x_1: Annotated[int, MustBeBetween(min_value=2, max_value=4)]):
         return x_1
 
@@ -85,11 +85,12 @@ def test_must_be_between_validator():
     with pytest.raises(ValidationError):
         func(5)
 
-    @validate_func_args
+    @validate_params
     def func_2(
-        x_1: Annotated[
-            int, MustBeBetween(min_value=2, max_value=4, min_inclusive=False)
-        ],
+            x_1: Annotated[
+                int, MustBeBetween(min_value=2, max_value=4,
+                                   min_inclusive=False)
+            ],
     ):
         return x_1
 
@@ -99,11 +100,12 @@ def test_must_be_between_validator():
     with pytest.raises(ValidationError):
         func_2(2)
 
-    @validate_func_args
+    @validate_params
     def func_3(
-        x_1: Annotated[
-            int, MustBeBetween(min_value=2, max_value=4, max_inclusive=False)
-        ],
+            x_1: Annotated[
+                int, MustBeBetween(min_value=2, max_value=4,
+                                   max_inclusive=False)
+            ],
     ):
         return x_1
 
@@ -113,17 +115,17 @@ def test_must_be_between_validator():
     with pytest.raises(ValidationError):
         func_3(4)
 
-    @validate_func_args
+    @validate_params
     def func_4(
-        x_1: Annotated[
-            int,
-            MustBeBetween(
-                min_value=2,
-                max_value=4,
-                min_inclusive=False,
-                max_inclusive=False,
-            ),
-        ],
+            x_1: Annotated[
+                int,
+                MustBeBetween(
+                    min_value=2,
+                    max_value=4,
+                    min_inclusive=False,
+                    max_inclusive=False,
+                ),
+            ],
     ):
         return x_1
 
@@ -138,7 +140,7 @@ def test_must_be_between_validator():
 
 # Comparison validation tests
 def test_must_be_equal_validator():
-    @validate_func_args
+    @validate_params
     def func(x_1: Annotated[int, MustBeEqual(5)]):
         return x_1
 
@@ -149,7 +151,7 @@ def test_must_be_equal_validator():
 
 
 def test_must_be_not_equal_validator():
-    @validate_func_args
+    @validate_params
     def func(x_1: Annotated[int, MustBeNotEqual(5)]):
         return x_1
 
@@ -160,7 +162,7 @@ def test_must_be_not_equal_validator():
 
 
 def test_must_be_greater_than_validator():
-    @validate_func_args
+    @validate_params
     def func(x_1: Annotated[int, MustBeGreaterThan(5)]):
         return x_1
 
@@ -174,7 +176,7 @@ def test_must_be_greater_than_validator():
 
 
 def test_must_be_greater_than_or_equal_validator():
-    @validate_func_args
+    @validate_params
     def func(x_1: Annotated[int, MustBeGreaterThanOrEqual(5)]):
         return x_1
 
@@ -186,7 +188,7 @@ def test_must_be_greater_than_or_equal_validator():
 
 
 def test_must_be_less_than_validator():
-    @validate_func_args
+    @validate_params
     def func(x_1: Annotated[int, MustBeLessThan(5)]):
         return x_1
 
@@ -200,7 +202,7 @@ def test_must_be_less_than_validator():
 
 
 def test_must_be_less_than_or_equal_validator():
-    @validate_func_args
+    @validate_params
     def func(x_1: Annotated[int, MustBeLessThanOrEqual(5)]):
         return x_1
 
@@ -212,7 +214,7 @@ def test_must_be_less_than_or_equal_validator():
 
 
 def test_must_be_almost_equal():
-    @validate_func_args
+    @validate_params
     def func(x_1: Annotated[float, MustBeAlmostEqual(5.39, rel_tol=0.01)]):
         return x_1
 

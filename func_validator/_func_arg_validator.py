@@ -16,15 +16,15 @@ from typing import (
 P = ParamSpec("P")
 R = TypeVar("R")
 DecoratorOrWrapper: TypeAlias = (
-    Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
+        Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
 )
 
 
-def validate_func_args(
-    func: Callable[P, R] | None = None,
-    /,
-    *,
-    check_arg_types: bool = False,
+def validate_params(
+        func: Callable[P, R] | None = None,
+        /,
+        *,
+        check_arg_types: bool = False,
 ) -> DecoratorOrWrapper:
     """Decorator to validate function arguments at runtime based on their
     type annotations using `typing.Annotated` and custom validators. This
@@ -54,15 +54,18 @@ def validate_func_args(
             func_type_hints = get_type_hints(fn, include_extras=True)
 
             for arg_name, arg_annotation in func_type_hints.items():
-                if arg_name == "return" or get_origin(arg_annotation) is not Annotated:
+                if (
+                        arg_name == "return"
+                        or get_origin(arg_annotation) is not Annotated
+                ):
                     continue
 
                 arg_type, *arg_validator_funcs = get_args(arg_annotation)
                 arg_value = arguments[arg_name]
 
-                is_arg_type_optional = get_origin(arg_type) is Union and get_args(
+                is_arg_type_optional = get_origin(
                     arg_type
-                )[1] is type(None)
+                ) is Union and get_args(arg_type)[1] is type(None)
 
                 # If arg_type is Optional, None is allowed as a valid arg_value
                 if is_arg_type_optional and arg_value is None:
@@ -94,4 +97,5 @@ def validate_func_args(
     raise TypeError("The first argument must be a callable function or None.")
 
 
-validate_func_args_at_runtime = validate_func_args
+validate_func_args_at_runtime = validate_params
+validate_func_args = validate_params

@@ -29,9 +29,15 @@ pip install func-validator
 - Import for the function decorator
 
   ```python
+  from func_validator import validate_params
   from func_validator import validate_func_args
   from func_validator import validate_func_args_at_runtime 
   ```
+
+> [!NOTE]
+> `validate_params` is a function decorator that validates function arguments
+> at runtime. `validate_func_args` and `validate_func_args_at_runtime`
+> are alias for `validate_params`.
 
 - Import for the validators
 
@@ -55,24 +61,27 @@ pip install func-validator
 ```python
 
 from typing import Annotated
-from func_validator import validate_func_args
-from func_validator.validators.numeric_arg_validators import ( MustBePositive, 
-                                                               MustBeNegative)
+from func_validator import validate_params
+from func_validator.validators.numeric_arg_validators import (MustBePositive,
+                                                              MustBeNegative)
 
-@validate_func_args
-def func(a: Annotated[int, MustBePositive], b: Annotated[float, MustBeNegative]):
+
+@validate_params
+def func(a: Annotated[int, MustBePositive],
+         b: Annotated[float, MustBeNegative]):
     return (a, b)
+
 
 func(10, -10)  # ✅ Correct
 
 func(-10, -10)  # ❌ Wrong -10 is not positive and 10 is not negative
-                # A validation error is raised with a message.
+# A validation error is raised with a message.
 
-func(0, -10)    # ❌ Wrong 0 is not positive
-                # A validation error is raised with a message.
-                
-func(20, 10)    # ❌ Wrong 10 is not negative
-                # A validation error is raised with a message.
+func(0, -10)  # ❌ Wrong 0 is not positive
+# A validation error is raised with a message.
+
+func(20, 10)  # ❌ Wrong 10 is not negative
+# A validation error is raised with a message.
 ```
 
 ## Validators

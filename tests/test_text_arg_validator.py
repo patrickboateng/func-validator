@@ -4,7 +4,7 @@ from typing import Annotated
 import pytest
 
 from func_validator import (
-    validate_func_args,
+    validate_params,
     MustMatchRegex,
     ValidationError,
     MustMatchBSCAddress,
@@ -13,7 +13,7 @@ from func_validator import (
 
 
 def test_must_match_regex_match():
-    @validate_func_args
+    @validate_params
     def func(x: Annotated[str, MustMatchRegex(r"\d+")]):
         return x
 
@@ -24,9 +24,9 @@ def test_must_match_regex_match():
 
 
 def test_must_match_regex_fullmatch():
-    @validate_func_args
+    @validate_params
     def func(
-        x: Annotated[str, MustMatchRegex(r"\d+", match_type="fullmatch")],
+            x: Annotated[str, MustMatchRegex(r"\d+", match_type="fullmatch")],
     ):
         return x
 
@@ -37,7 +37,7 @@ def test_must_match_regex_fullmatch():
 
 
 def test_must_match_regex_search():
-    @validate_func_args
+    @validate_params
     def func(x: Annotated[str, MustMatchRegex(r"\d+", match_type="search")]):
         return x
 
@@ -45,7 +45,7 @@ def test_must_match_regex_search():
 
 
 def test_must_match_regex_with_flags():
-    @validate_func_args
+    @validate_params
     def func(x: Annotated[str, MustMatchRegex(r"abc", flags=re.IGNORECASE)]):
         return x
 
@@ -53,7 +53,7 @@ def test_must_match_regex_with_flags():
 
 
 def test_must_match_regex_type_error_non_string():
-    @validate_func_args
+    @validate_params
     def func(x: Annotated[str, MustMatchRegex(r"\d+")]):
         return x
 
@@ -64,7 +64,7 @@ def test_must_match_regex_type_error_non_string():
 def test_must_match_regex_error_message_contains_pattern():
     pattern = r"\d+"
 
-    @validate_func_args
+    @validate_params
     def func(x: Annotated[str, MustMatchRegex(pattern)]):
         return x
 
@@ -75,7 +75,7 @@ def test_must_match_regex_error_message_contains_pattern():
 def test_must_match_regex_precompiled_pattern():
     compiled_pattern = re.compile(r"\d{3}")
 
-    @validate_func_args
+    @validate_params
     def func(x: Annotated[str, MustMatchRegex(compiled_pattern)]):
         return x
 
@@ -89,20 +89,19 @@ def test_must_match_regex_precompiled_pattern():
 
 def test_must_match_regex_invalid_match_type():
     with pytest.raises(ValidationError):
-
-        @validate_func_args
+        @validate_params
         def func(
-            x: Annotated[
-                str,
-                MustMatchRegex(
-                    r"abc", flags=re.IGNORECASE, match_type="invalid"
-                ),
-            ],
+                x: Annotated[
+                    str,
+                    MustMatchRegex(
+                        r"abc", flags=re.IGNORECASE, match_type="invalid"
+                    ),
+                ],
         ): ...
 
 
 def test_must_match_bsc_address():
-    @validate_func_args
+    @validate_params
     def func(address: Annotated[str, MustMatchBSCAddress]):
         return address
 
@@ -113,7 +112,7 @@ def test_must_match_bsc_address():
 
 
 def test_must_match_email():
-    @validate_func_args
+    @validate_params
     def func(email_addr: Annotated[str, MustMatchEmail]):
         return email_addr
 

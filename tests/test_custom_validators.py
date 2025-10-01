@@ -1,5 +1,5 @@
 import pytest
-from func_validator import ValidationError, validate_func_args
+from func_validator import ValidationError, validate_params
 from typing import Iterable, Annotated
 
 from func_validator import validator
@@ -14,7 +14,7 @@ def test_custom_validator():
 
         return check, f"{arg_name}:{arg_val} must be even"
 
-    @validate_func_args
+    @validate_params
     def func(even_num: Annotated[int, must_be_even]):
         return even_num
 

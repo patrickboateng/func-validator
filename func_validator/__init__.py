@@ -1,4 +1,5 @@
 from ._func_arg_validator import (
+    validate_params,
     validate_func_args,
     validate_func_args_at_runtime,
 )
