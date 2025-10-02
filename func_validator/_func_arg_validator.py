@@ -13,15 +13,38 @@ from typing import (
     Union,
 )
 
-from .validators import DependsOn
+from .validators import DependsOn, MustBeA
 
 P = ParamSpec("P")
 R = TypeVar("R")
+T = TypeVar("T")
 DecoratorOrWrapper: TypeAlias = (
         Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
 )
 
-ALLOWED_OPTIONAL_VALUES = {None, nan}
+ALLOWED_OPTIONAL_VALUES = (None, nan)
+
+
+def _is_arg_type_optional(arg_type: T) -> bool:
+    is_optional = False
+    if get_origin(arg_type) is Union:
+        is_optional = get_args(arg_type)[1] is type(None)
+    return is_optional
+
+
+def _skip_validation(
+        arg_name: str,
+        arg_val: T,
+        arg_annotation: T,
+) -> bool:
+    if arg_name == "return":
+        return True
+    if get_origin(arg_annotation) is not Annotated:
+        return True
+    arg_type, *_ = get_args(arg_annotation)
+    if _is_arg_type_optional(arg_type) and arg_val in ALLOWED_OPTIONAL_VALUES:
+        return True
+    return False
 
 
 def validate_params(
@@ -58,47 +81,19 @@ def validate_params(
             func_type_hints = get_type_hints(fn, include_extras=True)
 
             for arg_name, arg_annotation in func_type_hints.items():
-                if (
-                        arg_name == "return"
-                        or get_origin(arg_annotation) is not Annotated
-                ):
+                arg_value = arguments[arg_name]
+                if _skip_validation(arg_name, arg_value, arg_annotation):
                     continue
 
                 arg_type, *arg_validator_funcs = get_args(arg_annotation)
-                arg_value = arguments[arg_name]
 
-                is_arg_type_optional = get_origin(
-                    arg_type
-                ) is Union and get_args(arg_type)[1] is type(None)
-
-                # If arg_type is Optional, None is allowed as a valid arg_value
-                if (
-                        is_arg_type_optional
-                        and arg_value in ALLOWED_OPTIONAL_VALUES
-                ):
-                    continue  # we are skipping the validation of the arg_value
-
-                if check_arg_types and not isinstance(arg_value, arg_type):
-                    raise TypeError(
-                        f"Argument '{arg_name}' must be of type "
-                        f"{arg_type}, got {type(arg_value)} instead."
-                    )
+                if check_arg_types:
+                    type_checker = MustBeA(arg_type)
+                    type_checker(arg_value, arg_name)
 
                 for arg_validator_fn in arg_validator_funcs:
                     if isinstance(arg_validator_fn, DependsOn):
-                        for (
-                                dep_arg_name,
-                                dep_arg_val,
-                        ) in arg_validator_fn.dependencies:
-                            if arguments[dep_arg_name] == dep_arg_val:
-                                arg_validator_fn(
-                                    arg_value,
-                                    arg_name,
-                                    dep_arg_val,
-                                    dep_arg_name,
-                                )
-                        continue
-
+                        arg_validator_fn.arguments = arguments
                     if callable(arg_validator_fn):
                         arg_validator_fn(arg_value, arg_name)
 
@@ -110,8 +105,8 @@ def validate_params(
     if func is None:
         return dec
 
-    # If a function is provided, apply the decorator directly and return the
-    # wrapper function
+    # If a function is provided, apply the decorator directly and return
+    # the wrapper function
     if callable(func):
         return dec(func)
 

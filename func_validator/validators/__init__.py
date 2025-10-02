@@ -1,5 +1,7 @@
 import enum
 
+from mkdocs.config.config_options import Optional
+
 from .collection_arg_validators import (
     MustBeEmpty,
     MustBeMemberOf,
@@ -91,18 +93,16 @@ class DependsOn:
     def __init__(self, strategy=Strategy.MUST_NOT_BE_EMPTY, **kwargs):
         self.strategy = strategy
         self.dependencies = kwargs.items()
+        self.arguments: Optional[dict] = None
 
-    def __call__(
-        self,
-        arg_val,
-        arg_name: str,
-        dependent_arg_val,
-        dependent_arg_name: str,
-    ):
-        if self.strategy == Strategy.MUST_NOT_BE_EMPTY:
-            if not arg_val:
-                msg = (
-                    f"{arg_name} must not be empty when {dependent_arg_name} "
-                    f"is {dependent_arg_val}."
-                )
-                raise ValidationError(msg)
+    def __call__(self, arg_val, arg_name: str):
+        for dep_arg_name, dep_arg_val in self.dependencies:
+            type_checker = MustBeA(dict)
+            type_checker(self.arguments, "self.arguments")
+            actual_dep_arg_val = self.arguments[dep_arg_name]
+            if actual_dep_arg_val == dep_arg_val:
+                if callable(self.strategy):
+                    self.strategy(arg_val, arg_name)
+                else:
+                    if self.strategy == Strategy.MUST_NOT_BE_EMPTY:
+                        MustBeNonEmpty(arg_val, arg_name)

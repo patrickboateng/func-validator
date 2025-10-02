@@ -22,11 +22,11 @@ def test_must_be_a_validator():
     assert func_2(2) == 2
     assert func_2(None) is None
 
-    with pytest.raises(TypeError):
+    with pytest.raises(ValidationError):
         func_2((1, 2, 3))
 
-    with pytest.raises(TypeError):
-        validate_params("invalid")
+    with pytest.raises(ValidationError):
+        func_2("invalid")
 
     @validate_params
     def func_3(x_1: int, x_2: Annotated[int, "Just a Metadata"]):
