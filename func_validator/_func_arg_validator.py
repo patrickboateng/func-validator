@@ -1,30 +1,34 @@
 import inspect
 from functools import wraps
+from math import nan
 from typing import (
     Annotated,
     Callable,
     ParamSpec,
     TypeAlias,
     TypeVar,
-    Optional,
     get_args,
     get_origin,
     get_type_hints,
     Union,
 )
 
+from .validators import DependsOn
+
 P = ParamSpec("P")
 R = TypeVar("R")
 DecoratorOrWrapper: TypeAlias = (
-        Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
+    Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
 )
+
+ALLOWED_OPTIONAL_VALUES = {None, nan}
 
 
 def validate_params(
-        func: Callable[P, R] | None = None,
-        /,
-        *,
-        check_arg_types: bool = False,
+    func: Callable[P, R] | None = None,
+    /,
+    *,
+    check_arg_types: bool = False,
 ) -> DecoratorOrWrapper:
     """Decorator to validate function arguments at runtime based on their
     type annotations using `typing.Annotated` and custom validators. This
@@ -55,8 +59,8 @@ def validate_params(
 
             for arg_name, arg_annotation in func_type_hints.items():
                 if (
-                        arg_name == "return"
-                        or get_origin(arg_annotation) is not Annotated
+                    arg_name == "return"
+                    or get_origin(arg_annotation) is not Annotated
                 ):
                     continue
 
@@ -68,7 +72,10 @@ def validate_params(
                 ) is Union and get_args(arg_type)[1] is type(None)
 
                 # If arg_type is Optional, None is allowed as a valid arg_value
-                if is_arg_type_optional and arg_value is None:
+                if (
+                    is_arg_type_optional
+                    and arg_value in ALLOWED_OPTIONAL_VALUES
+                ):
                     continue  # we are skipping the validation of the arg_value
 
                 if check_arg_types and not isinstance(arg_value, arg_type):
@@ -78,6 +85,20 @@ def validate_params(
                     )
 
                 for arg_validator_fn in arg_validator_funcs:
+                    # if isinstance(arg_validator_fn, DependsOn):
+                    #     for (
+                    #         dep_arg_name,
+                    #         dep_arg_val,
+                    #     ) in arg_validator_fn.dependencies:
+                    #         if arguments[dep_arg_name] == dep_arg_val:
+                    #             arg_validator_fn(
+                    #                 arg_value,
+                    #                 arg_name,
+                    #                 dep_arg_val,
+                    #                 dep_arg_name,
+                    #             )
+                    #     continue
+
                     if callable(arg_validator_fn):
                         arg_validator_fn(arg_value, arg_name)
 

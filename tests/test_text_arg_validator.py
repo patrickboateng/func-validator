@@ -3,13 +3,7 @@ from typing import Annotated
 
 import pytest
 
-from func_validator import (
-    validate_params,
-    MustMatchRegex,
-    ValidationError,
-    MustMatchBSCAddress,
-    MustMatchEmail,
-)
+from func_validator import validate_params, MustMatchRegex, ValidationError
 
 
 def test_must_match_regex_match():
@@ -26,7 +20,7 @@ def test_must_match_regex_match():
 def test_must_match_regex_fullmatch():
     @validate_params
     def func(
-            x: Annotated[str, MustMatchRegex(r"\d+", match_type="fullmatch")],
+        x: Annotated[str, MustMatchRegex(r"\d+", match_type="fullmatch")],
     ):
         return x
 
@@ -89,34 +83,13 @@ def test_must_match_regex_precompiled_pattern():
 
 def test_must_match_regex_invalid_match_type():
     with pytest.raises(ValidationError):
+
         @validate_params
         def func(
-                x: Annotated[
-                    str,
-                    MustMatchRegex(
-                        r"abc", flags=re.IGNORECASE, match_type="invalid"
-                    ),
-                ],
+            x: Annotated[
+                str,
+                MustMatchRegex(
+                    r"abc", flags=re.IGNORECASE, match_type="invalid"
+                ),
+            ],
         ): ...
-
-
-def test_must_match_bsc_address():
-    @validate_params
-    def func(address: Annotated[str, MustMatchBSCAddress]):
-        return address
-
-    assert func("0x4e5acf9684652BEa56F2f01b7101a225Ee33d23f")
-
-    with pytest.raises(ValidationError):
-        func("01234")
-
-
-def test_must_match_email():
-    @validate_params
-    def func(email_addr: Annotated[str, MustMatchEmail]):
-        return email_addr
-
-    assert func("pato@gmail.com") == "pato@gmail.com"
-
-    with pytest.raises(ValidationError):
-        func("not-an-email")

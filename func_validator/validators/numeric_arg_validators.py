@@ -67,96 +67,131 @@ def MustBeNonNegative(arg_value: Number, arg_name: str, /):
     _generic_number_validator(arg_value, arg_name, to=0.0, fn=ge)
 
 
-def MustBeBetween(
-    *,
-    min_value: Number,
-    max_value: Number,
-    min_inclusive: bool = True,
-    max_inclusive: bool = True,
-) -> Callable[[Number], None]:
-    """Validates that the number is between min_value and max_value.
+class MustBeBetween:
+    """Validates that the number is between min_value and max_value."""
 
-    :param min_value: The minimum value (inclusive or exclusive based
-                      on min_inclusive).
+    def __init__(
+        self,
+        *,
+        min_value: Number,
+        max_value: Number,
+        min_inclusive: bool = True,
+        max_inclusive: bool = True,
+    ):
+        """
+        :param min_value: The minimum value (inclusive or exclusive based
+                          on min_inclusive).
+        :param max_value: The maximum value (inclusive or exclusive based
+                          on max_inclusive).
+        :param min_inclusive: If True, min_value is inclusive. Default is True.
+        :param max_inclusive: If True, max_value is inclusive. Default is True.
+        """
+        self.min_value = min_value
+        self.max_value = max_value
+        self.min_inclusive = min_inclusive
+        self.max_inclusive = max_inclusive
 
-    :param max_value: The maximum value (inclusive or exclusive based
-                      on max_inclusive).
-
-    :param min_inclusive: If True, min_value is inclusive. Default is True.
-
-    :param max_inclusive: If True, max_value is inclusive. Default is True.
-
-    :raises ValidationError: If the number is not within the specified range.
-
-    :return: A validator function that accepts a number and raises
-             ValidationError if it is not within the specified range.
-    """
-
-    return partial(
-        _must_be_between,
-        min_value=min_value,
-        max_value=max_value,
-        min_inclusive=min_inclusive,
-        max_inclusive=max_inclusive,
-    )
+    def __call__(self, arg_value: Number, arg_name: str):
+        _must_be_between(
+            arg_value,
+            arg_name,
+            min_value=self.min_value,
+            max_value=self.max_value,
+            min_inclusive=self.min_inclusive,
+            max_inclusive=self.max_inclusive,
+        )
 
 
 # Comparison validation functions
 
 
-def MustBeEqual(value: Number, /) -> Callable[[Number], None]:
-    """Validates that the number is equal to the specified value"""
-    return partial(_generic_number_validator, to=value, fn=eq)
+class MustBeEqual:
+    def __init__(self, value: Number):
+        """Validates that the number is equal to the specified value"""
+        self.value = value
+
+    def __call__(self, arg_value: Number, arg_name: str):
+        _generic_number_validator(arg_value, arg_name, to=self.value, fn=eq)
 
 
-def MustBeNotEqual(value: Number, /) -> Callable[[Number], None]:
-    """Validates that the number is not equal to the specified value"""
-    return partial(_generic_number_validator, to=value, fn=ne)
+class MustNotBeEqual:
+    def __init__(self, value: Number):
+        """Validates that the number is not equal to the specified value"""
+        self.value = value
+
+    def __call__(self, arg_value: Number, arg_name: str):
+        _generic_number_validator(arg_value, arg_name, to=self.value, fn=ne)
 
 
-def MustBeAlmostEqual(
-    value: float,
-    /,
-    *,
-    rel_tol=1e-9,
-    abs_tol=0.0,
-) -> Callable[[float], None]:
-    """Validates that argument value (float) is almost equal to the
-    specified value.
+class MustBeAlmostEqual:
+    def __init__(
+        self,
+        value: float,
+        /,
+        *,
+        rel_tol=1e-9,
+        abs_tol=0.0,
+    ):
+        """Validates that argument value (float) is almost equal to the
+        specified value.
 
-    Uses `math.isclose` (which means key-word arguments provided are
-    passed to `math.isclose`) for comparison, see its
-    [documentation](https://docs.python.org/3/library/math.html#math.isclose)
-    for details.
-    """
-    return partial(
-        _generic_number_validator,
-        to=value,
-        fn=math.isclose,
-        rel_tol=rel_tol,
-        abs_tol=abs_tol,
-    )
+        Uses `math.isclose` (which means key-word arguments provided are
+        passed to `math.isclose`) for comparison, see its
+        [documentation](https://docs.python.org/3/library/math.html#math.isclose)
+        for details.
+        """
+        self.value = value
+        self.rel_tol = rel_tol
+        self.abs_tol = abs_tol
 
-
-def MustBeGreaterThan(value: Number, /) -> Callable[[Number], None]:
-    """Validates that the number is greater than the specified value"""
-    return partial(_generic_number_validator, to=value, fn=gt)
-
-
-def MustBeGreaterThanOrEqual(value: Number, /) -> Callable[[Number], None]:
-    """Validates that the number is greater than or equal to the
-    specified value.
-    """
-    return partial(_generic_number_validator, to=value, fn=ge)
+    def __call__(self, arg_value: float, arg_name: str):
+        _generic_number_validator(
+            arg_value,
+            arg_name,
+            to=self.value,
+            fn=math.isclose,
+            rel_tol=self.rel_tol,
+            abs_tol=self.abs_tol,
+        )
 
 
-def MustBeLessThan(value: Number, /) -> Callable[[Number], None]:
-    """Validates that the number is less than the specified value"""
-    return partial(_generic_number_validator, to=value, fn=lt)
+class MustBeGreaterThan:
+
+    def __init__(self, value: Number):
+        """Validates that the number is greater than the specified value"""
+        self.value = value
+
+    def __call__(self, arg_value: Number, arg_name: str):
+        _generic_number_validator(arg_value, arg_name, to=self.value, fn=gt)
 
 
-def MustBeLessThanOrEqual(value: Number, /) -> Callable[[Number], None]:
-    """Validates that the number is less than or equal to the
-    specified value.
-    """
-    return partial(_generic_number_validator, to=value, fn=le)
+class MustBeGreaterThanOrEqual:
+
+    def __init__(self, value: Number):
+        """Validates that the number is greater than or equal to the
+        specified value.
+        """
+        self.value = value
+
+    def __call__(self, arg_value: Number, arg_name: str):
+        _generic_number_validator(arg_value, arg_name, to=self.value, fn=ge)
+
+
+class MustBeLessThan:
+    def __init__(self, value: Number):
+        """Validates that the number is less than the specified value"""
+        self.value = value
+
+    def __call__(self, arg_value: Number, arg_name: str):
+        _generic_number_validator(arg_value, arg_name, to=self.value, fn=lt)
+
+
+class MustBeLessThanOrEqual:
+    def __init__(self, value: Number):
+        """Validates that the number is less than or equal to the
+        specified value.
+        """
+        self.value = value
+
+    def __call__(self, arg_value: Number, arg_name: str):
+        _generic_number_validator(arg_value, arg_name, to=self.value, fn=le)

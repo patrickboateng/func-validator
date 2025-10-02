@@ -1,10 +1,7 @@
 from functools import wraps
 from typing import TypeAlias, TypeVar, Callable
 
-# ValidationError from python-validators package
-from validators.utils import ValidationError as Error
-
-__all__ = ["Error", "Number", "OPERATOR_SYMBOLS", "T", "ValidationError"]
+__all__ = ["Number", "OPERATOR_SYMBOLS", "T"]
 
 Number: TypeAlias = int | float
 T = TypeVar("T")

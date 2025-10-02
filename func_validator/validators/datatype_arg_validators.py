@@ -12,16 +12,23 @@ def _must_be_a_particular_type(
 ) -> None:
     if not isinstance(arg_value, arg_type):
         exc_msg = (
-            f"{arg_name} must be of type {arg_type}, got {type(arg_value)} instead."
+            f"{arg_name} must be of type {arg_type}, "
+            f"got {type(arg_value)} instead."
         )
         raise ValidationError(exc_msg)
 
 
-def MustBeA(arg_type: Type[T]) -> Callable[[T, Type[T]], None]:
-    """Validates that the value is of the specified type.
+class MustBeA:
+    def __init__(self, arg_type: Type[T]):
+        """Validates that the value is of the specified type.
 
-    :param arg_type: The type to validate against.
+        :param arg_type: The type to validate against.
+        """
+        self.arg_type = arg_type
 
-    :raises ValidationError: If the value is not of the specified type.
-    """
-    return partial(_must_be_a_particular_type, arg_type=arg_type)
+    def __call__(self, arg_value: T, arg_name: str) -> None:
+        _must_be_a_particular_type(
+            arg_value,
+            arg_name,
+            arg_type=self.arg_type,
+        )

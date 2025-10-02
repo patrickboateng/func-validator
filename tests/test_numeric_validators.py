@@ -8,7 +8,7 @@ from func_validator import (
     MustBeNegative,
     MustBeBetween,
     MustBeEqual,
-    MustBeNotEqual,
+    MustNotBeEqual,
     MustBeGreaterThan,
     MustBeLessThan,
     MustBeGreaterThanOrEqual,
@@ -87,10 +87,9 @@ def test_must_be_between_validator():
 
     @validate_params
     def func_2(
-            x_1: Annotated[
-                int, MustBeBetween(min_value=2, max_value=4,
-                                   min_inclusive=False)
-            ],
+        x_1: Annotated[
+            int, MustBeBetween(min_value=2, max_value=4, min_inclusive=False)
+        ],
     ):
         return x_1
 
@@ -102,10 +101,9 @@ def test_must_be_between_validator():
 
     @validate_params
     def func_3(
-            x_1: Annotated[
-                int, MustBeBetween(min_value=2, max_value=4,
-                                   max_inclusive=False)
-            ],
+        x_1: Annotated[
+            int, MustBeBetween(min_value=2, max_value=4, max_inclusive=False)
+        ],
     ):
         return x_1
 
@@ -117,15 +115,15 @@ def test_must_be_between_validator():
 
     @validate_params
     def func_4(
-            x_1: Annotated[
-                int,
-                MustBeBetween(
-                    min_value=2,
-                    max_value=4,
-                    min_inclusive=False,
-                    max_inclusive=False,
-                ),
-            ],
+        x_1: Annotated[
+            int,
+            MustBeBetween(
+                min_value=2,
+                max_value=4,
+                min_inclusive=False,
+                max_inclusive=False,
+            ),
+        ],
     ):
         return x_1
 
@@ -152,7 +150,7 @@ def test_must_be_equal_validator():
 
 def test_must_be_not_equal_validator():
     @validate_params
-    def func(x_1: Annotated[int, MustBeNotEqual(5)]):
+    def func(x_1: Annotated[int, MustNotBeEqual(5)]):
         return x_1
 
     assert func(4) == 4
