@@ -22,7 +22,7 @@ DecoratorOrWrapper: TypeAlias = (
         Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
 )
 
-ALLOWED_OPTIONAL_VALUES = (None, nan)
+ALLOWED_OPTIONAL_VALUES = (None,)
 
 
 def _is_arg_type_optional(arg_type: T) -> bool:

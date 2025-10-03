@@ -20,6 +20,7 @@ from .collection_arg_validators import (
 )
 from .datatype_arg_validators import MustBeA
 from .numeric_arg_validators import (
+    MustBeTruthy,
     MustBeBetween,
     MustBeEqual,
     MustNotBeEqual,
@@ -57,6 +58,7 @@ __all__ = [
     # DataType Validators
     "MustBeA",
     # Numeric Validators
+    "MustBeTruthy",
     "MustBeBetween",
     "MustBeEqual",
     "MustNotBeEqual",
@@ -77,10 +79,6 @@ __all__ = [
 ]
 
 
-class Strategy(enum.StrEnum):
-    MUST_NOT_BE_EMPTY = "must_not_be_empty"
-
-
 class DependsOn:
     """Class to indicate that a function argument depends on another
     argument.
@@ -90,7 +88,7 @@ class DependsOn:
     or necessity of the other.
     """
 
-    def __init__(self, strategy=Strategy.MUST_NOT_BE_EMPTY, **kwargs):
+    def __init__(self, strategy=MustBeTruthy, **kwargs):
         self.strategy = strategy
         self.dependencies = kwargs.items()
         self.arguments: Optional[dict] = None
@@ -100,9 +98,6 @@ class DependsOn:
             type_checker = MustBeA(dict)
             type_checker(self.arguments, "self.arguments")
             actual_dep_arg_val = self.arguments[dep_arg_name]
+
             if actual_dep_arg_val == dep_arg_val:
-                if callable(self.strategy):
-                    self.strategy(arg_val, arg_name)
-                else:
-                    if self.strategy == Strategy.MUST_NOT_BE_EMPTY:
-                        MustBeNonEmpty(arg_val, arg_name)
+                self.strategy(arg_val, arg_name)
