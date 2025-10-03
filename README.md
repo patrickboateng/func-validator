@@ -72,15 +72,15 @@ def func(a: Annotated[int, MustBePositive],
     return (a, b)
 
 
-func(10, -10)  # ✅ Correct
+func(10, -10)   # ✅ Correct
 
 func(-10, -10)  # ❌ Wrong -10 is not positive and 10 is not negative
 # A validation error is raised with a message.
 
-func(0, -10)  # ❌ Wrong 0 is not positive
+func(0, -10)    # ❌ Wrong 0 is not positive
 # A validation error is raised with a message.
 
-func(20, 10)  # ❌ Wrong 10 is not negative
+func(20, 10)    # ❌ Wrong 10 is not negative
 # A validation error is raised with a message.
 ```
 
