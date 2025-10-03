@@ -7,13 +7,13 @@ from ._core import Number, T, OPERATOR_SYMBOLS, ValidationError
 
 
 def _generic_number_validator(
-        arg_value: T,
-        arg_name: str,
-        /,
-        *,
-        to: T,
-        fn: Callable,
-        **kwargs,
+    arg_value: T,
+    arg_name: str,
+    /,
+    *,
+    to: T,
+    fn: Callable,
+    **kwargs,
 ):
     if not fn(arg_value, to, **kwargs):
         operator_symbol = OPERATOR_SYMBOLS[fn.__name__]
@@ -23,14 +23,14 @@ def _generic_number_validator(
 
 
 def _must_be_between(
-        arg_value: T,
-        arg_name: str,
-        /,
-        *,
-        min_value: Number,
-        max_value: Number,
-        min_inclusive: bool,
-        max_inclusive: bool,
+    arg_value: T,
+    arg_name: str,
+    /,
+    *,
+    min_value: Number,
+    max_value: Number,
+    min_inclusive: bool,
+    max_inclusive: bool,
 ):
     min_fn = ge if min_inclusive else gt
     max_fn = le if max_inclusive else lt
@@ -71,12 +71,12 @@ class MustBeBetween:
     """Validates that the number is between min_value and max_value."""
 
     def __init__(
-            self,
-            *,
-            min_value: Number,
-            max_value: Number,
-            min_inclusive: bool = True,
-            max_inclusive: bool = True,
+        self,
+        *,
+        min_value: Number,
+        max_value: Number,
+        min_inclusive: bool = True,
+        max_inclusive: bool = True,
     ):
         """
         :param min_value: The minimum value (inclusive or exclusive based
@@ -130,12 +130,12 @@ class MustNotBeEqual:
 
 class MustBeAlmostEqual:
     def __init__(
-            self,
-            value: float,
-            /,
-            *,
-            rel_tol=1e-9,
-            abs_tol=0.0,
+        self,
+        value: float,
+        /,
+        *,
+        rel_tol=1e-9,
+        abs_tol=0.0,
     ):
         """Validates that argument value (float) is almost equal to the
         specified value.

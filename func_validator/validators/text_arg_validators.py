@@ -19,14 +19,9 @@ def _generic_text_validator(
         )
         raise TypeError(exc_msg)
 
-    if to is None:
-        if not fn(arg_value, **kwargs):
-            exc_msg = f"{arg_name}:{arg_value} is not valid."
-            raise ValidationError(exc_msg)
-    else:
-        if not fn(to, arg_value, **kwargs):
-            exc_msg = f"{arg_name}:{arg_value} does not match or equal {to}"
-            raise ValidationError(exc_msg)
+    if not fn(to, arg_value, **kwargs):
+        exc_msg = f"{arg_name}:{arg_value} does not match or equal {to}"
+        raise ValidationError(exc_msg)
 
 
 class MustMatchRegex:

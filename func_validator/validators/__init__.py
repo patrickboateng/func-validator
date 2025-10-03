@@ -1,6 +1,4 @@
-import enum
-
-from mkdocs.config.config_options import Optional
+from typing import Optional
 
 from .collection_arg_validators import (
     MustBeEmpty,

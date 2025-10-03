@@ -19,7 +19,7 @@ P = ParamSpec("P")
 R = TypeVar("R")
 T = TypeVar("T")
 DecoratorOrWrapper: TypeAlias = (
-        Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
+    Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
 )
 
 ALLOWED_OPTIONAL_VALUES = (None,)
@@ -43,10 +43,10 @@ def _skip_validation(arg_value: T, arg_annotation: T) -> bool:
 
 
 def validate_params(
-        func: Callable[P, R] | None = None,
-        /,
-        *,
-        check_arg_types: bool = False,
+    func: Callable[P, R] | None = None,
+    /,
+    *,
+    check_arg_types: bool = False,
 ) -> DecoratorOrWrapper:
     """Decorator to validate function arguments at runtime based on their
     type annotations using `typing.Annotated` and custom validators. This
