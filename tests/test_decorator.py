@@ -1,5 +1,4 @@
 from typing import Annotated, Optional
-from math import nan
 
 import pytest
 
@@ -7,7 +6,6 @@ from func_validator import (
     validate_params,
     DependsOn,
     ValidationError,
-    MustBePositive,
 )
 
 

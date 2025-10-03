@@ -32,17 +32,12 @@ def _is_arg_type_optional(arg_type: T) -> bool:
     return is_optional
 
 
-def _skip_validation(
-        arg_name: str,
-        arg_val: T,
-        arg_annotation: T,
-) -> bool:
-    if arg_name == "return":
-        return True
+def _skip_validation(arg_value: T, arg_annotation: T) -> bool:
     if get_origin(arg_annotation) is not Annotated:
         return True
     arg_type, *_ = get_args(arg_annotation)
-    if _is_arg_type_optional(arg_type) and arg_val in ALLOWED_OPTIONAL_VALUES:
+    is_arg_optional = _is_arg_type_optional(arg_type)
+    if is_arg_optional and arg_value in ALLOWED_OPTIONAL_VALUES:
         return True
     return False
 
@@ -80,9 +75,12 @@ def validate_params(
             arguments = bound_args.arguments
             func_type_hints = get_type_hints(fn, include_extras=True)
 
+            if "return" in func_type_hints:
+                del func_type_hints["return"]
+
             for arg_name, arg_annotation in func_type_hints.items():
                 arg_value = arguments[arg_name]
-                if _skip_validation(arg_name, arg_value, arg_annotation):
+                if _skip_validation(arg_value, arg_annotation):
                     continue
 
                 arg_type, *arg_validator_funcs = get_args(arg_annotation)
