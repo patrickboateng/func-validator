@@ -4,6 +4,6 @@ from ._func_arg_validator import (
 )
 from .validators import *
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 __all__ = ["validate_params"] + validators.__all__

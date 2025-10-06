@@ -5,6 +5,7 @@
 [![Unit-Tests](https://github.com/patrickboateng/func-validator/actions/workflows/func-validator-unit-tests.yml/badge.svg)](https://github.com/patrickboateng/func-validator/actions/workflows/func-validator-unit-tests.yml)
 [![Coverage Status](https://coveralls.io/repos/github/patrickboateng/func-validator/badge.svg?branch=main)](https://coveralls.io/github/patrickboateng/func-validator?branch=main)
 [![license](https://img.shields.io/pypi/l/func-validator?style=flat&logo=opensourceinitiative)](https://opensource.org/license/mit/)
+[![Documentation Status](https://readthedocs.org/projects/func-validator/badge/?version=latest)](https://func-validator.readthedocs.io/en/latest/?badge=latest)
 
 `func-validator` is a python package which provides MATLAB-style function 
 argument validation for Python, which is clean, simple, and reliable.
