@@ -1,5 +1,6 @@
 from typing import Optional
 
+from ._core import ValidationError, Validator
 from .collection_arg_validators import (
     MustBeEmpty,
     MustBeMemberOf,
@@ -18,11 +19,9 @@ from .collection_arg_validators import (
 )
 from .datatype_arg_validators import MustBeA
 from .numeric_arg_validators import (
-    MustBeTruthy,
+    MustBeAlmostEqual,
     MustBeBetween,
     MustBeEqual,
-    MustNotBeEqual,
-    MustBeAlmostEqual,
     MustBeGreaterThan,
     MustBeGreaterThanOrEqual,
     MustBeLessThan,
@@ -31,9 +30,10 @@ from .numeric_arg_validators import (
     MustBeNonNegative,
     MustBeNonPositive,
     MustBePositive,
+    MustBeTruthy,
+    MustNotBeEqual,
 )
 from .text_arg_validators import MustMatchRegex
-from ._core import ValidationError, validator
 
 __all__ = [
     # Error
@@ -73,11 +73,11 @@ __all__ = [
     "MustMatchRegex",
     # Core
     "DependsOn",
-    "validator",
+    "Validator",
 ]
 
 
-class DependsOn:
+class DependsOn(Validator):
     """Class to indicate that a function argument depends on another
     argument.
 
@@ -86,16 +86,13 @@ class DependsOn:
     or necessity of the other.
     """
 
-    def __init__(self, strategy=MustBeTruthy, **kwargs):
+    def __init__(self, strategy=MustBeTruthy(), **kwargs):
         self.strategy = strategy
         self.dependencies = kwargs.items()
-        self.arguments: Optional[dict] = None
+        self.arguments: dict = {}
 
     def __call__(self, arg_val, arg_name: str):
         for dep_arg_name, dep_arg_val in self.dependencies:
-            type_checker = MustBeA(dict)
-            type_checker(self.arguments, "self.arguments")
             actual_dep_arg_val = self.arguments[dep_arg_name]
-
             if actual_dep_arg_val == dep_arg_val:
                 self.strategy(arg_val, arg_name)

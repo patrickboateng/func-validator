@@ -1,7 +1,14 @@
+from abc import ABC, abstractmethod
 from functools import wraps
-from typing import TypeAlias, TypeVar, Callable
+from typing import Callable, TypeAlias, TypeVar
 
-__all__ = ["Number", "OPERATOR_SYMBOLS", "T"]
+__all__ = [
+    "Number",
+    "OPERATOR_SYMBOLS",
+    "T",
+    "Validator",
+    "ValidationError",
+]
 
 Number: TypeAlias = int | float
 T = TypeVar("T")
@@ -21,11 +28,17 @@ class ValidationError(Exception):
     pass
 
 
-def validator(func: Callable[[T, str], tuple[bool, str]]):
-    @wraps(func)
-    def wrapper(arg_val: T, arg_name: str):
-        result, msg = func(arg_val, arg_name)
-        if not result:
-            raise ValidationError(msg)
+class Validator(ABC):
 
-    return wrapper
+    @abstractmethod
+    def __call__(self, *args, **kwargs) -> T: ...
+
+
+# def validator(func: Callable[[T, str], tuple[bool, str]]):
+#     @wraps(func)
+#     def wrapper(*args, **kwargs):
+#         result, msg = func(*args, **kwargs)
+#         if not result:
+#             raise ValidationError(msg)
+#
+#     return wrapper

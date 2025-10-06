@@ -23,7 +23,7 @@ from func_validator import (
 
 def test_must_be_positive_validator():
     @validate_params
-    def func(x_1: Annotated[int, MustBePositive]):
+    def func(x_1: Annotated[int, MustBePositive()]):
         return x_1
 
     assert func(1) == 1
@@ -37,7 +37,7 @@ def test_must_be_positive_validator():
 
 def test_must_be_non_positive_validator():
     @validate_params
-    def func(x_1: Annotated[int, MustBeNonPositive]):
+    def func(x_1: Annotated[int, MustBeNonPositive()]):
         return x_1
 
     assert func(-2) == -2
@@ -49,7 +49,7 @@ def test_must_be_non_positive_validator():
 
 def test_must_be_negative_validator():
     @validate_params
-    def func(x_1: Annotated[int, MustBeNegative]):
+    def func(x_1: Annotated[int, MustBeNegative()]):
         return x_1
 
     assert func(-10) == -10
@@ -60,7 +60,7 @@ def test_must_be_negative_validator():
 
 def test_must_be_non_negative_validator():
     @validate_params
-    def func(x_1: Annotated[int, MustBeNonNegative]):
+    def func(x_1: Annotated[int, MustBeNonNegative()]):
         return x_1
 
     assert func(10) == 10
@@ -87,9 +87,10 @@ def test_must_be_between_validator():
 
     @validate_params
     def func_2(
-        x_1: Annotated[
-            int, MustBeBetween(min_value=2, max_value=4, min_inclusive=False)
-        ],
+            x_1: Annotated[
+                int, MustBeBetween(min_value=2, max_value=4,
+                                   min_inclusive=False)
+            ],
     ):
         return x_1
 
@@ -101,9 +102,10 @@ def test_must_be_between_validator():
 
     @validate_params
     def func_3(
-        x_1: Annotated[
-            int, MustBeBetween(min_value=2, max_value=4, max_inclusive=False)
-        ],
+            x_1: Annotated[
+                int, MustBeBetween(min_value=2, max_value=4,
+                                   max_inclusive=False)
+            ],
     ):
         return x_1
 
@@ -115,15 +117,15 @@ def test_must_be_between_validator():
 
     @validate_params
     def func_4(
-        x_1: Annotated[
-            int,
-            MustBeBetween(
-                min_value=2,
-                max_value=4,
-                min_inclusive=False,
-                max_inclusive=False,
-            ),
-        ],
+            x_1: Annotated[
+                int,
+                MustBeBetween(
+                    min_value=2,
+                    max_value=4,
+                    min_inclusive=False,
+                    max_inclusive=False,
+                ),
+            ],
     ):
         return x_1
 

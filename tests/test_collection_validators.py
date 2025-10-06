@@ -43,7 +43,7 @@ def test_must_be_a_member_of_validator():
 
 def test_must_be_empty_validator():
     @validate_params
-    def func(x_1: Annotated[list, MustBeEmpty]):
+    def func(x_1: Annotated[list, MustBeEmpty()]):
         return x_1
 
     assert func([]) == []
@@ -54,7 +54,7 @@ def test_must_be_empty_validator():
 
 def test_must_be_non_empty_validator():
     @validate_params
-    def func(x_1: Annotated[list, MustBeNonEmpty]):
+    def func(x_1: Annotated[list, MustBeNonEmpty()]):
         return x_1
 
     assert func([1, 2]) == [1, 2]
@@ -122,7 +122,8 @@ def test_must_have_length_less_than_or_equal_validator():
 def test_must_have_length_between_validator():
     @validate_params
     def func(
-        x_1: Annotated[list, MustHaveLengthBetween(min_value=2, max_value=4)],
+            x_1: Annotated[
+                list, MustHaveLengthBetween(min_value=2, max_value=4)],
     ):
         return x_1
 
@@ -138,12 +139,12 @@ def test_must_have_length_between_validator():
 
     @validate_params
     def func_2(
-        x_1: Annotated[
-            list,
-            MustHaveLengthBetween(
-                min_value=2, max_value=4, min_inclusive=False
-            ),
-        ],
+            x_1: Annotated[
+                list,
+                MustHaveLengthBetween(
+                    min_value=2, max_value=4, min_inclusive=False
+                ),
+            ],
     ):
         return x_1
 
@@ -155,12 +156,12 @@ def test_must_have_length_between_validator():
 
     @validate_params
     def func_3(
-        x_1: Annotated[
-            list,
-            MustHaveLengthBetween(
-                min_value=2, max_value=4, max_inclusive=False
-            ),
-        ],
+            x_1: Annotated[
+                list,
+                MustHaveLengthBetween(
+                    min_value=2, max_value=4, max_inclusive=False
+                ),
+            ],
     ):
         return x_1
 
@@ -172,15 +173,15 @@ def test_must_have_length_between_validator():
 
     @validate_params
     def func_4(
-        x_1: Annotated[
-            list,
-            MustHaveLengthBetween(
-                min_value=2,
-                max_value=4,
-                min_inclusive=False,
-                max_inclusive=False,
-            ),
-        ],
+            x_1: Annotated[
+                list,
+                MustHaveLengthBetween(
+                    min_value=2,
+                    max_value=4,
+                    min_inclusive=False,
+                    max_inclusive=False,
+                ),
+            ],
     ):
         return x_1
 
@@ -240,7 +241,8 @@ def test_must_have_values_less_than_or_equal_validator():
 def test_must_have_values_between_validator():
     @validate_params
     def func(
-        x_1: Annotated[list, MustHaveValuesBetween(min_value=2, max_value=5)],
+            x_1: Annotated[
+                list, MustHaveValuesBetween(min_value=2, max_value=5)],
     ):
         return x_1
 
@@ -251,12 +253,12 @@ def test_must_have_values_between_validator():
 
     @validate_params
     def func_2(
-        x_1: Annotated[
-            list,
-            MustHaveValuesBetween(
-                min_value=2, max_value=5, min_inclusive=False
-            ),
-        ],
+            x_1: Annotated[
+                list,
+                MustHaveValuesBetween(
+                    min_value=2, max_value=5, min_inclusive=False
+                ),
+            ],
     ):
         return x_1
 
@@ -267,12 +269,12 @@ def test_must_have_values_between_validator():
 
     @validate_params
     def func_3(
-        x_1: Annotated[
-            list,
-            MustHaveValuesBetween(
-                min_value=2, max_value=5, max_inclusive=False
-            ),
-        ],
+            x_1: Annotated[
+                list,
+                MustHaveValuesBetween(
+                    min_value=2, max_value=5, max_inclusive=False
+                ),
+            ],
     ):
         return x_1
 
@@ -283,15 +285,15 @@ def test_must_have_values_between_validator():
 
     @validate_params
     def func_4(
-        x_1: Annotated[
-            list,
-            MustHaveValuesBetween(
-                min_value=2,
-                max_value=5,
-                min_inclusive=False,
-                max_inclusive=False,
-            ),
-        ],
+            x_1: Annotated[
+                list,
+                MustHaveValuesBetween(
+                    min_value=2,
+                    max_value=5,
+                    min_inclusive=False,
+                    max_inclusive=False,
+                ),
+            ],
     ):
         return x_1
 

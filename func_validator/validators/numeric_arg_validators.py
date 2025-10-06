@@ -1,9 +1,8 @@
 import math
-from functools import partial
 from operator import eq, ge, gt, le, lt, ne
 from typing import Callable
 
-from ._core import Number, T, OPERATOR_SYMBOLS, ValidationError
+from ._core import OPERATOR_SYMBOLS, Number, T, ValidationError, Validator
 
 
 def _generic_number_validator(
@@ -47,27 +46,35 @@ def _must_be_between(
 # Numeric validation functions
 
 
-def MustBePositive(arg_value: Number, arg_name: str, /):
+class MustBePositive(Validator):
     r"""Validates that the number is positive ($x \gt 0$)."""
-    _generic_number_validator(arg_value, arg_name, to=0.0, fn=gt)
+
+    def __call__(self, arg_value: Number, arg_name: str):
+        _generic_number_validator(arg_value, arg_name, to=0.0, fn=gt)
 
 
-def MustBeNonPositive(arg_value: Number, arg_name: str, /):
+class MustBeNonPositive(Validator):
     r"""Validates that the number is non-positive ($x \le 0$)."""
-    _generic_number_validator(arg_value, arg_name, to=0.0, fn=le)
+
+    def __call__(self, arg_value: Number, arg_name: str, /):
+        _generic_number_validator(arg_value, arg_name, to=0.0, fn=le)
 
 
-def MustBeNegative(arg_value: Number, arg_name: str, /):
+class MustBeNegative(Validator):
     r"""Validates that the number is negative ($x \lt 0$)."""
-    _generic_number_validator(arg_value, arg_name, to=0.0, fn=lt)
+
+    def __call__(self, arg_value: Number, arg_name: str, /):
+        _generic_number_validator(arg_value, arg_name, to=0.0, fn=lt)
 
 
-def MustBeNonNegative(arg_value: Number, arg_name: str, /):
+class MustBeNonNegative(Validator):
     r"""Validates that the number is non-negative ($x \ge 0$)."""
-    _generic_number_validator(arg_value, arg_name, to=0.0, fn=ge)
+
+    def __call__(self, arg_value: Number, arg_name: str, /):
+        _generic_number_validator(arg_value, arg_name, to=0.0, fn=ge)
 
 
-class MustBeBetween:
+class MustBeBetween(Validator):
     """Validates that the number is between min_value and max_value."""
 
     def __init__(
@@ -105,30 +112,43 @@ class MustBeBetween:
 # Comparison validation functions
 
 
-def MustBeTruthy(arg_value: T, arg_name: str):
-    if not bool(arg_value):
-        raise ValidationError(f"{arg_name}:{arg_value} must be truthy.")
+class MustBeTruthy(Validator):
+
+    def __call__(self, arg_value: T, arg_name: str):
+        if not bool(arg_value):
+            raise ValidationError(f"{arg_name}:{arg_value} must be truthy.")
 
 
-class MustBeEqual:
+class MustBeEqual(Validator):
+    """Validates that the number is equal to the specified value"""
+
     def __init__(self, value: Number):
-        """Validates that the number is equal to the specified value"""
         self.value = value
 
     def __call__(self, arg_value: Number, arg_name: str):
         _generic_number_validator(arg_value, arg_name, to=self.value, fn=eq)
 
 
-class MustNotBeEqual:
+class MustNotBeEqual(Validator):
+    """Validates that the number is not equal to the specified value"""
+
     def __init__(self, value: Number):
-        """Validates that the number is not equal to the specified value"""
         self.value = value
 
     def __call__(self, arg_value: Number, arg_name: str):
         _generic_number_validator(arg_value, arg_name, to=self.value, fn=ne)
 
 
-class MustBeAlmostEqual:
+class MustBeAlmostEqual(Validator):
+    """Validates that argument value (float) is almost equal to the
+    specified value.
+
+    Uses `math.isclose` (which means key-word arguments provided are
+    passed to `math.isclose`) for comparison, see its
+    [documentation](https://docs.python.org/3/library/math.html#math.isclose)
+    for details.
+    """
+
     def __init__(
         self,
         value: float,
@@ -137,14 +157,6 @@ class MustBeAlmostEqual:
         rel_tol=1e-9,
         abs_tol=0.0,
     ):
-        """Validates that argument value (float) is almost equal to the
-        specified value.
-
-        Uses `math.isclose` (which means key-word arguments provided are
-        passed to `math.isclose`) for comparison, see its
-        [documentation](https://docs.python.org/3/library/math.html#math.isclose)
-        for details.
-        """
         self.value = value
         self.rel_tol = rel_tol
         self.abs_tol = abs_tol
@@ -160,17 +172,17 @@ class MustBeAlmostEqual:
         )
 
 
-class MustBeGreaterThan:
+class MustBeGreaterThan(Validator):
+    """Validates that the number is greater than the specified value"""
 
     def __init__(self, value: Number):
-        """Validates that the number is greater than the specified value"""
         self.value = value
 
     def __call__(self, arg_value: Number, arg_name: str):
         _generic_number_validator(arg_value, arg_name, to=self.value, fn=gt)
 
 
-class MustBeGreaterThanOrEqual:
+class MustBeGreaterThanOrEqual(Validator):
 
     def __init__(self, value: Number):
         """Validates that the number is greater than or equal to the
@@ -182,7 +194,7 @@ class MustBeGreaterThanOrEqual:
         _generic_number_validator(arg_value, arg_name, to=self.value, fn=ge)
 
 
-class MustBeLessThan:
+class MustBeLessThan(Validator):
     def __init__(self, value: Number):
         """Validates that the number is less than the specified value"""
         self.value = value
@@ -191,7 +203,7 @@ class MustBeLessThan:
         _generic_number_validator(arg_value, arg_name, to=self.value, fn=lt)
 
 
-class MustBeLessThanOrEqual:
+class MustBeLessThanOrEqual(Validator):
     def __init__(self, value: Number):
         """Validates that the number is less than or equal to the
         specified value.

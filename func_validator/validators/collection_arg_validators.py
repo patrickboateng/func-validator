@@ -1,15 +1,14 @@
 from operator import contains
-from typing import Container, Iterable, Sized, Callable
-from math import isnan
+from typing import Callable, Container, Iterable, Sized
 
-from ._core import Number, T, ValidationError
+from ._core import Number, T, ValidationError, Validator
 from .numeric_arg_validators import (
+    MustBeBetween,
+    MustBeEqual,
+    MustBeGreaterThan,
+    MustBeGreaterThanOrEqual,
     MustBeLessThan,
     MustBeLessThanOrEqual,
-    MustBeGreaterThanOrEqual,
-    MustBeGreaterThan,
-    MustBeEqual,
-    MustBeBetween,
 )
 
 
@@ -44,7 +43,7 @@ def _must_be_member_of(arg_value, arg_name: str, /, *, value_set: Container):
         )
 
 
-class MustBeMemberOf:
+class MustBeMemberOf(Validator):
 
     def __init__(self, value_set: Container):
         """Validates that the value is a member of the specified set.
@@ -61,19 +60,23 @@ class MustBeMemberOf:
 # Size validation functions
 
 
-def MustBeEmpty(arg_value: Iterable, arg_name: str, /):
-    """Validates that the iterable is empty."""
-    if arg_value:
-        raise ValidationError(f"{arg_name}:{arg_value} must be empty.")
+class MustBeEmpty(Validator):
+
+    def __call__(self, arg_value: Sized, arg_name: str, /):
+        """Validates that the iterable is empty."""
+        if len(arg_value) != 0:
+            raise ValidationError(f"{arg_name}:{arg_value} must be empty.")
 
 
-def MustBeNonEmpty(arg_value: Iterable, arg_name: str, /):
-    """Validates that the iterable is not empty."""
-    if not arg_value:
-        raise ValidationError(f"{arg_name}:{arg_value} must not be empty.")
+class MustBeNonEmpty(Validator):
+
+    def __call__(self, arg_value: Sized, arg_name: str, /):
+        """Validates that the iterable is not empty."""
+        if len(arg_value) == 0:
+            raise ValidationError(f"{arg_name}:{arg_value} must not be empty.")
 
 
-class MustHaveLengthEqual:
+class MustHaveLengthEqual(Validator):
     """Validates that the iterable has length equal to the specified
     value.
     """
@@ -87,7 +90,7 @@ class MustHaveLengthEqual:
         )
 
 
-class MustHaveLengthGreaterThan:
+class MustHaveLengthGreaterThan(Validator):
     """Validates that the iterable has length greater than the specified
     value.
     """
@@ -101,7 +104,7 @@ class MustHaveLengthGreaterThan:
         )
 
 
-class MustHaveLengthGreaterThanOrEqual:
+class MustHaveLengthGreaterThanOrEqual(Validator):
     """Validates that the iterable has length greater than or equal to
     the specified value.
     """
@@ -115,7 +118,7 @@ class MustHaveLengthGreaterThanOrEqual:
         )
 
 
-class MustHaveLengthLessThan:
+class MustHaveLengthLessThan(Validator):
     """Validates that the iterable has length less than the specified
     value.
     """
@@ -129,7 +132,7 @@ class MustHaveLengthLessThan:
         )
 
 
-class MustHaveLengthLessThanOrEqual:
+class MustHaveLengthLessThanOrEqual(Validator):
     """Validates that the iterable has length less than or equal to
     the specified value.
     """
@@ -143,7 +146,7 @@ class MustHaveLengthLessThanOrEqual:
         )
 
 
-class MustHaveLengthBetween:
+class MustHaveLengthBetween(Validator):
     """Validates that the iterable has length between the specified
     min_value and max_value.
     """
@@ -175,7 +178,7 @@ class MustHaveLengthBetween:
         _iterable_len_validator(arg_value, arg_name, func=self.func)
 
 
-class MustHaveValuesGreaterThan:
+class MustHaveValuesGreaterThan(Validator):
     """Validates that all values in the iterable are greater than the
     specified min_value.
     """
@@ -189,7 +192,7 @@ class MustHaveValuesGreaterThan:
         )
 
 
-class MustHaveValuesGreaterThanOrEqual:
+class MustHaveValuesGreaterThanOrEqual(Validator):
     """Validates that all values in the iterable are greater than or
     equal to the specified min_value.
     """
@@ -203,7 +206,7 @@ class MustHaveValuesGreaterThanOrEqual:
         )
 
 
-class MustHaveValuesLessThan:
+class MustHaveValuesLessThan(Validator):
     """Validates that all values in the iterable are less than the
     specified max_value.
     """
@@ -217,7 +220,7 @@ class MustHaveValuesLessThan:
         )
 
 
-class MustHaveValuesLessThanOrEqual:
+class MustHaveValuesLessThanOrEqual(Validator):
     """Validates that all values in the iterable are less than or
     equal to the specified max_value.
     """
@@ -231,7 +234,7 @@ class MustHaveValuesLessThanOrEqual:
         )
 
 
-class MustHaveValuesBetween:
+class MustHaveValuesBetween(Validator):
     """Validates that all values in the iterable are between the
     specified min_value and max_value.
     """

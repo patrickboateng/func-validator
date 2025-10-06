@@ -1,15 +1,9 @@
+from . import validators
 from ._func_arg_validator import (
     validate_params,
-    validate_func_args,
-    validate_func_args_at_runtime,
 )
 from .validators import *
-from . import validators
 
-__version__ = "0.19.0"
+__version__ = "1.0.0"
 
-__all__ = [
-              "validate_params",
-              "validate_func_args",
-              "validate_func_args_at_runtime",
-          ] + validators.__all__
+__all__ = ["validate_params"] + validators.__all__

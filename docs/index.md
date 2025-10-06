@@ -21,16 +21,8 @@ pip install func-validator
 
   ```python
   from func_validator import validate_params
-  from func_validator import validate_func_args
-  from func_validator import validate_func_args_at_runtime 
   ```
-
-!!! note
-
-    `validate_params` is a function decorator that validates function arguments
-    at runtime. `validate_func_args` and `validate_func_args_at_runtime`
-    are alias for `validate_params`.
-
+  
 - Import for the validators
 
   ```python
@@ -60,10 +52,10 @@ pip install func-validator
 ```python
 
 >>> from typing import Annotated
->>> from func_validator import validate_func_args
+>>> from func_validator import validate_params
 >>> from func_validator.validators.collection_arg_validators import (MustBeMemberOf, 
 ...                                                                  MustBeEmpty)
->>> @validate_func_args
+>>> @validate_params
 ... def func(val_1: Annotated[int, MustBeMemberOf([1, 2, 3])]):
 ...        return val_1
 >>> func(1)
@@ -73,8 +65,8 @@ Traceback (most recent call last):
 ...
 ValidationError: val_1:4 must be in [1, 2, 3]
 
->>> @validate_func_args
-... def func_2(val_2: Annotated[list, MustBeEmpty]):
+>>> @validate_params
+... def func_2(val_2: Annotated[list, MustBeEmpty()]):
 ...        return val_2
 >>> func_2([])
 []
@@ -97,8 +89,8 @@ ValidationError: val_2:[1, 2, 3] must be empty.
 ```python
 
 >>> from typing import Annotated
->>> from func_validator import MustBeA, validate_func_args
->>> @validate_func_args
+>>> from func_validator import MustBeA, validate_params
+>>> @validate_params
 ... def func(val_1: Annotated[list, MustBeA(list)]):
 ...     return val_1
 >>> func([2, 3])
@@ -126,13 +118,13 @@ ValidationError: val_1 must be of type <class 'list'>, got <class 'tuple'> inste
 ```python
 
 >>> from typing import Annotated
->>> from func_validator import (validate_func_args,
+>>> from func_validator import (validate_params,
 ...                             MustBePositive,
 ...                             MustBeNegative)
 
->>> @validate_func_args  
-... def func(a: Annotated[int, MustBePositive],
-...          b: Annotated[float, MustBeNegative]):
+>>> @validate_params  
+... def func(a: Annotated[int, MustBePositive()],
+...          b: Annotated[float, MustBeNegative()]):
 ...     return (a, b)
 
 >>> func(10, -10)  # ✅ Correct
@@ -166,9 +158,8 @@ ValidationError: b:10 must be < 0.0.
 </table>
 
 ```python
->>> from func_validator import validate_func_args
->>> from func_validator import MustMatchRegex, validate_func_args
->>> @validate_func_args
+>>> from func_validator import MustMatchRegex, validate_params
+>>> @validate_params
 ... def func(val_1: Annotated[str, MustMatchRegex(r"\d+")]):
 ...     return val_1
 >>> func("123")

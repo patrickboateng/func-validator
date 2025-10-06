@@ -1,7 +1,6 @@
-from functools import partial
-from typing import Type, Callable
+from typing import Type
 
-from ._core import T, ValidationError
+from ._core import T, ValidationError, Validator
 
 
 def _must_be_a_particular_type(
@@ -18,7 +17,7 @@ def _must_be_a_particular_type(
         raise ValidationError(exc_msg)
 
 
-class MustBeA:
+class MustBeA(Validator):
     def __init__(self, arg_type: Type[T]):
         """Validates that the value is of the specified type.
 

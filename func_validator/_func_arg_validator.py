@@ -1,25 +1,24 @@
 import inspect
 from functools import wraps
-from math import nan
 from typing import (
     Annotated,
     Callable,
     ParamSpec,
     TypeAlias,
     TypeVar,
+    Union,
     get_args,
     get_origin,
     get_type_hints,
-    Union,
 )
 
-from .validators import DependsOn, MustBeA
+from .validators import DependsOn, MustBeA, Validator
 
 P = ParamSpec("P")
 R = TypeVar("R")
 T = TypeVar("T")
 DecoratorOrWrapper: TypeAlias = (
-    Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
+        Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
 )
 
 ALLOWED_OPTIONAL_VALUES = (None,)
@@ -43,10 +42,10 @@ def _skip_validation(arg_value: T, arg_annotation: T) -> bool:
 
 
 def validate_params(
-    func: Callable[P, R] | None = None,
-    /,
-    *,
-    check_arg_types: bool = False,
+        func: Callable[P, R] | None = None,
+        /,
+        *,
+        check_arg_types: bool = False,
 ) -> DecoratorOrWrapper:
     """Decorator to validate function arguments at runtime based on their
     type annotations using `typing.Annotated` and custom validators. This
@@ -90,9 +89,9 @@ def validate_params(
                     type_checker(arg_value, arg_name)
 
                 for arg_validator_fn in arg_validator_funcs:
-                    if isinstance(arg_validator_fn, DependsOn):
-                        arg_validator_fn.arguments = arguments
-                    if callable(arg_validator_fn):
+                    if isinstance(arg_validator_fn, Validator):
+                        if isinstance(arg_validator_fn, DependsOn):
+                            arg_validator_fn.arguments = arguments
                         arg_validator_fn(arg_value, arg_name)
 
             return fn(*args, **kwargs)
@@ -109,7 +108,3 @@ def validate_params(
         return dec(func)
 
     raise TypeError("The first argument must be a callable function or None.")
-
-
-validate_func_args_at_runtime = validate_params
-validate_func_args = validate_params

@@ -1,21 +1,18 @@
-import pytest
-from func_validator import ValidationError, validate_params
-from typing import Iterable, Annotated
+from typing import Annotated
 
-from func_validator import validator
+import pytest
+
+from func_validator import Validator, ValidationError, validate_params
 
 
 def test_custom_validator():
-    @validator
-    def must_be_even(arg_val: int, arg_name: str) -> tuple[bool, str]:
-        check = arg_val % 2 == 0
-        if check:
-            return check, ""
-
-        return check, f"{arg_name}:{arg_val} must be even"
+    class MustBeEven(Validator):
+        def __call__(self, arg_value, arg_name: str):
+            if arg_value % 2 != 0:
+                raise ValidationError(f"{arg_name}:{arg_value} must be even")
 
     @validate_params
-    def func(even_num: Annotated[int, must_be_even]):
+    def func(even_num: Annotated[int, MustBeEven()]):
         return even_num
 
     assert func(4) == 4

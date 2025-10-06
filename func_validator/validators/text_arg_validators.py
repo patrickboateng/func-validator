@@ -1,17 +1,17 @@
 import re
-from typing import Literal, Callable
+from typing import Callable, Literal
 
-from ._core import ValidationError, T
+from ._core import T, ValidationError, Validator
 
 
 def _generic_text_validator(
-        arg_value: str,
-        arg_name: str,
-        /,
-        *,
-        to: T | None = None,
-        fn: Callable,
-        **kwargs,
+    arg_value: str,
+    arg_name: str,
+    /,
+    *,
+    to: T | None = None,
+    fn: Callable,
+    **kwargs,
 ) -> None:
     if not isinstance(arg_value, str):
         exc_msg = (
@@ -24,14 +24,14 @@ def _generic_text_validator(
         raise ValidationError(exc_msg)
 
 
-class MustMatchRegex:
+class MustMatchRegex(Validator):
     def __init__(
-            self,
-            regex: str | re.Pattern,
-            /,
-            *,
-            match_type: Literal["match", "fullmatch", "search"] = "match",
-            flags: int | re.RegexFlag = 0,
+        self,
+        regex: str | re.Pattern,
+        /,
+        *,
+        match_type: Literal["match", "fullmatch", "search"] = "match",
+        flags: int | re.RegexFlag = 0,
     ):
         """Validates that the value matches the provided regular expression.
 

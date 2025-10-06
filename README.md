@@ -30,14 +30,7 @@ pip install func-validator
 
   ```python
   from func_validator import validate_params
-  from func_validator import validate_func_args
-  from func_validator import validate_func_args_at_runtime 
   ```
-
-> [!NOTE]
-> `validate_params` is a function decorator that validates function arguments
-> at runtime. `validate_func_args` and `validate_func_args_at_runtime`
-> are alias for `validate_params`.
 
 - Import for the validators
 
