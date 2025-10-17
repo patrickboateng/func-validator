@@ -6,6 +6,7 @@ from func_validator import (
     validate_params,
     DependsOn,
     ValidationError,
+    MustBeLessThan,
 )
 
 
@@ -26,3 +27,48 @@ def test_decorator():
 
     with pytest.raises(TypeError):
         validate_params("t")
+
+    class A:
+
+        def __init__(self, age: int = 10, height: int = 5):
+            self.age = age
+            self.height = height
+
+        @property
+        def height(self):
+            return self._height
+
+        @height.setter
+        @validate_params
+        def height(
+                self,
+                height: Annotated[
+                    int, DependsOn("age", args_strategy=MustBeLessThan)
+                ],
+        ):
+            self._height = height
+
+    a = A()
+    assert a.height == 5
+
+    class B:
+
+        def __init__(self, weight: int = 5):
+            self.weight = weight
+
+        @property
+        def weight(self):
+            return self._weight
+
+        @weight.setter
+        @validate_params
+        def weight(
+                self,
+                weight: Annotated[
+                    int, DependsOn("age", args_strategy=MustBeLessThan)
+                ],
+        ):
+            self._weight = weight
+
+    with pytest.raises(ValidationError):
+        B()
