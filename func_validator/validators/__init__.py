@@ -89,11 +89,11 @@ class DependsOn(Validator):
     """
 
     def __init__(
-            self,
-            *args,
-            args_strategy: Type[T] = MustBeLessThan,
-            kw_strategy: Type[T] = MustBeTruthy,
-            **kwargs,
+        self,
+        *args,
+        args_strategy: Type[T] = MustBeLessThan,
+        kw_strategy: Type[T] = MustBeTruthy,
+        **kwargs,
     ):
         self.args_dependencies = args
         self.kw_dependencies = kwargs.items()

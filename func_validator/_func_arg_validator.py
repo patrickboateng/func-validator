@@ -18,7 +18,7 @@ P = ParamSpec("P")
 R = TypeVar("R")
 T = TypeVar("T")
 DecoratorOrWrapper: TypeAlias = (
-        Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
+    Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
 )
 
 ALLOWED_OPTIONAL_VALUES = (None,)
@@ -76,10 +76,10 @@ def _process_func(fn: Callable[P, R], check_arg_types: bool) -> Callable[P, R]:
 
 
 def validate_params(
-        func: Callable[P, R] | None = None,
-        /,
-        *,
-        check_arg_types: bool = False,
+    func: Callable[P, R] | None = None,
+    /,
+    *,
+    check_arg_types: bool = False,
 ) -> DecoratorOrWrapper:
     """Decorator to validate function arguments at runtime based on their
     type annotations using `typing.Annotated` and custom validators. This

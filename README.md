@@ -47,8 +47,7 @@ pip install func-validator
     - [text_arg_validators](#text-validators)
 
 > [!NOTE]
-> All validator objects (functions/callables) can be imported from the
-> `func_validator` namespace
+> All validator objects can be imported from the `func_validator` namespace
 
 ## Usage
 
@@ -61,8 +60,8 @@ from func_validator.validators.numeric_arg_validators import (MustBePositive,
 
 
 @validate_params
-def func(a: Annotated[int, MustBePositive],
-         b: Annotated[float, MustBeNegative]):
+def func(a: Annotated[int, MustBePositive()],
+         b: Annotated[float, MustBeNegative()]):
     return (a, b)
 
 
