@@ -1,4 +1,4 @@
-# @validate_params
+# API Reference
 
 ::: func_validator.validate_params
     options:

@@ -112,7 +112,7 @@ class DependsOn(Validator):
         self.kw_strategy = kw_strategy
         self.arguments: dict = {}
 
-    def get_depenency_value(self, dep_arg_name: str) -> Optional:
+    def _get_depenency_value(self, dep_arg_name: str) -> T:
         try:
             actual_value = self.arguments[dep_arg_name]
         except KeyError:
@@ -124,21 +124,21 @@ class DependsOn(Validator):
                 raise ValidationError(msg)
         return actual_value
 
-    def validate_args_dependencies(self, arg_val, arg_name: str):
+    def _validate_args_dependencies(self, arg_val, arg_name: str):
         for dep_arg_name in self.args_dependencies:
-            actual_dep_arg_val = self.get_depenency_value(dep_arg_name)
+            actual_dep_arg_val = self._get_depenency_value(dep_arg_name)
             strategy = self.args_strategy(actual_dep_arg_val)
             strategy(arg_val, arg_name)
 
-    def validate_kw_dependencies(self, arg_val, arg_name: str):
+    def _validate_kw_dependencies(self, arg_val, arg_name: str):
         for dep_arg_name, dep_arg_val in self.kw_dependencies:
-            actual_dep_arg_val = self.get_depenency_value(dep_arg_name)
+            actual_dep_arg_val = self._get_depenency_value(dep_arg_name)
             if actual_dep_arg_val == dep_arg_val:
                 strategy = self.kw_strategy()
                 strategy(arg_val, arg_name)
 
     def __call__(self, arg_val, arg_name: str):
         if self.args_dependencies:
-            self.validate_args_dependencies(arg_val, arg_name)
+            self._validate_args_dependencies(arg_val, arg_name)
         if self.kw_dependencies:
-            self.validate_kw_dependencies(arg_val, arg_name)
+            self._validate_kw_dependencies(arg_val, arg_name)
