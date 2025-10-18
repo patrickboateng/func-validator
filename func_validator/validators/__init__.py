@@ -76,7 +76,7 @@ __all__ = [
     "Validator",
 ]
 
-T = TypeVar("T", bound=Validator)
+T = TypeVar("T")
 
 
 class DependsOn(Validator):
@@ -89,12 +89,23 @@ class DependsOn(Validator):
     """
 
     def __init__(
-        self,
-        *args,
-        args_strategy: Type[T] = MustBeLessThan,
-        kw_strategy: Type[T] = MustBeTruthy,
-        **kwargs,
+            self,
+            *args: str,
+            args_strategy: Type[Validator] = MustBeLessThan,
+            kw_strategy: Type[Validator] = MustBeTruthy,
+            **kwargs: T,
     ):
+        """
+        :param args: The names of the arguments that the current argument
+                     depends on.
+        :param args_strategy: The validation strategy to apply based on
+                              the values of the dependent arguments.
+        :param kw_strategy: The validation strategy to apply when
+                            dependent arguments match specific values.
+        :param kwargs: Key-value pairs where the key is the name of the
+                       dependent argument and the value is the specific
+                       value to match for applying the strategy.
+        """
         self.args_dependencies = args
         self.kw_dependencies = kwargs.items()
         self.args_strategy = args_strategy

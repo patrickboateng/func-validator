@@ -13,9 +13,9 @@ from func_validator import (
 def test_decorator():
     @validate_params
     def func(
-        param1: str,
-        param2: Annotated[Optional[str], DependsOn(param1="check")],
-        # default strategy is value must not be empty.
+            param1: str,
+            param2: Annotated[Optional[str], DependsOn(param1="check")],
+            # default strategy is value must not be empty.
     ) -> tuple:
         return param1, param2
 
@@ -41,16 +41,17 @@ def test_decorator():
         @height.setter
         @validate_params
         def height(
-            self,
-            height: Annotated[
-                int, DependsOn("age", args_strategy=MustBeLessThan)
-            ],
+                self,
+                height: Annotated[
+                    int, DependsOn("age", args_strategy=MustBeLessThan)
+                ],
         ):
             self._height = height
 
     a = A()
     assert a.height == 5
 
+    # If dependent argument does not exist.
     class B:
 
         def __init__(self, weight: int = 5):
@@ -63,10 +64,10 @@ def test_decorator():
         @weight.setter
         @validate_params
         def weight(
-            self,
-            weight: Annotated[
-                int, DependsOn("age", args_strategy=MustBeLessThan)
-            ],
+                self,
+                weight: Annotated[
+                    int, DependsOn("age", args_strategy=MustBeLessThan)
+                ],
         ):
             self._weight = weight
 

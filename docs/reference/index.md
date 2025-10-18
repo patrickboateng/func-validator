@@ -1,10 +1,13 @@
 # @validate_params
 
 ::: func_validator.validate_params
-    handler: python
-    options.extra:
-       show_root_heading: true
-       members: true
-       summary: true
-
+    options:
+        show_root_heading: true
+        show_object_full_path: false
+   
+::: func_validator.validators.DependsOn
+    options:
+        show_root_heading: true
+        show_object_full_path: false
+    
    
