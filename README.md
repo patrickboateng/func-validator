@@ -17,6 +17,11 @@ reliable.
 - [Imports](#imports)
 - [Usage](#usage)
 - [Validators](#validators)
+  - [Collection Validators](#collection-validators)
+  - [DataType Validators](#datatype-validators)
+  - [Numeric Validators](#numeric-validators)
+  - [Text Validators](#text-validators)
+  - [Dependent Argument Validator](#dependent-argument-validator)
 - [License](#license)
 
 ## Installation
@@ -124,6 +129,18 @@ for more examples.
     <tr>
         <td>MustMatchRegex</td>
         <td>Validates that the value matches the provided regular expression.</td>
+    </tr>
+</table>
+
+### Dependent Argument Validator
+
+<table>
+    <tr>
+        <td>DependsOn</td>
+        <td>
+            Validates that the value of one argument depends on the value or 
+            presence of another argument.
+        </td>
     </tr>
 </table>
 

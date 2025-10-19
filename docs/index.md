@@ -103,6 +103,29 @@ ValidationError: val_1 must be of type <class 'list'>, got <class 'tuple'> inste
 
 ```
 
+### [Dependent Argument Validator](reference/dependent_argument_validator.md)
+
+```python
+
+>>> from typing import Annotated
+>>> from func_validator import validate_params, DependsOn, MustBePositive
+>>> @validate_params
+... def foundation(depth: Annotated[float, MustBePositive()],
+...                width: Annotated[float, MustBePositive()],
+...                length: Annotated[float, DependsOn(shape="rectangle")]=None,
+...                shape: str = "square", ):
+...     return (depth, width, length, shape)
+>>> foundation(10, 20, length=30, shape="rectangle")  # ✅ Correct
+(10, 20, 30, 'rectangle')
+>>> foundation(10, 20, shape="square")  # ✅ Correct
+(10, 20, None, 'square')
+>>> foundation(10, 20, shape="rectangle")  # ❌ Wrong - length provided but shape is not rectangle
+Traceback (most recent call last):
+...
+ValidationError:
+
+```
+
 ### [Numeric Validators](reference/numeric_validators.md)
 
 <table>
@@ -147,7 +170,6 @@ Traceback (most recent call last):
 ValidationError: b:10 must be < 0.0.
 
 ```
-
 
 ### [Text Validators](reference/text_validators.md)
 
