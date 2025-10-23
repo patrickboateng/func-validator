@@ -1,37 +1,36 @@
 import re
-from typing import Callable, Literal
+from typing import Callable, Literal, Optional
 
 from ._core import T, ValidationError, Validator
 
 
 def _generic_text_validator(
-    arg_value: str,
-    arg_name: str,
-    /,
-    *,
-    to: T | None = None,
-    fn: Callable,
-    **kwargs,
+        arg_value: str,
+        arg_name: str,
+        /,
+        *,
+        to: T | None = None,
+        fn: Callable,
+        err_msg: str,
 ) -> None:
-    if not isinstance(arg_value, str):
-        exc_msg = (
-            f"{arg_name} must be a string, got {type(arg_value)} instead."
+    if not fn(to, arg_value):
+        msg = (
+            err_msg
+            if err_msg
+            else f"{arg_name}:{arg_value} does not match or equal {to}"
         )
-        raise TypeError(exc_msg)
-
-    if not fn(to, arg_value, **kwargs):
-        exc_msg = f"{arg_name}:{arg_value} does not match or equal {to}"
-        raise ValidationError(exc_msg)
+        raise ValidationError(msg)
 
 
 class MustMatchRegex(Validator):
     def __init__(
-        self,
-        regex: str | re.Pattern,
-        /,
-        *,
-        match_type: Literal["match", "fullmatch", "search"] = "match",
-        flags: int | re.RegexFlag = 0,
+            self,
+            regex: str | re.Pattern,
+            /,
+            *,
+            match_type: Literal["match", "fullmatch", "search"] = "match",
+            flags: int | re.RegexFlag = 0,
+            err_msg: Optional[str] = None,
     ):
         """Validates that the value matches the provided regular expression.
 
@@ -41,6 +40,7 @@ class MustMatchRegex(Validator):
         :param flags: Optional regex flags to modify the regex behavior.
                       If `regex` is a compiled Pattern, flags are ignored.
                       See `re` module for available flags.
+        :param err_msg: error message.
 
         :raises ValueError: If the value does not match the regex pattern.
         """
@@ -48,6 +48,8 @@ class MustMatchRegex(Validator):
             self.regex_pattern = re.compile(regex, flags=flags)
         else:
             self.regex_pattern = regex
+
+        self.err_msg = err_msg
 
         match match_type:
             case "match":
@@ -68,4 +70,5 @@ class MustMatchRegex(Validator):
             arg_name,
             to=self.regex_pattern,
             fn=self.regex_func,
+            err_msg=self.err_msg,
         )

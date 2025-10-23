@@ -23,7 +23,9 @@ from func_validator import (
 
 def test_must_be_positive_validator():
     @validate_params
-    def func(x_1: Annotated[int, MustBePositive()]):
+    def func(
+            x_1: Annotated[int, MustBePositive()],
+    ):
         return x_1
 
     assert func(1) == 1
@@ -124,6 +126,7 @@ def test_must_be_between_validator():
                     max_value=4,
                     min_inclusive=False,
                     max_inclusive=False,
+                    err_msg="Value must be greater than 2 but less than 4.",
                 ),
             ],
     ):

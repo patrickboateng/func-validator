@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, Optional
 
 from ._core import Validator, ValidationError, T
 from .numeric_arg_validators import MustBeLessThan, MustBeTruthy
@@ -20,6 +20,7 @@ class DependsOn(Validator):
             *args: str,
             args_strategy: Type[Validator] = MustBeLessThan,
             kw_strategy: Type[Validator] = MustBeTruthy,
+            err_msg: Optional[str] = None,
             **kwargs: T,
     ):
         """
@@ -37,6 +38,7 @@ class DependsOn(Validator):
         self.kw_dependencies = kwargs.items()
         self.args_strategy = args_strategy
         self.kw_strategy = kw_strategy
+        self.err_msg = err_msg
         self.arguments: dict = {}
 
     def _get_depenency_value(self, dep_arg_name: str) -> T:
@@ -54,14 +56,17 @@ class DependsOn(Validator):
     def _validate_args_dependencies(self, arg_val, arg_name: str):
         for dep_arg_name in self.args_dependencies:
             actual_dep_arg_val = self._get_depenency_value(dep_arg_name)
-            strategy = self.args_strategy(actual_dep_arg_val)
+            strategy = self.args_strategy(
+                actual_dep_arg_val,
+                err_msg=self.err_msg,
+            )
             strategy(arg_val, arg_name)
 
     def _validate_kw_dependencies(self, arg_val, arg_name: str):
         for dep_arg_name, dep_arg_val in self.kw_dependencies:
             actual_dep_arg_val = self._get_depenency_value(dep_arg_name)
             if actual_dep_arg_val == dep_arg_val:
-                strategy = self.kw_strategy()
+                strategy = self.kw_strategy(err_msg=self.err_msg)
                 strategy(arg_val, arg_name)
 
     def __call__(self, arg_val, arg_name: str):
