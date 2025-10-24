@@ -119,7 +119,7 @@ ValidationError: val_1 must be of type <class 'list'>, got <class 'tuple'> inste
 (10, 20, 30, 'rectangle')
 >>> foundation(10, 20, shape="square")  # ✅ Correct
 (10, 20, None, 'square')
->>> foundation(10, 20, shape="rectangle")  # ❌ Wrong - length provided but shape is not rectangle
+>>> foundation(10, 20, shape="rectangle")  # ❌ Wrong - length must be provided when shape is rectangle
 Traceback (most recent call last):
 ...
 ValidationError:
