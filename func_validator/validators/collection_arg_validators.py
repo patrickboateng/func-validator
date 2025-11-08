@@ -1,34 +1,34 @@
 from operator import contains
-from typing import Callable, Container, Iterable, Sized, Optional
+from typing import Callable, Container, Iterable, Optional, Sized
 
-from ._core import Number, T, ValidationError, Validator
+from ._core import ErrorMsg, Number, T, ValidationError, Validator
 from .numeric_arg_validators import (
     MustBeBetween,
     MustBeEqual,
-    MustNotBeEqual,
     MustBeGreaterThan,
     MustBeGreaterThanOrEqual,
     MustBeLessThan,
     MustBeLessThanOrEqual,
+    MustNotBeEqual,
 )
 
 
 def _iterable_len_validator(
-        arg_values: Sized,
-        arg_name: str,
-        /,
-        *,
-        func: Callable,
+    arg_values: Sized,
+    arg_name: str,
+    /,
+    *,
+    func: Callable,
 ):
     func(len(arg_values), arg_name)
 
 
 def _iterable_values_validator(
-        values: Iterable,
-        arg_name: str,
-        /,
-        *,
-        func: Callable,
+    values: Iterable,
+    arg_name: str,
+    /,
+    *,
+    func: Callable,
 ):
     for value in values:
         func(value, arg_name)
@@ -38,32 +38,38 @@ def _iterable_values_validator(
 
 
 def _must_be_member_of(
-        arg_value,
-        arg_name: str,
-        /,
-        *,
-        value_set: Container,
-        err_msg: str,
+    arg_value,
+    arg_name: str,
+    /,
+    *,
+    value_set: Container,
+    err_msg: ErrorMsg,
 ):
     if not contains(value_set, arg_value):
-        msg = (
-            err_msg
-            if err_msg is not None
-            else f"{arg_name}:{arg_value} must be in {value_set!r}"
+        err_msg = err_msg.transform(
+            arg_value=arg_value,
+            arg_name=arg_name,
+            value_set=repr(value_set),
         )
-        raise ValidationError(msg)
+        raise ValidationError(err_msg)
 
 
 class MustBeMemberOf(Validator):
 
-    def __init__(self, value_set: Container, *, err_msg: Optional[str] = None):
+    def __init__(
+        self,
+        value_set: Container,
+        *,
+        err_msg: str = "${arg_name}:${arg_value} must be in ${value_set}",
+    ):
         """Validates that the value is a member of the specified set.
 
         :param value_set: The set of values to validate against.
                           `value_set` must support the `in` operator.
+        :param err_msg: Error message.
         """
+        super().__init__(err_msg=err_msg)
         self.value_set = value_set
-        self.err_msg = err_msg
 
     def __call__(self, arg_value: T, arg_name: str):
         _must_be_member_of(
@@ -80,29 +86,35 @@ class MustBeMemberOf(Validator):
 class MustBeEmpty(Validator):
 
     def __init__(self, *, err_msg: Optional[str] = None):
-        self.err_msg = err_msg
+        """
+        :param err_msg: Error message.
+        """
+        super().__init__(err_msg=err_msg)
 
     def __call__(self, arg_value: Sized, arg_name: str, /):
         """Validates that the iterable is empty."""
-        _iterable_len_validator(
-            arg_value,
-            arg_name,
-            func=MustBeEqual(0, err_msg=self.err_msg),
-        )
+        if self.err_msg is None:
+            fn = MustBeEqual(0)
+        else:
+            fn = MustBeEqual(0, err_msg=self.err_msg)
+        _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
 class MustBeNonEmpty(Validator):
 
     def __init__(self, *, err_msg: Optional[str] = None):
-        self.err_msg = err_msg
+        """
+        :param err_msg: Error message.
+        """
+        super().__init__(err_msg=err_msg)
 
     def __call__(self, arg_value: Sized, arg_name: str, /):
         """Validates that the iterable is not empty."""
-        _iterable_len_validator(
-            arg_value,
-            arg_name,
-            func=MustNotBeEqual(0, err_msg=self.err_msg),
-        )
+        if self.err_msg is None:
+            fn = MustNotBeEqual(0)
+        else:
+            fn = MustNotBeEqual(0, err_msg=self.err_msg)
+        _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
 class MustHaveLengthEqual(Validator):
@@ -111,15 +123,19 @@ class MustHaveLengthEqual(Validator):
     """
 
     def __init__(self, value: int, *, err_msg: Optional[str] = None):
+        """
+        :param value: The length of the iterable.
+        :param err_msg: Error message.
+        """
+        super().__init__(err_msg=err_msg)
         self.value = value
-        self.err_msg = err_msg
 
     def __call__(self, arg_value: Sized, arg_name: str):
-        _iterable_len_validator(
-            arg_value,
-            arg_name,
-            func=MustBeEqual(self.value, err_msg=self.err_msg),
-        )
+        if self.err_msg is None:
+            fn = MustBeEqual(self.value)
+        else:
+            fn = MustBeEqual(self.value, err_msg=self.err_msg)
+        _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
 class MustHaveLengthGreaterThan(Validator):
@@ -128,15 +144,19 @@ class MustHaveLengthGreaterThan(Validator):
     """
 
     def __init__(self, value: int, *, err_msg: Optional[str] = None):
+        """
+        :param value: The length of the iterable.
+        :param err_msg: Error message.
+        """
+        super().__init__(err_msg=err_msg)
         self.value = value
-        self.err_msg = err_msg
 
     def __call__(self, arg_value: Sized, arg_name: str):
-        _iterable_len_validator(
-            arg_value,
-            arg_name,
-            func=MustBeGreaterThan(self.value, err_msg=self.err_msg),
-        )
+        if self.err_msg is None:
+            fn = MustBeGreaterThan(self.value)
+        else:
+            fn = MustBeGreaterThan(self.value, err_msg=self.err_msg)
+        _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
 class MustHaveLengthGreaterThanOrEqual(Validator):
@@ -145,15 +165,19 @@ class MustHaveLengthGreaterThanOrEqual(Validator):
     """
 
     def __init__(self, value: int, *, err_msg: Optional[str] = None):
+        """
+        :param value: The length of the iterable.
+        :param err_msg: Error message
+        """
+        super().__init__(err_msg=err_msg)
         self.value = value
-        self.err_msg = err_msg
 
     def __call__(self, arg_value: Sized, arg_name: str):
-        _iterable_len_validator(
-            arg_value,
-            arg_name,
-            func=MustBeGreaterThanOrEqual(self.value, err_msg=self.err_msg),
-        )
+        if self.err_msg is None:
+            fn = MustBeGreaterThanOrEqual(self.value)
+        else:
+            fn = MustBeGreaterThanOrEqual(self.value, err_msg=self.err_msg)
+        _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
 class MustHaveLengthLessThan(Validator):
@@ -162,15 +186,19 @@ class MustHaveLengthLessThan(Validator):
     """
 
     def __init__(self, value: int, *, err_msg: Optional[str] = None):
+        """
+        :param value: The length of the iterable.
+        :param err_msg: Error message.
+        """
+        super().__init__(err_msg=err_msg)
         self.value = value
-        self.err_msg = err_msg
 
     def __call__(self, arg_value: Sized, arg_name: str):
-        _iterable_len_validator(
-            arg_value,
-            arg_name,
-            func=MustBeLessThan(self.value, err_msg=self.err_msg),
-        )
+        if self.err_msg is None:
+            fn = MustBeLessThan(self.value)
+        else:
+            fn = MustBeLessThan(self.value, err_msg=self.err_msg)
+        _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
 class MustHaveLengthLessThanOrEqual(Validator):
@@ -179,15 +207,19 @@ class MustHaveLengthLessThanOrEqual(Validator):
     """
 
     def __init__(self, value: int, *, err_msg: Optional[str] = None):
+        """
+        :param value: The length of the iterable.
+        :param err_msg: Error message.
+        """
+        super().__init__(err_msg=err_msg)
         self.value = value
-        self.err_msg = err_msg
 
     def __call__(self, arg_value: Sized, arg_name: str):
-        _iterable_len_validator(
-            arg_value,
-            arg_name,
-            func=MustBeLessThanOrEqual(self.value, err_msg=self.err_msg),
-        )
+        if self.err_msg is None:
+            fn = MustBeLessThanOrEqual(self.value)
+        else:
+            fn = MustBeLessThanOrEqual(self.value, err_msg=self.err_msg)
+        _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
 class MustHaveLengthBetween(Validator):
@@ -196,13 +228,13 @@ class MustHaveLengthBetween(Validator):
     """
 
     def __init__(
-            self,
-            *,
-            min_value: int,
-            max_value: int,
-            min_inclusive: bool = True,
-            max_inclusive: bool = True,
-            err_msg: Optional[str] = None,
+        self,
+        *,
+        min_value: int,
+        max_value: int,
+        min_inclusive: bool = True,
+        max_inclusive: bool = True,
+        err_msg: Optional[str] = None,
     ):
         """
         :param min_value: The minimum value (inclusive or exclusive based
@@ -213,7 +245,7 @@ class MustHaveLengthBetween(Validator):
         :param max_inclusive: If True, max_value is inclusive.
         :param err_msg: error message.
         """
-
+        super().__init__(err_msg=err_msg)
         self.min_value = min_value
         self.max_value = max_value
         self.min_inclusive = min_inclusive
@@ -221,14 +253,22 @@ class MustHaveLengthBetween(Validator):
         self.err_msg = err_msg
 
     def __call__(self, arg_value: Sized, arg_name: str):
-        func = MustBeBetween(
-            min_value=self.min_value,
-            max_value=self.max_value,
-            min_inclusive=self.min_inclusive,
-            max_inclusive=self.max_inclusive,
-            err_msg=self.err_msg,
-        )
-        _iterable_len_validator(arg_value, arg_name, func=func)
+        if self.err_msg is None:
+            fn = MustBeBetween(
+                min_value=self.min_value,
+                max_value=self.max_value,
+                min_inclusive=self.min_inclusive,
+                max_inclusive=self.max_inclusive,
+            )
+        else:
+            fn = MustBeBetween(
+                min_value=self.min_value,
+                max_value=self.max_value,
+                min_inclusive=self.min_inclusive,
+                max_inclusive=self.max_inclusive,
+                err_msg=self.err_msg,
+            )
+        _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
 class MustHaveValuesGreaterThan(Validator):
@@ -237,15 +277,20 @@ class MustHaveValuesGreaterThan(Validator):
     """
 
     def __init__(self, min_value: Number, *, err_msg: Optional[str] = None):
+        """
+        :param min_value: The minimum value the values in the iterable
+                          should be greater than.
+        :param err_msg: Error message.
+        """
+        super().__init__(err_msg=err_msg)
         self.min_value = min_value
-        self.err_msg = err_msg
 
     def __call__(self, values: Iterable, arg_name: str):
-        _iterable_values_validator(
-            values,
-            arg_name,
-            func=MustBeGreaterThan(self.min_value, err_msg=self.err_msg),
-        )
+        if self.err_msg is None:
+            fn = MustBeGreaterThan(self.min_value)
+        else:
+            fn = MustBeGreaterThan(self.min_value, err_msg=self.err_msg)
+        _iterable_values_validator(values, arg_name, func=fn)
 
 
 class MustHaveValuesGreaterThanOrEqual(Validator):
@@ -254,17 +299,20 @@ class MustHaveValuesGreaterThanOrEqual(Validator):
     """
 
     def __init__(self, min_value: Number, *, err_msg: Optional[str] = None):
+        """
+        :param min_value: The minimum value the values in the iterable
+                          should be greater than or equal to.
+        :param err_msg: Error message.
+        """
+        super().__init__(err_msg=err_msg)
         self.min_value = min_value
-        self.err_msg = err_msg
 
     def __call__(self, values: Iterable, arg_name: str):
-        _iterable_values_validator(
-            values,
-            arg_name,
-            func=MustBeGreaterThanOrEqual(
-                self.min_value, err_msg=self.err_msg
-            ),
-        )
+        if self.err_msg is None:
+            fn = MustBeGreaterThanOrEqual(self.min_value)
+        else:
+            fn = MustBeGreaterThanOrEqual(self.min_value, err_msg=self.err_msg)
+        _iterable_values_validator(values, arg_name, func=fn)
 
 
 class MustHaveValuesLessThan(Validator):
@@ -273,15 +321,20 @@ class MustHaveValuesLessThan(Validator):
     """
 
     def __init__(self, max_value: Number, *, err_msg: Optional[str] = None):
+        """
+        :param max_value: The maximum value the values in the iterable
+                          should be less than.
+        :param err_msg: Error message.
+        """
+        super().__init__(err_msg=err_msg)
         self.max_value = max_value
-        self.err_msg = err_msg
 
     def __call__(self, values: Iterable, arg_name: str):
-        _iterable_values_validator(
-            values,
-            arg_name,
-            func=MustBeLessThan(self.max_value, err_msg=self.err_msg),
-        )
+        if self.err_msg is None:
+            fn = MustBeLessThan(self.max_value)
+        else:
+            fn = MustBeLessThan(self.max_value, err_msg=self.err_msg)
+        _iterable_values_validator(values, arg_name, func=fn)
 
 
 class MustHaveValuesLessThanOrEqual(Validator):
@@ -290,15 +343,20 @@ class MustHaveValuesLessThanOrEqual(Validator):
     """
 
     def __init__(self, max_value: Number, *, err_msg: Optional[str] = None):
+        """
+        :param max_value: The maximum value the values in the iterable
+                          should be less than or equal to.
+        :param err_msg: Error message.
+        """
+        super().__init__(err_msg=err_msg)
         self.max_value = max_value
-        self.err_msg = err_msg
 
     def __call__(self, values: Iterable, arg_name: str):
-        _iterable_values_validator(
-            values,
-            arg_name,
-            func=MustBeLessThanOrEqual(self.max_value, err_msg=self.err_msg),
-        )
+        if self.err_msg is None:
+            fn = MustBeLessThanOrEqual(self.max_value)
+        else:
+            fn = MustBeLessThanOrEqual(self.max_value, err_msg=self.err_msg)
+        _iterable_values_validator(values, arg_name, func=fn)
 
 
 class MustHaveValuesBetween(Validator):
@@ -307,13 +365,13 @@ class MustHaveValuesBetween(Validator):
     """
 
     def __init__(
-            self,
-            *,
-            min_value: Number,
-            max_value: Number,
-            min_inclusive: bool = True,
-            max_inclusive: bool = True,
-            err_msg: Optional[str] = None,
+        self,
+        *,
+        min_value: Number,
+        max_value: Number,
+        min_inclusive: bool = True,
+        max_inclusive: bool = True,
+        err_msg: Optional[str] = None,
     ):
         """
         :param min_value: The minimum value (inclusive or exclusive based
@@ -324,18 +382,26 @@ class MustHaveValuesBetween(Validator):
         :param max_inclusive: If True, max_value is inclusive.
         :param err_msg: error message.
         """
+        super().__init__(err_msg=err_msg)
         self.min_value = min_value
         self.max_value = max_value
         self.min_inclusive = min_inclusive
         self.max_inclusive = max_inclusive
-        self.err_msg = err_msg
 
     def __call__(self, values: Iterable, arg_name: str):
-        func = MustBeBetween(
-            min_value=self.min_value,
-            max_value=self.max_value,
-            min_inclusive=self.min_inclusive,
-            max_inclusive=self.max_inclusive,
-            err_msg=self.err_msg,
-        )
-        _iterable_values_validator(values, arg_name, func=func)
+        if self.err_msg is None:
+            fn = MustBeBetween(
+                min_value=self.min_value,
+                max_value=self.max_value,
+                min_inclusive=self.min_inclusive,
+                max_inclusive=self.max_inclusive,
+            )
+        else:
+            fn = MustBeBetween(
+                min_value=self.min_value,
+                max_value=self.max_value,
+                min_inclusive=self.min_inclusive,
+                max_inclusive=self.max_inclusive,
+                err_msg=self.err_msg,
+            )
+        _iterable_values_validator(values, arg_name, func=fn)

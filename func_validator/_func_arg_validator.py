@@ -1,5 +1,5 @@
 import inspect
-from functools import wraps, partial
+from functools import partial, wraps
 from typing import (
     Annotated,
     Callable,

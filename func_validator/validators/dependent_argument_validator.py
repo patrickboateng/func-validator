@@ -1,6 +1,6 @@
-from typing import Type, Optional
+from typing import Optional, Type
 
-from ._core import Validator, ValidationError, T
+from ._core import T, ValidationError, Validator
 from .numeric_arg_validators import MustBeLessThan, MustBeTruthy
 
 __all__ = ["DependsOn"]
@@ -16,12 +16,12 @@ class DependsOn(Validator):
     """
 
     def __init__(
-            self,
-            *args: str,
-            args_strategy: Type[Validator] = MustBeLessThan,
-            kw_strategy: Type[Validator] = MustBeTruthy,
-            err_msg: Optional[str] = None,
-            **kwargs: T,
+        self,
+        *args: str,
+        args_strategy: Type[Validator] = MustBeLessThan,
+        kw_strategy: Type[Validator] = MustBeTruthy,
+        err_msg: Optional[str] = "",
+        **kwargs: T,
     ):
         """
         :param args: The names of the arguments that the current argument
@@ -34,11 +34,11 @@ class DependsOn(Validator):
                        dependent argument and the value is the specific
                        value to match for applying the strategy.
         """
+        super().__init__(err_msg=err_msg)
         self.args_dependencies = args
         self.kw_dependencies = kwargs.items()
         self.args_strategy = args_strategy
         self.kw_strategy = kw_strategy
-        self.err_msg = err_msg
         self.arguments: dict = {}
 
     def _get_depenency_value(self, dep_arg_name: str) -> T:
@@ -46,8 +46,8 @@ class DependsOn(Validator):
             actual_value = self.arguments[dep_arg_name]
         except KeyError:
             try:
-                __obj = self.arguments["self"]
-                actual_value = getattr(__obj, dep_arg_name)
+                instance = self.arguments["self"]
+                actual_value = getattr(instance, dep_arg_name)
             except (AttributeError, KeyError):
                 msg = f"Dependency argument '{dep_arg_name}' not found."
                 raise ValidationError(msg)

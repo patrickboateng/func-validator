@@ -8,11 +8,15 @@ from func_validator import validate_params, MustMatchRegex, ValidationError
 
 def test_must_match_regex_match():
     @validate_params
-    def func(x: Annotated[str, MustMatchRegex(r"\d+")]):
+    def func(
+        x: Annotated[
+            str,
+            MustMatchRegex(r"\d+"),
+        ],
+    ):
         return x
 
     assert func("123") == "123"
-
     with pytest.raises(ValidationError):
         func("abc")
 

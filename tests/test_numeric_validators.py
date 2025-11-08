@@ -24,7 +24,7 @@ from func_validator import (
 def test_must_be_positive_validator():
     @validate_params
     def func(
-            x_1: Annotated[int, MustBePositive()],
+        x_1: Annotated[int, MustBePositive()],
     ):
         return x_1
 
@@ -89,10 +89,9 @@ def test_must_be_between_validator():
 
     @validate_params
     def func_2(
-            x_1: Annotated[
-                int, MustBeBetween(min_value=2, max_value=4,
-                                   min_inclusive=False)
-            ],
+        x_1: Annotated[
+            int, MustBeBetween(min_value=2, max_value=4, min_inclusive=False)
+        ],
     ):
         return x_1
 
@@ -104,31 +103,29 @@ def test_must_be_between_validator():
 
     @validate_params
     def func_3(
-            x_1: Annotated[
-                int, MustBeBetween(min_value=2, max_value=4,
-                                   max_inclusive=False)
-            ],
+        x_1: Annotated[
+            int, MustBeBetween(min_value=2, max_value=4, max_inclusive=False)
+        ],
     ):
         return x_1
 
     assert func_3(2) == 2
     assert func_3(3) == 3
-
     with pytest.raises(ValidationError):
         func_3(4)
 
     @validate_params
     def func_4(
-            x_1: Annotated[
-                int,
-                MustBeBetween(
-                    min_value=2,
-                    max_value=4,
-                    min_inclusive=False,
-                    max_inclusive=False,
-                    err_msg="Value must be greater than 2 but less than 4.",
-                ),
-            ],
+        x_1: Annotated[
+            int,
+            MustBeBetween(
+                min_value=2,
+                max_value=4,
+                min_inclusive=False,
+                max_inclusive=False,
+                err_msg="Value must be greater than 2 but less than 4.",
+            ),
+        ],
     ):
         return x_1
 

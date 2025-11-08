@@ -122,8 +122,7 @@ def test_must_have_length_less_than_or_equal_validator():
 def test_must_have_length_between_validator():
     @validate_params
     def func(
-            x_1: Annotated[
-                list, MustHaveLengthBetween(min_value=2, max_value=4)],
+        x_1: Annotated[list, MustHaveLengthBetween(min_value=2, max_value=4)],
     ):
         return x_1
 
@@ -139,12 +138,12 @@ def test_must_have_length_between_validator():
 
     @validate_params
     def func_2(
-            x_1: Annotated[
-                list,
-                MustHaveLengthBetween(
-                    min_value=2, max_value=4, min_inclusive=False
-                ),
-            ],
+        x_1: Annotated[
+            list,
+            MustHaveLengthBetween(
+                min_value=2, max_value=4, min_inclusive=False
+            ),
+        ],
     ):
         return x_1
 
@@ -156,12 +155,12 @@ def test_must_have_length_between_validator():
 
     @validate_params
     def func_3(
-            x_1: Annotated[
-                list,
-                MustHaveLengthBetween(
-                    min_value=2, max_value=4, max_inclusive=False
-                ),
-            ],
+        x_1: Annotated[
+            list,
+            MustHaveLengthBetween(
+                min_value=2, max_value=4, max_inclusive=False
+            ),
+        ],
     ):
         return x_1
 
@@ -173,15 +172,15 @@ def test_must_have_length_between_validator():
 
     @validate_params
     def func_4(
-            x_1: Annotated[
-                list,
-                MustHaveLengthBetween(
-                    min_value=2,
-                    max_value=4,
-                    min_inclusive=False,
-                    max_inclusive=False,
-                ),
-            ],
+        x_1: Annotated[
+            list,
+            MustHaveLengthBetween(
+                min_value=2,
+                max_value=4,
+                min_inclusive=False,
+                max_inclusive=False,
+            ),
+        ],
     ):
         return x_1
 
@@ -241,8 +240,7 @@ def test_must_have_values_less_than_or_equal_validator():
 def test_must_have_values_between_validator():
     @validate_params
     def func(
-            x_1: Annotated[
-                list, MustHaveValuesBetween(min_value=2, max_value=5)],
+        x_1: Annotated[list, MustHaveValuesBetween(min_value=2, max_value=5)],
     ):
         return x_1
 
@@ -253,12 +251,12 @@ def test_must_have_values_between_validator():
 
     @validate_params
     def func_2(
-            x_1: Annotated[
-                list,
-                MustHaveValuesBetween(
-                    min_value=2, max_value=5, min_inclusive=False
-                ),
-            ],
+        x_1: Annotated[
+            list,
+            MustHaveValuesBetween(
+                min_value=2, max_value=5, min_inclusive=False
+            ),
+        ],
     ):
         return x_1
 
@@ -269,12 +267,12 @@ def test_must_have_values_between_validator():
 
     @validate_params
     def func_3(
-            x_1: Annotated[
-                list,
-                MustHaveValuesBetween(
-                    min_value=2, max_value=5, max_inclusive=False
-                ),
-            ],
+        x_1: Annotated[
+            list,
+            MustHaveValuesBetween(
+                min_value=2, max_value=5, max_inclusive=False
+            ),
+        ],
     ):
         return x_1
 
@@ -285,15 +283,15 @@ def test_must_have_values_between_validator():
 
     @validate_params
     def func_4(
-            x_1: Annotated[
-                list,
-                MustHaveValuesBetween(
-                    min_value=2,
-                    max_value=5,
-                    min_inclusive=False,
-                    max_inclusive=False,
-                ),
-            ],
+        x_1: Annotated[
+            list,
+            MustHaveValuesBetween(
+                min_value=2,
+                max_value=5,
+                min_inclusive=False,
+                max_inclusive=False,
+            ),
+        ],
     ):
         return x_1
 
