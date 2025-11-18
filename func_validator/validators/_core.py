@@ -33,6 +33,9 @@ class ErrorMsg(Template):
     def transform(self, **kwargs):
         return self.safe_substitute(kwargs)
 
+    def __bool__(self):
+        return bool(self.template)
+
 
 class Validator(ABC):
 

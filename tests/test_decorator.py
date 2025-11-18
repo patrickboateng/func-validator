@@ -22,6 +22,7 @@ def test_decorator():
     assert func("check", "value") == ("check", "value")
     assert func("check2", "value") == ("check2", "value")
 
+
     with pytest.raises(ValidationError):
         func("check", "")
 
