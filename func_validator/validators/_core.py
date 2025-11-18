@@ -36,11 +36,15 @@ class ErrorMsg(Template):
 
 class Validator(ABC):
 
-    def __init__(self, *, err_msg: Optional[str | ErrorMsg] = "") -> None:
-        if err_msg:
+    def __init__(self, *, err_msg: str | ErrorMsg = "") -> None:
+        if isinstance(err_msg, str):
             self.err_msg = ErrorMsg(err_msg)
-        else:
+        elif isinstance(err_msg, ErrorMsg):
             self.err_msg = err_msg
+        else:
+            raise ValidationError(
+                f"err_msg must be str or ErrorMsg, not {type(err_msg)}"
+            )
 
     @abstractmethod
     def __call__(self, *args, **kwargs) -> T: ...

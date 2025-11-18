@@ -1,5 +1,5 @@
 from operator import contains
-from typing import Callable, Container, Iterable, Optional, Sized
+from typing import Callable, Container, Iterable, Sized
 
 from ._core import ErrorMsg, Number, T, ValidationError, Validator
 from .numeric_arg_validators import (
@@ -85,7 +85,7 @@ class MustBeMemberOf(Validator):
 
 class MustBeEmpty(Validator):
 
-    def __init__(self, *, err_msg: Optional[str] = None):
+    def __init__(self, *, err_msg: str = ""):
         """
         :param err_msg: Error message.
         """
@@ -102,7 +102,7 @@ class MustBeEmpty(Validator):
 
 class MustBeNonEmpty(Validator):
 
-    def __init__(self, *, err_msg: Optional[str] = None):
+    def __init__(self, *, err_msg: str = ""):
         """
         :param err_msg: Error message.
         """
@@ -122,7 +122,7 @@ class MustHaveLengthEqual(Validator):
     value.
     """
 
-    def __init__(self, value: int, *, err_msg: Optional[str] = None):
+    def __init__(self, value: int, *, err_msg: str = ""):
         """
         :param value: The length of the iterable.
         :param err_msg: Error message.
@@ -143,7 +143,7 @@ class MustHaveLengthGreaterThan(Validator):
     value.
     """
 
-    def __init__(self, value: int, *, err_msg: Optional[str] = None):
+    def __init__(self, value: int, *, err_msg: str = ""):
         """
         :param value: The length of the iterable.
         :param err_msg: Error message.
@@ -164,7 +164,7 @@ class MustHaveLengthGreaterThanOrEqual(Validator):
     the specified value.
     """
 
-    def __init__(self, value: int, *, err_msg: Optional[str] = None):
+    def __init__(self, value: int, *, err_msg: str = ""):
         """
         :param value: The length of the iterable.
         :param err_msg: Error message
@@ -185,7 +185,7 @@ class MustHaveLengthLessThan(Validator):
     value.
     """
 
-    def __init__(self, value: int, *, err_msg: Optional[str] = None):
+    def __init__(self, value: int, *, err_msg: str = ""):
         """
         :param value: The length of the iterable.
         :param err_msg: Error message.
@@ -206,7 +206,7 @@ class MustHaveLengthLessThanOrEqual(Validator):
     the specified value.
     """
 
-    def __init__(self, value: int, *, err_msg: Optional[str] = None):
+    def __init__(self, value: int, *, err_msg: str = ""):
         """
         :param value: The length of the iterable.
         :param err_msg: Error message.
@@ -234,7 +234,7 @@ class MustHaveLengthBetween(Validator):
         max_value: int,
         min_inclusive: bool = True,
         max_inclusive: bool = True,
-        err_msg: Optional[str] = None,
+        err_msg: str = "",
     ):
         """
         :param min_value: The minimum value (inclusive or exclusive based
@@ -276,7 +276,7 @@ class MustHaveValuesGreaterThan(Validator):
     specified min_value.
     """
 
-    def __init__(self, min_value: Number, *, err_msg: Optional[str] = None):
+    def __init__(self, min_value: Number, *, err_msg: str = ""):
         """
         :param min_value: The minimum value the values in the iterable
                           should be greater than.
@@ -298,7 +298,7 @@ class MustHaveValuesGreaterThanOrEqual(Validator):
     equal to the specified min_value.
     """
 
-    def __init__(self, min_value: Number, *, err_msg: Optional[str] = None):
+    def __init__(self, min_value: Number, *, err_msg: str = ""):
         """
         :param min_value: The minimum value the values in the iterable
                           should be greater than or equal to.
@@ -320,7 +320,7 @@ class MustHaveValuesLessThan(Validator):
     specified max_value.
     """
 
-    def __init__(self, max_value: Number, *, err_msg: Optional[str] = None):
+    def __init__(self, max_value: Number, *, err_msg: str = ""):
         """
         :param max_value: The maximum value the values in the iterable
                           should be less than.
@@ -342,7 +342,7 @@ class MustHaveValuesLessThanOrEqual(Validator):
     equal to the specified max_value.
     """
 
-    def __init__(self, max_value: Number, *, err_msg: Optional[str] = None):
+    def __init__(self, max_value: Number, *, err_msg: str = ""):
         """
         :param max_value: The maximum value the values in the iterable
                           should be less than or equal to.
@@ -371,7 +371,7 @@ class MustHaveValuesBetween(Validator):
         max_value: Number,
         min_inclusive: bool = True,
         max_inclusive: bool = True,
-        err_msg: Optional[str] = None,
+        err_msg: str = "",
     ):
         """
         :param min_value: The minimum value (inclusive or exclusive based

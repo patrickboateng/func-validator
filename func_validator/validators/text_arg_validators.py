@@ -1,5 +1,5 @@
 import re
-from typing import Callable, Literal, Optional
+from typing import Callable, Literal
 
 from ._core import ErrorMsg, T, ValidationError, Validator
 

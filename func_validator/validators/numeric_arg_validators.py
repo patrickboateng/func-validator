@@ -1,7 +1,7 @@
 import math
 from functools import partial
 from operator import eq, ge, gt, le, lt, ne
-from typing import Callable, Optional
+from typing import Callable
 
 from ._core import (
     OPERATOR_SYMBOLS,
@@ -189,10 +189,10 @@ class MustBeNonNegative(Validator):
 # Comparison validation functions
 
 
-# TODO: Deprecate this and work on logic
+# TODO: Deprecate this and work on logic in MustBeProvided
 class MustBeTruthy(Validator):
 
-    def __init__(self, *, err_msg: str = None) -> None:
+    def __init__(self, *, err_msg: str = "") -> None:
         super().__init__(err_msg=err_msg)
 
     def __call__(self, arg_value: T, arg_name: str):

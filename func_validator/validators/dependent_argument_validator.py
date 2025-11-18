@@ -1,4 +1,4 @@
-from typing import Optional, Type
+from typing import Type
 
 from ._core import T, ValidationError, Validator
 from .numeric_arg_validators import MustBeLessThan, MustBeTruthy
@@ -20,7 +20,7 @@ class DependsOn(Validator):
         *args: str,
         args_strategy: Type[Validator] = MustBeLessThan,
         kw_strategy: Type[Validator] = MustBeTruthy,
-        err_msg: Optional[str] = "",
+        err_msg: str = "",
         **kwargs: T,
     ):
         """

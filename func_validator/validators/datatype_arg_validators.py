@@ -1,4 +1,4 @@
-from typing import Optional, Type
+from typing import Type
 
 from ._core import ErrorMsg, T, ValidationError, Validator
 
