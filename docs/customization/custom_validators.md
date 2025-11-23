@@ -1,9 +1,9 @@
-# Custom validators
+# Custom Validators
 
 You can add a custom validator by creating a class and inheriting from
 `Validator` (`from func_validator import Validator`) base class. Implement
-the `__call__` method to accept arguments in the order `arg_value` and 
-`arg_name`. Raise a `ValidationError` 
+the `__call__` method to accept arguments in the order `arg_value` and
+`arg_name`. Raise a `ValidationError`
 (`from func_validator import ValidationError`) if validation fails.
 
 ## Example custom validator
