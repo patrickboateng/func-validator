@@ -1,5 +1,7 @@
 from typing import Annotated
+
 import pytest
+
 from func_validator import (
     validate_params,
     MustBePositive,

@@ -29,7 +29,6 @@ from .numeric_arg_validators import (
     MustBeNonNegative,
     MustBeNonPositive,
     MustBePositive,
-    MustBeTruthy,
     MustNotBeEqual,
 )
 from .text_arg_validators import MustMatchRegex
@@ -55,7 +54,6 @@ __all__ = [
     # DataType Validators
     "MustBeA",
     # Numeric Validators
-    "MustBeTruthy",
     "MustBeBetween",
     "MustBeEqual",
     "MustNotBeEqual",

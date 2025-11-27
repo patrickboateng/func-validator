@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Optional, Type
 
 from ._core import T, ValidationError, Validator
 from .numeric_arg_validators import MustBeLessThan, MustBeProvided
@@ -20,7 +20,9 @@ class DependsOn(Validator):
         *args: str,
         args_strategy: Type[Validator] = MustBeLessThan,
         kw_strategy: Type[Validator] = MustBeProvided,
-        err_msg: str = "",
+        args_err_msg: Optional[str] = None,
+        kw_err_msg: Optional[str] = None,
+        extra_msg_args: Optional[dict] = None,
         **kwargs: T,
     ):
         """
@@ -34,11 +36,14 @@ class DependsOn(Validator):
                        dependent argument and the value is the specific
                        value to match for applying the strategy.
         """
-        super().__init__(err_msg=err_msg)
+
+        super().__init__(extra_msg_args=extra_msg_args)
         self.args_dependencies = args
         self.kw_dependencies = kwargs.items()
         self.args_strategy = args_strategy
         self.kw_strategy = kw_strategy
+        self.args_err_msg = args_err_msg or args_strategy.DEFAULT_ERROR_MSG
+        self.kw_err_msg = kw_err_msg or kw_strategy.DEFAULT_ERROR_MSG
         self.arguments: dict = {}
 
     def _get_depenency_value(self, dep_arg_name: str) -> T:
@@ -56,23 +61,31 @@ class DependsOn(Validator):
     def _validate_args_dependencies(self, arg_val, arg_name: str):
         for dep_arg_name in self.args_dependencies:
             actual_dep_arg_val = self._get_depenency_value(dep_arg_name)
-            if self.err_msg:
-                strategy = self.args_strategy(
-                    actual_dep_arg_val,
-                    err_msg=self.err_msg,
-                )
-            else:
-                strategy = self.args_strategy(actual_dep_arg_val)
+            strategy = self.args_strategy(
+                actual_dep_arg_val,
+                err_msg=self.args_err_msg,
+                extra_msg_args=self.extra_msg_args.update(
+                    {
+                        "dep_arg_name": dep_arg_name,
+                        "dep_arg_value": actual_dep_arg_val,
+                    }
+                ),
+            )
             strategy(arg_val, arg_name)
 
     def _validate_kw_dependencies(self, arg_val, arg_name: str):
         for dep_arg_name, dep_arg_val in self.kw_dependencies:
             actual_dep_arg_val = self._get_depenency_value(dep_arg_name)
             if actual_dep_arg_val == dep_arg_val:
-                if self.err_msg:
-                    strategy = self.kw_strategy(err_msg=self.err_msg)
-                else:
-                    strategy = self.kw_strategy()
+                strategy = self.kw_strategy(
+                    err_msg=self.kw_err_msg,
+                    extra_msg_args=self.extra_msg_args.update(
+                        {
+                            "dep_arg_name": dep_arg_name,
+                            "dep_arg_value": dep_arg_val,
+                        }
+                    ),
+                )
                 strategy(arg_val, arg_name)
 
     def __call__(self, arg_val, arg_name: str):

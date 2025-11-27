@@ -37,7 +37,7 @@ pip install func-validator
     This is not the exhaustive list for all validators, click on each heading 
     to checkout more examples.
 
-### [Collection Validators](reference/collection_validators.md)
+### [Collection Validators](reference/collection-validators.md)
 
 <table>
     <tr>
@@ -78,7 +78,7 @@ ValidationError: val_2:[1, 2, 3] must be empty.
 
 ```
 
-### [DataType Validators](reference/datatype_validators.md)
+### [DataType Validators](reference/datatype-validators.md)
 
 <table>
     <tr>
@@ -103,7 +103,7 @@ ValidationError: val_1 must be of type <class 'list'>, got <class 'tuple'> inste
 
 ```
 
-### [Dependent Argument Validator](reference/dependent_argument_validator.md)
+### [Dependent Argument Validator](reference/dependent-argument-validator.md)
 
 ```python
 
@@ -126,7 +126,7 @@ ValidationError:
 
 ```
 
-### [Numeric Validators](reference/numeric_validators.md)
+### [Numeric Validators](reference/numeric-validators.md)
 
 <table>
     <tr>
@@ -171,7 +171,7 @@ ValidationError: b:10 must be < 0.0.
 
 ```
 
-### [Text Validators](reference/text_validators.md)
+### [Text Validators](reference/text-validators.md)
 
 <table>
     <tr>

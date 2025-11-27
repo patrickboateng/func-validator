@@ -1,5 +1,5 @@
 import re
-from typing import Callable, Literal
+from typing import Callable, Final, Literal, Optional
 
 from ._core import ErrorMsg, T, ValidationError, Validator
 
@@ -11,18 +11,24 @@ def _generic_text_validator(
     *,
     to: T | None = None,
     fn: Callable,
-    err_msg: ErrorMsg,
+    err_msg: str,
+    extra_msg_args: dict,
 ) -> None:
     if not fn(to, arg_value):
-        err_msg = err_msg.transform(
-            arg_name=arg_name,
-            arg_value=arg_value,
-            to=to,
+        err_msg = ErrorMsg(err_msg).transform(
+            arg_name=arg_name, arg_value=arg_value, to=to, **extra_msg_args
         )
         raise ValidationError(err_msg)
 
 
+TEXT_VALIDATOR_DEFAULT_MSG = (
+    "${arg_name}:${arg_value} does not match or equal ${to}"
+)
+
+
 class MustMatchRegex(Validator):
+    DEFAULT_ERROR_MSG: Final = TEXT_VALIDATOR_DEFAULT_MSG
+
     def __init__(
         self,
         regex: str | re.Pattern,
@@ -30,7 +36,8 @@ class MustMatchRegex(Validator):
         *,
         match_type: Literal["match", "fullmatch", "search"] = "match",
         flags: int | re.RegexFlag = 0,
-        err_msg: str = "${arg_name}:${arg_value} does not match or equal ${to}",
+        err_msg: Optional[str] = None,
+        extra_msg_args: Optional[dict] = None,
     ):
         """Validates that the value matches the provided regular expression.
 
@@ -44,7 +51,8 @@ class MustMatchRegex(Validator):
 
         :raises ValueError: If the value does not match the regex pattern.
         """
-        super().__init__(err_msg=err_msg)
+        err_msg = err_msg or self.DEFAULT_ERROR_MSG
+        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
 
         if not isinstance(regex, re.Pattern):
             self.regex_pattern = re.compile(regex, flags=flags)
@@ -71,4 +79,5 @@ class MustMatchRegex(Validator):
             to=self.regex_pattern,
             fn=self.regex_func,
             err_msg=self.err_msg,
+            extra_msg_args=self.extra_msg_args,
         )

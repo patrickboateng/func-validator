@@ -10,16 +10,6 @@ repo_name: func-validator
 repo_url: https://github.com/patrickboateng/func-validator
 edit_uri: edit/main/docs
 
-nav:
-  - Home: index.md
-  - Reference:
-      - reference/index.md
-      - Collection Validators: reference/collection_validators.md
-      - DataType Validators: reference/datatype_validators.md
-      - Dependent Argument Validators: reference/dependent_argument_validator.md
-      - Numeric Validators: reference/numeric_validators.md
-      - Text Validators: reference/text_validators.md
-  - Customization: customization.md
 
 theme:
   name: material
@@ -93,6 +83,10 @@ plugins:
   - git-committers:
       repository: patrickboateng/func-validator
       branch: main
+  - awesome-nav
+  - mkdocs-jupyter:
+      include_source: True
+      execute: True
 
 markdown_extensions:
   - admonition

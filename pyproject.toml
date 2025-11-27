@@ -68,5 +68,7 @@ dev = [
     "mktestdocs==0.2.5",
     "pytest-cov==6.2.1",
     "pytest-doctestplus==1.4.0",
+    "mkdocs-awesome-nav==3.2.0",
+    "mkdocs-jupyter>=0.25.1",
 ]
 

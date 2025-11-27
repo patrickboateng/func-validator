@@ -33,21 +33,15 @@ class ErrorMsg(Template):
     def transform(self, **kwargs):
         return self.safe_substitute(kwargs)
 
-    def __bool__(self):
-        return bool(self.template)
-
 
 class Validator(ABC):
+    DEFAULT_ERROR_MSG: str
 
-    def __init__(self, *, err_msg: str | ErrorMsg = "") -> None:
-        if isinstance(err_msg, str):
-            self.err_msg = ErrorMsg(err_msg)
-        elif isinstance(err_msg, ErrorMsg):
-            self.err_msg = err_msg
-        else:
-            raise ValidationError(
-                f"err_msg must be str or ErrorMsg, not {type(err_msg)}"
-            )
+    def __init__(
+        self, *, err_msg: str = "", extra_msg_args: Optional[dict] = None
+    ) -> None:
+        self.err_msg = err_msg
+        self.extra_msg_args = extra_msg_args or {}
 
     @abstractmethod
     def __call__(self, *args, **kwargs) -> T: ...

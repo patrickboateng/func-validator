@@ -22,7 +22,6 @@ def test_decorator():
     assert func("check", "value") == ("check", "value")
     assert func("check2", "value") == ("check2", "value")
 
-
     with pytest.raises(ValidationError):
         func("check", "")
 
@@ -44,13 +43,19 @@ def test_decorator():
         def height(
             self,
             height: Annotated[
-                int, DependsOn("age", args_strategy=MustBeLessThan)
+                int,
+                DependsOn(
+                    "age",
+                    args_strategy=MustBeLessThan,
+                    args_err_msg="${arg_value} ${dep_arg_name}",
+                ),
             ],
         ):
             self._height = height
 
     a = A()
     assert a.height == 5
+    # a.height = 10
 
     # If dependent argument does not exist.
     class B:
