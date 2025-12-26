@@ -38,7 +38,10 @@ class Validator(ABC):
     DEFAULT_ERROR_MSG: str
 
     def __init__(
-        self, *, err_msg: str = "", extra_msg_args: Optional[dict] = None
+        self,
+        *,
+        err_msg: str = "",
+        extra_msg_args: Optional[dict] = None,
     ) -> None:
         self.err_msg = err_msg
         self.extra_msg_args = extra_msg_args or {}
