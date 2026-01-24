@@ -1,9 +1,49 @@
-from typing import Optional, Type
+from typing import Final, Optional, Type
 
-from ._core import T, ValidationError, Validator
-from .numeric_arg_validators import MustBeLessThan, MustBeProvided
+from ._core import ErrorMsg, T, ValidationError, Validator
+from .numeric_arg_validators import MustBeLessThan
 
-__all__ = ["DependsOn"]
+__all__ = ["DependsOn", "MustBeProvided"]
+
+
+def _must_be_provided(
+    arg_value: T,
+    arg_name: str,
+    err_msg: str,
+    extra_msg_args: dict,
+):
+    if not bool(arg_value):
+        err_msg = ErrorMsg(err_msg).transform(
+            arg_value=arg_value, arg_name=arg_name, **extra_msg_args
+        )
+        raise ValidationError(err_msg)
+
+
+class MustBeProvided(Validator):
+    DEFAULT_ERROR_MSG: Final[str] = (
+        "${arg_name} must be provided when ${dep_arg_name} "
+        "has a value of ${dep_arg_value}"
+    )
+
+    def __init__(
+        self,
+        *,
+        err_msg: Optional[str] = None,
+        extra_msg_args: Optional[dict] = None,
+    ) -> None:
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
+
+    def __call__(self, arg_value: T, arg_name: str):
+        _must_be_provided(
+            arg_value,
+            arg_name,
+            err_msg=self.err_msg,
+            extra_msg_args=self.extra_msg_args,
+        )
 
 
 class DependsOn(Validator):
@@ -61,15 +101,16 @@ class DependsOn(Validator):
     def _validate_args_dependencies(self, arg_val, arg_name: str):
         for dep_arg_name in self.args_dependencies:
             actual_dep_arg_val = self._get_depenency_value(dep_arg_name)
+            self.extra_msg_args.update(
+                {
+                    "dep_arg_name": dep_arg_name,
+                    "dep_arg_value": actual_dep_arg_val,
+                }
+            )
             strategy = self.args_strategy(
                 actual_dep_arg_val,
                 err_msg=self.args_err_msg,
-                extra_msg_args=self.extra_msg_args.update(
-                    {
-                        "dep_arg_name": dep_arg_name,
-                        "dep_arg_value": actual_dep_arg_val,
-                    }
-                ),
+                extra_msg_args=self.extra_msg_args,
             )
             strategy(arg_val, arg_name)
 
@@ -77,14 +118,15 @@ class DependsOn(Validator):
         for dep_arg_name, dep_arg_val in self.kw_dependencies:
             actual_dep_arg_val = self._get_depenency_value(dep_arg_name)
             if actual_dep_arg_val == dep_arg_val:
+                self.extra_msg_args.update(
+                    {
+                        "dep_arg_name": dep_arg_name,
+                        "dep_arg_value": dep_arg_val,
+                    }
+                )
                 strategy = self.kw_strategy(
                     err_msg=self.kw_err_msg,
-                    extra_msg_args=self.extra_msg_args.update(
-                        {
-                            "dep_arg_name": dep_arg_name,
-                            "dep_arg_value": dep_arg_val,
-                        }
-                    ),
+                    extra_msg_args=self.extra_msg_args,
                 )
                 strategy(arg_val, arg_name)
 
