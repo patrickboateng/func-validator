@@ -30,7 +30,7 @@ class ValidationError(Exception):
 
 
 class ErrorMsg(Template):
-    def transform(self, **kwargs):
+    def transform(self, **kwargs) -> str:
         return self.safe_substitute(kwargs)
 
 
@@ -42,8 +42,9 @@ class Validator(ABC):
         *,
         err_msg: str = "",
         extra_msg_args: Optional[dict] = None,
+        default_err_msg: Optional[str] = None,
     ) -> None:
-        self.err_msg = err_msg
+        self.err_msg = err_msg or default_err_msg
         self.extra_msg_args = extra_msg_args or {}
 
     @abstractmethod
