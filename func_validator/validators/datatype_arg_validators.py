@@ -28,7 +28,8 @@ def _must_be_a_particular_type(
 
 
 class MustBeA(Validator):
-    DEFAULT_ERR_MSG: Final = DATATYPE_VALIDATOR_MSG
+
+    DEFAULT_ERROR_MSG: Final[str] = DATATYPE_VALIDATOR_MSG
 
     def __init__(
         self,
@@ -41,8 +42,11 @@ class MustBeA(Validator):
 
         :param arg_type: The type to validate against.
         """
-        err_msg = err_msg or self.DEFAULT_ERR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
         self.arg_type = arg_type
 
     def __call__(self, arg_value: T, arg_name: str) -> None:

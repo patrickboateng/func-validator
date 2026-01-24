@@ -16,7 +16,10 @@ def _generic_text_validator(
 ) -> None:
     if not fn(to, arg_value):
         err_msg = ErrorMsg(err_msg).transform(
-            arg_name=arg_name, arg_value=arg_value, to=to, **extra_msg_args
+            arg_name=arg_name,
+            arg_value=arg_value,
+            to=to,
+            **extra_msg_args,
         )
         raise ValidationError(err_msg)
 
@@ -27,7 +30,8 @@ TEXT_VALIDATOR_DEFAULT_MSG = (
 
 
 class MustMatchRegex(Validator):
-    DEFAULT_ERROR_MSG: Final = TEXT_VALIDATOR_DEFAULT_MSG
+
+    DEFAULT_ERROR_MSG: Final[str] = TEXT_VALIDATOR_DEFAULT_MSG
 
     def __init__(
         self,
@@ -51,8 +55,11 @@ class MustMatchRegex(Validator):
 
         :raises ValueError: If the value does not match the regex pattern.
         """
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
 
         if not isinstance(regex, re.Pattern):
             self.regex_pattern = re.compile(regex, flags=flags)

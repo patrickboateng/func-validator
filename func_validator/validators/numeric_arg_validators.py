@@ -78,23 +78,10 @@ def _must_be_between(
         raise ValidationError(err_msg)
 
 
-def _must_be_provided(
-    arg_value: T,
-    arg_name: str,
-    err_msg: str,
-    extra_msg_args: dict,
-):
-    if not bool(arg_value):
-        err_msg = ErrorMsg(err_msg).transform(
-            arg_value=arg_value, arg_name=arg_name, **extra_msg_args
-        )
-        raise ValidationError(err_msg)
-
-
 class MustBeBetween(Validator):
     """Validates that the number is between min_value and max_value."""
 
-    DEFAULT_ERROR_MSG: Final = MUST_BE_BTWN_VALIDATOR_ERR_MSG
+    DEFAULT_ERROR_MSG: Final[str] = MUST_BE_BTWN_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
@@ -115,8 +102,11 @@ class MustBeBetween(Validator):
         :param max_inclusive: If True, max_value is inclusive. Default is True.
         :param err_msg: error message.
         """
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
 
         self.min_value = min_value
         self.max_value = max_value
@@ -142,7 +132,7 @@ class MustBeBetween(Validator):
 class MustBePositive(Validator):
     r"""Validates that the number is positive ($x \gt 0$)."""
 
-    DEFAULT_ERROR_MSG: Final = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
+    DEFAULT_ERROR_MSG: Final[str] = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
@@ -150,8 +140,11 @@ class MustBePositive(Validator):
         err_msg: Optional[str] = None,
         extra_msg_args: Optional[dict] = None,
     ):
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
 
     def __call__(self, arg_value: Number, arg_name: str):
         _generic_number_validator(
@@ -167,7 +160,7 @@ class MustBePositive(Validator):
 class MustBeNonPositive(Validator):
     r"""Validates that the number is non-positive ($x \le 0$)."""
 
-    DEFAULT_ERROR_MSG: Final = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
+    DEFAULT_ERROR_MSG: Final[str] = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
@@ -175,8 +168,11 @@ class MustBeNonPositive(Validator):
         err_msg: Optional[str] = None,
         extra_msg_args: Optional[dict] = None,
     ) -> None:
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
 
     def __call__(self, arg_value: Number, arg_name: str, /):
         _generic_number_validator(
@@ -192,7 +188,7 @@ class MustBeNonPositive(Validator):
 class MustBeNegative(Validator):
     r"""Validates that the number is negative ($x \lt 0$)."""
 
-    DEFAULT_ERROR_MSG: Final = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
+    DEFAULT_ERROR_MSG: Final[str] = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
@@ -200,8 +196,11 @@ class MustBeNegative(Validator):
         err_msg: Optional[str] = None,
         extra_msg_args: Optional[dict] = None,
     ) -> None:
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
 
     def __call__(self, arg_value: Number, arg_name: str, /):
         _generic_number_validator(
@@ -217,7 +216,7 @@ class MustBeNegative(Validator):
 class MustBeNonNegative(Validator):
     r"""Validates that the number is non-negative ($x \ge 0$)."""
 
-    DEFAULT_ERROR_MSG: Final = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
+    DEFAULT_ERROR_MSG: Final[str] = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
@@ -225,8 +224,11 @@ class MustBeNonNegative(Validator):
         err_msg: Optional[str] = None,
         extra_msg_args: Optional[dict] = None,
     ) -> None:
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
 
     def __call__(self, arg_value: Number, arg_name: str, /):
         _generic_number_validator(
@@ -242,31 +244,10 @@ class MustBeNonNegative(Validator):
 # Comparison validation functions
 
 
-class MustBeProvided(Validator):
-    DEFAULT_ERROR_MSG: Final = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
-
-    def __init__(
-        self,
-        *,
-        err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
-    ) -> None:
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
-
-    def __call__(self, arg_value: T, arg_name: str):
-        _must_be_provided(
-            arg_value,
-            arg_name,
-            err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
-        )
-
-
 class MustBeEqual(Validator):
     """Validates that the number is equal to the specified value"""
 
-    DEFAULT_ERROR_MSG: Final = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
+    DEFAULT_ERROR_MSG: Final[str] = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
@@ -276,8 +257,11 @@ class MustBeEqual(Validator):
         err_msg: Optional[str] = None,
         extra_msg_args: Optional[dict] = None,
     ) -> None:
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
         self.value = value
 
     def __call__(self, arg_value: Number, arg_name: str):
@@ -294,7 +278,7 @@ class MustBeEqual(Validator):
 class MustNotBeEqual(Validator):
     """Validates that the number is not equal to the specified value"""
 
-    DEFAULT_ERROR_MSG: Final = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
+    DEFAULT_ERROR_MSG: Final[str] = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
@@ -304,8 +288,11 @@ class MustNotBeEqual(Validator):
         err_msg: Optional[str] = None,
         extra_msg_args: Optional[dict] = None,
     ) -> None:
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
         self.value = value
 
     def __call__(self, arg_value: Number, arg_name: str):
@@ -329,7 +316,7 @@ class MustBeAlmostEqual(Validator):
     for details.
     """
 
-    DEFAULT_ERROR_MSG: Final = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
+    DEFAULT_ERROR_MSG: Final[str] = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
@@ -341,8 +328,11 @@ class MustBeAlmostEqual(Validator):
         err_msg: Optional[str] = None,
         extra_msg_args: Optional[dict] = None,
     ):
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
         self.value = value
         self.rel_tol = rel_tol
         self.abs_tol = abs_tol
@@ -363,7 +353,7 @@ class MustBeAlmostEqual(Validator):
 class MustBeGreaterThan(Validator):
     """Validates that the number is greater than the specified value"""
 
-    DEFAULT_ERROR_MSG: Final = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
+    DEFAULT_ERROR_MSG: Final[str] = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
@@ -373,8 +363,11 @@ class MustBeGreaterThan(Validator):
         err_msg: Optional[str] = None,
         extra_msg_args: Optional[dict] = None,
     ) -> None:
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
         self.value = value
 
     def __call__(self, arg_value: Number, arg_name: str):
@@ -389,7 +382,8 @@ class MustBeGreaterThan(Validator):
 
 
 class MustBeGreaterThanOrEqual(Validator):
-    DEFAULT_ERROR_MSG: Final = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
+
+    DEFAULT_ERROR_MSG: Final[str] = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
@@ -402,8 +396,11 @@ class MustBeGreaterThanOrEqual(Validator):
         """Validates that the number is greater than or equal to the
         specified value.
         """
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
         self.value = value
 
     def __call__(self, arg_value: Number, arg_name: str):
@@ -418,7 +415,8 @@ class MustBeGreaterThanOrEqual(Validator):
 
 
 class MustBeLessThan(Validator):
-    DEFAULT_ERROR_MSG: Final = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
+
+    DEFAULT_ERROR_MSG: Final[str] = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
@@ -429,8 +427,11 @@ class MustBeLessThan(Validator):
         extra_msg_args: Optional[dict] = None,
     ) -> None:
         """Validates that the number is less than the specified value"""
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
         self.value = value
 
     def __call__(self, arg_value: Number, arg_name: str):
@@ -445,7 +446,8 @@ class MustBeLessThan(Validator):
 
 
 class MustBeLessThanOrEqual(Validator):
-    DEFAULT_ERROR_MSG: Final = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
+
+    DEFAULT_ERROR_MSG: Final[str] = DEFAULT_NUMERIC_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
@@ -458,8 +460,11 @@ class MustBeLessThanOrEqual(Validator):
         """Validates that the number is less than or equal to the
         specified value.
         """
-        err_msg = err_msg or self.DEFAULT_ERROR_MSG
-        super().__init__(err_msg=err_msg, extra_msg_args=extra_msg_args)
+        super().__init__(
+            err_msg=err_msg,
+            extra_msg_args=extra_msg_args,
+            default_err_msg=self.DEFAULT_ERROR_MSG,
+        )
         self.value = value
 
     def __call__(self, arg_value: Number, arg_name: str):
