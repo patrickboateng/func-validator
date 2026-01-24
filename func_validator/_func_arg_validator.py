@@ -31,16 +31,6 @@ def _is_arg_type_optional(arg_type: T) -> bool:
     return is_optional
 
 
-def _skip_validation(arg_value: T, arg_annotation: T) -> bool:
-    if get_origin(arg_annotation) is not Annotated:
-        skip = True
-    else:
-        arg_type, *_ = get_args(arg_annotation)
-        is_arg_optional = _is_arg_type_optional(arg_type)
-        skip = is_arg_optional and arg_value in ALLOWED_OPTIONAL_VALUES
-    return skip
-
-
 def _process_func(fn: Callable[P, R], check_arg_types: bool) -> Callable[P, R]:
     @wraps(fn)
     def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
@@ -55,20 +45,33 @@ def _process_func(fn: Callable[P, R], check_arg_types: bool) -> Callable[P, R]:
 
         for arg_name, arg_annotation in func_type_hints.items():
             arg_value = arguments[arg_name]
-            if _skip_validation(arg_value, arg_annotation):
-                continue
 
-            arg_type, *arg_validator_funcs = get_args(arg_annotation)
+            if get_origin(arg_annotation) is Annotated:
 
-            if check_arg_types:
-                type_checker = MustBeA(arg_type)
-                type_checker(arg_value, arg_name)
+                arg_type, *arg_validators = get_args(arg_annotation)
 
-            for arg_validator_fn in arg_validator_funcs:
-                if isinstance(arg_validator_fn, Validator):
-                    if isinstance(arg_validator_fn, DependsOn):
-                        arg_validator_fn.arguments = arguments
-                    arg_validator_fn(arg_value, arg_name)
+                if check_arg_types:
+                    type_checker = MustBeA(arg_type)
+                    type_checker(arg_value, arg_name)
+
+                for arg_validator in arg_validators:
+                    is_depends_on_validator = isinstance(
+                        arg_validator, DependsOn
+                    )
+                    is_arg_optional = _is_arg_type_optional(arg_type)
+                    skip = (
+                        is_arg_optional
+                        and arg_value in ALLOWED_OPTIONAL_VALUES
+                        and not is_depends_on_validator
+                    )
+
+                    if skip:
+                        continue
+
+                    if isinstance(arg_validator, Validator):
+                        if is_depends_on_validator:
+                            arg_validator.arguments = arguments
+                        arg_validator(arg_value, arg_name)
 
         return fn(*args, **kwargs)
 
