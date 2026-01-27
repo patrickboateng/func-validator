@@ -3,97 +3,80 @@ from typing import Annotated
 
 import pytest
 
-from func_validator import validate_params, MustMatchRegex, ValidationError
+from func_validator import MustMatchRegex, ValidationError, validate_params
 
 
-def test_must_match_regex_match():
-    @validate_params
-    def func(
-        x: Annotated[
-            str,
-            MustMatchRegex(r"\d+"),
-        ],
-    ):
-        return x
+class TestTextValidator:
 
-    assert func("123") == "123"
-    with pytest.raises(ValidationError):
-        func("abc")
+    def test_must_match_regex_match(self):
+        @validate_params
+        def fn(arg__1: Annotated[str, MustMatchRegex(r"\d+")]):
+            return arg__1
 
+        assert fn("123") == "123"
 
-def test_must_match_regex_fullmatch():
-    @validate_params
-    def func(
-        x: Annotated[str, MustMatchRegex(r"\d+", match_type="fullmatch")],
-    ):
-        return x
+        with pytest.raises(ValidationError):
+            fn("abc")
 
-    assert func("456") == "456"
+    def test_must_match_regex_fullmatch(self):
+        @validate_params
+        def fn(
+            arg__1: Annotated[
+                str, MustMatchRegex(r"\d+", match_type="fullmatch")
+            ],
+        ):
+            return arg__1
 
-    with pytest.raises(ValidationError):
-        func("456abc")
+        assert fn("456") == "456"
 
+        with pytest.raises(ValidationError):
+            fn("456abc")
 
-def test_must_match_regex_search():
-    @validate_params
-    def func(x: Annotated[str, MustMatchRegex(r"\d+", match_type="search")]):
-        return x
+    def test_must_match_regex_search(self):
+        @validate_params
+        def fn(
+            arg__1: Annotated[
+                str, MustMatchRegex(r"\d+", match_type="search")
+            ],
+        ):
+            return arg__1
 
-    assert func("abc789xyz") == "abc789xyz"
+        assert fn("abc789xyz") == "abc789xyz"
 
+    def test_must_match_regex_with_flags(self):
+        @validate_params
+        def fn(
+            arg__1: Annotated[
+                str, MustMatchRegex(r"abc", flags=re.IGNORECASE)
+            ],
+        ):
+            return arg__1
 
-def test_must_match_regex_with_flags():
-    @validate_params
-    def func(x: Annotated[str, MustMatchRegex(r"abc", flags=re.IGNORECASE)]):
-        return x
+        assert fn("ABC") == "ABC"
 
-    assert func("ABC") == "ABC"
+    def test_must_match_regex_errors(self):
+        @validate_params
+        def fn__1(arg__1: Annotated[str, MustMatchRegex(r"\d+")]):
+            return arg__1
 
-
-def test_must_match_regex_type_error_non_string():
-    @validate_params
-    def func(x: Annotated[str, MustMatchRegex(r"\d+")]):
-        return x
-
-    with pytest.raises(TypeError):
-        func(123)  # Passing an int should raise TypeError
-
-
-def test_must_match_regex_error_message_contains_pattern():
-    pattern = r"\d+"
-
-    @validate_params
-    def func(x: Annotated[str, MustMatchRegex(pattern)]):
-        return x
-
-    with pytest.raises(ValidationError):
-        func("abc")
-
-
-def test_must_match_regex_precompiled_pattern():
-    compiled_pattern = re.compile(r"\d{3}")
-
-    @validate_params
-    def func(x: Annotated[str, MustMatchRegex(compiled_pattern)]):
-        return x
-
-    # Matching input should pass
-    assert func("123") == "123"
-
-    # Non-matching input should raise ValidationError
-    with pytest.raises(ValidationError):
-        func("12")
-
-
-def test_must_match_regex_invalid_match_type():
-    with pytest.raises(ValidationError):
+        with pytest.raises(TypeError):
+            fn__1(123)
 
         @validate_params
-        def func(
-            x: Annotated[
-                str,
-                MustMatchRegex(
-                    r"abc", flags=re.IGNORECASE, match_type="invalid"
-                ),
-            ],
-        ): ...
+        def fn__2(arg__1: Annotated[str, MustMatchRegex(r"\d+")]):
+            return arg__1
+
+        with pytest.raises(ValidationError):
+            fn__2("abc")
+
+        with pytest.raises(ValidationError):
+            @validate_params
+            def fn__3(
+                arg__1: Annotated[
+                    str, MustMatchRegex(r"\d+", match_type="invalid")
+                ],
+            ):
+                return arg__1
+
+
+

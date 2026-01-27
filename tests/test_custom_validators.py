@@ -2,7 +2,7 @@ from typing import Annotated
 
 import pytest
 
-from func_validator import Validator, ValidationError, validate_params
+from func_validator import ValidationError, Validator, validate_params
 
 
 def test_custom_validator():
@@ -12,10 +12,10 @@ def test_custom_validator():
                 raise ValidationError(f"{arg_name}:{arg_value} must be even")
 
     @validate_params
-    def func(even_num: Annotated[int, MustBeEven()]):
-        return even_num
+    def fn(arg__1: Annotated[int, MustBeEven()]):
+        return arg__1
 
-    assert func(4) == 4
+    assert fn(4) == 4
 
     with pytest.raises(ValidationError):
-        func(3)
+        fn(3)
