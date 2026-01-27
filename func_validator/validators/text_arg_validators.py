@@ -35,7 +35,7 @@ class MustMatchRegex(Validator):
 
     def __init__(
         self,
-        regex: str | re.Pattern,
+        regex: str,
         /,
         *,
         match_type: Literal["match", "fullmatch", "search"] = "match",
@@ -61,10 +61,7 @@ class MustMatchRegex(Validator):
             default_err_msg=self.DEFAULT_ERROR_MSG,
         )
 
-        if not isinstance(regex, re.Pattern):
-            self.regex_pattern = re.compile(regex, flags=flags)
-        else:
-            self.regex_pattern = regex
+        self.regex_pattern = re.compile(regex, flags=flags)
 
         match match_type:
             case "match":
