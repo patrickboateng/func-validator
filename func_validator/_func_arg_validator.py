@@ -21,6 +21,9 @@ DecoratorOrWrapper: TypeAlias = (
     Callable[[Callable[P, R]], Callable[P, R]] | Callable[P, R]
 )
 
+
+#: Values which are accepted when the argument type is marked as
+#: optional
 ALLOWED_OPTIONAL_VALUES = (None,)
 
 
