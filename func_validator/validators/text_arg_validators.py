@@ -9,16 +9,31 @@ def _generic_text_validator(
     arg_name: str,
     /,
     *,
-    to: T | None = None,
-    fn: Callable,
+    regex_pattern: T | None = None,
+    flags: int | re.RegexFlag,
     err_msg: str,
+    match_type: str,
     extra_msg_args: dict,
 ) -> None:
-    if not fn(to, arg_value):
+    if match_type == "match":
+        regex_fn = re.match
+
+    elif match_type == "fullmatch":
+        regex_fn = re.fullmatch
+
+    elif match_type == "search":
+        regex_fn = re.search
+
+    else:
+        err_msg = "Invalid match type, must be one of the following: " \
+                  "'match', 'fullmatch', or 'search'"
+        raise ValidationError(err_msg)
+
+    if not regex_fn(regex_pattern, arg_value, flags):
         err_msg = ErrorMsg(err_msg).transform(
             arg_name=arg_name,
             arg_value=arg_value,
-            to=to,
+            to=regex_pattern,
             **extra_msg_args,
         )
         raise ValidationError(err_msg)
@@ -61,27 +76,17 @@ class MustMatchRegex(Validator):
             default_err_msg=self.DEFAULT_ERROR_MSG,
         )
 
-        self.regex_pattern = re.compile(regex, flags=flags)
-
-        match match_type:
-            case "match":
-                self.regex_func = re.match
-            case "fullmatch":
-                self.regex_func = re.fullmatch
-            case "search":
-                self.regex_func = re.search
-            case _:
-                raise ValidationError(
-                    "Invalid match_type. Must be one of 'match', "
-                    "'fullmatch', or 'search'."
-                )
+        self.regex_pattern = regex
+        self.flags = flags
+        self.match_type = match_type
 
     def __call__(self, arg_value: str, arg_name: str) -> None:
         _generic_text_validator(
             arg_value,
             arg_name,
-            to=self.regex_pattern,
-            fn=self.regex_func,
+            regex_pattern=self.regex_pattern,
+            flags=self.flags,
+            match_type=self.match_type,
             err_msg=self.err_msg,
             extra_msg_args=self.extra_msg_args,
         )
