@@ -71,12 +71,9 @@ class TestTextValidator:
 
         with pytest.raises(ValidationError):
             @validate_params
-            def fn__3(
-                arg__1: Annotated[
-                    str, MustMatchRegex(r"\d+", match_type="invalid")
-                ],
-            ):
-                return arg__1
+            def fn__3(arg__1: Annotated[str,
+                                        MustMatchRegex(r"\d+", match_type="N/A")]):
 
+                pass
 
-
+            fn__3("123")
