@@ -22,8 +22,8 @@ DecoratorOrWrapper: TypeAlias = (
 )
 
 
-#: Values which are accepted when the argument type is marked as
-#: optional
+#: Values which are accepted when the argument type
+#: is marked as optional
 ALLOWED_OPTIONAL_VALUES = (None,)
 
 
