@@ -41,11 +41,10 @@ class Validator(ABC):
         self,
         *,
         err_msg: str = "",
-        extra_msg_args: Optional[dict] = None,
-        default_err_msg: Optional[str] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ) -> None:
-        self.err_msg = err_msg or default_err_msg
-        self.extra_msg_args = extra_msg_args or {}
+        self.err_msg = err_msg or self.DEFAULT_ERROR_MSG
+        self.extra_err_msg_args = extra_err_msg_args or {}
 
     @abstractmethod
     def __call__(self, *args, **kwargs) -> T: ...
