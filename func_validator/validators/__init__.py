@@ -16,7 +16,7 @@ from .collection_arg_validators import (
     MustHaveValuesLessThanOrEqual,
 )
 from .datatype_arg_validators import MustBeA
-from .dependent_arg_validator import DependsOn, MustBeProvided
+from .dependent_arg_validator import DependsOn, MustBeTruthy, must_be_truthy
 from .numeric_arg_validators import (
     MustBeAlmostEqual,
     MustBeBetween,
@@ -70,6 +70,7 @@ __all__ = [
     "MustMatchRegex",
     # Core
     "DependsOn",
-    "MustBeProvided",
+    "MustBeTruthy",
+    "must_be_truthy",
     "Validator",
 ]
