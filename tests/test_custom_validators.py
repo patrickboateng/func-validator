@@ -7,6 +7,8 @@ from func_validator import ValidationError, Validator, validate_params
 
 def test_custom_validator():
     class MustBeEven(Validator):
+        DEFAULT_ERROR_MSG: str = ""
+
         def __call__(self, arg_value, arg_name: str):
             if arg_value % 2 != 0:
                 raise ValidationError(f"{arg_name}:{arg_value} must be even")
