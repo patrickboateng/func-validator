@@ -1,5 +1,5 @@
 import re
-from typing import Callable, Final, Literal, Optional
+from typing import Final, Literal, Optional
 
 from ._core import ErrorMsg, T, ValidationError, Validator
 
@@ -13,17 +13,14 @@ def _generic_text_validator(
     flags: int | re.RegexFlag,
     err_msg: str,
     match_type: str,
-    extra_msg_args: dict,
+    extra_err_msg_args: dict,
 ) -> None:
     if match_type == "match":
         regex_fn = re.match
-
     elif match_type == "fullmatch":
         regex_fn = re.fullmatch
-
     elif match_type == "search":
         regex_fn = re.search
-
     else:
         err_msg = "Invalid match type, must be one of the following: " \
                   "'match', 'fullmatch', or 'search'"
@@ -34,7 +31,7 @@ def _generic_text_validator(
             arg_name=arg_name,
             arg_value=arg_value,
             to=regex_pattern,
-            **extra_msg_args,
+            **extra_err_msg_args,
         )
         raise ValidationError(err_msg)
 
@@ -56,7 +53,7 @@ class MustMatchRegex(Validator):
         match_type: Literal["match", "fullmatch", "search"] = "match",
         flags: int | re.RegexFlag = 0,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ):
         """Validates that the value matches the provided regular expression.
 
@@ -72,10 +69,8 @@ class MustMatchRegex(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
-
         self.regex_pattern = regex
         self.flags = flags
         self.match_type = match_type
@@ -88,5 +83,5 @@ class MustMatchRegex(Validator):
             flags=self.flags,
             match_type=self.match_type,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
