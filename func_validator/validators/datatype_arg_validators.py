@@ -14,7 +14,7 @@ def _must_be_a_particular_type(
     *,
     arg_type: Type[T],
     err_msg: str,
-    extra_msg_args: dict,
+    extra_err_msg_args: dict,
 ) -> None:
     if not isinstance(arg_value, arg_type):
         err_msg = ErrorMsg(err_msg).transform(
@@ -22,7 +22,7 @@ def _must_be_a_particular_type(
             arg_name=arg_name,
             arg_type=arg_type,
             arg_value_type=type(arg_value),
-            **extra_msg_args,
+            **extra_err_msg_args,
         )
         raise ValidationError(err_msg)
 
@@ -36,7 +36,7 @@ class MustBeA(Validator):
         arg_type: Type[T],
         *,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ) -> None:
         """Validates that the value is of the specified type.
 
@@ -44,8 +44,7 @@ class MustBeA(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
         self.arg_type = arg_type
 
@@ -55,5 +54,5 @@ class MustBeA(Validator):
             arg_name,
             arg_type=self.arg_type,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
