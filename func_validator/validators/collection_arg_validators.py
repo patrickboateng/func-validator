@@ -51,19 +51,38 @@ def _must_be_member_of(
     *,
     value_set: Container,
     err_msg: str,
-    extra_msg_args: dict,
+    extra_err_msg_args: dict,
 ):
     if not contains(value_set, arg_value):
         err_msg = ErrorMsg(err_msg).transform(
             arg_value=arg_value,
             arg_name=arg_name,
             value_set=repr(value_set),
-            **extra_msg_args,
+            **extra_err_msg_args,
         )
         raise ValidationError(err_msg)
 
 
-class MustBeMemberOf(Validator):
+class CollectionValidator(Validator):
+
+    DEFAULT_ERROR_MSG: Final[str] = COLLECTION_LEN_VALIDATOR_ERR_MSG
+
+    def __init__(
+        self,
+        *,
+        err_msg: Optional[str] = None,
+        extra_err_msg_args: Optional[dict] = None,
+    ):
+        """
+        :param err_msg: Error message.
+        """
+        super().__init__(
+            err_msg=err_msg,
+            extra_err_msg_args=extra_err_msg_args,
+        )
+
+
+class MustBeMemberOf(CollectionValidator):
 
     DEFAULT_ERROR_MSG: Final[str] = (
         "${arg_name}: ${arg_value} must be in ${value_set}"
@@ -74,7 +93,7 @@ class MustBeMemberOf(Validator):
         value_set: Container,
         *,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ):
         """Validates that the value is a member of the specified set.
 
@@ -84,8 +103,7 @@ class MustBeMemberOf(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
         self.value_set = value_set
 
@@ -95,80 +113,50 @@ class MustBeMemberOf(Validator):
             arg_name,
             value_set=self.value_set,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
 
 
 # Size validation functions
 
 
-class MustBeEmpty(Validator):
-
-    DEFAULT_ERROR_MSG: Final[str] = COLLECTION_LEN_VALIDATOR_ERR_MSG
-
-    def __init__(
-        self,
-        *,
-        err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
-    ):
-        """
-        :param err_msg: Error message.
-        """
-        super().__init__(
-            err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
-        )
+class MustBeEmpty(CollectionValidator):
 
     def __call__(self, arg_value: Sized, arg_name: str, /):
         """Validates that the iterable is empty."""
         fn = MustBeEqual(
-            0, err_msg=self.err_msg, extra_msg_args=self.extra_msg_args
+            0, err_msg=self.err_msg, extra_err_msg_args=self.extra_err_msg_args
         )
         _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
-class MustBeNonEmpty(Validator):
+must_be_empty: Final = MustBeEmpty()
 
-    DEFAULT_ERROR_MSG: Final[str] = COLLECTION_LEN_VALIDATOR_ERR_MSG
 
-    def __init__(
-        self,
-        *,
-        err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
-    ):
-        """
-        :param err_msg: Error message.
-        """
-        super().__init__(
-            err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
-        )
+class MustBeNonEmpty(CollectionValidator):
 
     def __call__(self, arg_value: Sized, arg_name: str, /):
         """Validates that the iterable is not empty."""
         fn = MustNotBeEqual(
-            0, err_msg=self.err_msg, extra_msg_args=self.extra_msg_args
+            0, err_msg=self.err_msg, extra_err_msg_args=self.extra_err_msg_args
         )
         _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
-class MustHaveLengthEqual(Validator):
+must_be_non_empty: Final = MustBeNonEmpty()
+
+
+class MustHaveLengthEqual(CollectionValidator):
     """Validates that the iterable has length equal to the specified
     value.
     """
-
-    DEFAULT_ERROR_MSG: Final[str] = COLLECTION_LEN_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
         value: int,
         *,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ):
         """
         :param value: The length of the iterable.
@@ -176,8 +164,7 @@ class MustHaveLengthEqual(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
         self.value = value
 
@@ -185,24 +172,22 @@ class MustHaveLengthEqual(Validator):
         fn = MustBeEqual(
             self.value,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
         _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
-class MustHaveLengthGreaterThan(Validator):
+class MustHaveLengthGreaterThan(CollectionValidator):
     """Validates that the iterable has length greater than the specified
     value.
     """
-
-    DEFAULT_ERROR_MSG: Final[str] = COLLECTION_LEN_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
         value: int,
         *,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ):
         """
         :param value: The length of the iterable.
@@ -210,8 +195,7 @@ class MustHaveLengthGreaterThan(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
         self.value = value
 
@@ -219,24 +203,22 @@ class MustHaveLengthGreaterThan(Validator):
         fn = MustBeGreaterThan(
             self.value,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
         _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
-class MustHaveLengthGreaterThanOrEqual(Validator):
+class MustHaveLengthGreaterThanOrEqual(CollectionValidator):
     """Validates that the iterable has length greater than or equal to
     the specified value.
     """
-
-    DEFAULT_ERROR_MSG: Final[str] = COLLECTION_LEN_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
         value: int,
         *,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ):
         """
         :param value: The length of the iterable.
@@ -244,8 +226,7 @@ class MustHaveLengthGreaterThanOrEqual(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
         self.value = value
 
@@ -253,24 +234,22 @@ class MustHaveLengthGreaterThanOrEqual(Validator):
         fn = MustBeGreaterThanOrEqual(
             self.value,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
         _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
-class MustHaveLengthLessThan(Validator):
+class MustHaveLengthLessThan(CollectionValidator):
     """Validates that the iterable has length less than the specified
     value.
     """
-
-    DEFAULT_ERROR_MSG: Final[str] = COLLECTION_LEN_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
         value: int,
         *,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ):
         """
         :param value: The length of the iterable.
@@ -278,8 +257,7 @@ class MustHaveLengthLessThan(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
         self.value = value
 
@@ -287,24 +265,22 @@ class MustHaveLengthLessThan(Validator):
         fn = MustBeLessThan(
             self.value,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
         _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
-class MustHaveLengthLessThanOrEqual(Validator):
+class MustHaveLengthLessThanOrEqual(CollectionValidator):
     """Validates that the iterable has length less than or equal to
     the specified value.
     """
-
-    DEFAULT_ERROR_MSG: Final[str] = COLLECTION_LEN_VALIDATOR_ERR_MSG
 
     def __init__(
         self,
         value: int,
         *,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ):
         """
         :param value: The length of the iterable.
@@ -312,8 +288,7 @@ class MustHaveLengthLessThanOrEqual(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
         self.value = value
 
@@ -321,19 +296,19 @@ class MustHaveLengthLessThanOrEqual(Validator):
         fn = MustBeLessThanOrEqual(
             self.value,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
         _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
-class MustHaveLengthBetween(Validator):
+class MustHaveLengthBetween(CollectionValidator):
     """Validates that the iterable has length between the specified
     min_value and max_value.
     """
 
     DEFAULT_ERROR_MSG: Final[str] = (
-        "Length of ${arg_name}: ${arg_value} must be ${min_fn_symbol} ${min_value} "
-        "and ${max_fn_symbol} ${max_value} "
+        "Length of ${arg_name}: ${arg_value} must be ${min_fn_symbol} "
+        "${min_value} and ${max_fn_symbol} ${max_value} "
     )
 
     def __init__(
@@ -344,7 +319,7 @@ class MustHaveLengthBetween(Validator):
         min_inclusive: bool = True,
         max_inclusive: bool = True,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ):
         """
         :param min_value: The minimum value (inclusive or exclusive based
@@ -357,8 +332,7 @@ class MustHaveLengthBetween(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
         self.min_value = min_value
         self.max_value = max_value
@@ -373,12 +347,12 @@ class MustHaveLengthBetween(Validator):
             min_inclusive=self.min_inclusive,
             max_inclusive=self.max_inclusive,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
         _iterable_len_validator(arg_value, arg_name, func=fn)
 
 
-class MustHaveValuesGreaterThan(Validator):
+class MustHaveValuesGreaterThan(CollectionValidator):
     """Validates that all values in the iterable are greater than the
     specified min_value.
     """
@@ -390,7 +364,7 @@ class MustHaveValuesGreaterThan(Validator):
         min_value: Number,
         *,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ):
         """
         :param min_value: The minimum value the values in the iterable
@@ -399,8 +373,7 @@ class MustHaveValuesGreaterThan(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
         self.min_value = min_value
 
@@ -408,12 +381,12 @@ class MustHaveValuesGreaterThan(Validator):
         fn = MustBeGreaterThan(
             self.min_value,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
         _iterable_values_validator(values, arg_name, func=fn)
 
 
-class MustHaveValuesGreaterThanOrEqual(Validator):
+class MustHaveValuesGreaterThanOrEqual(CollectionValidator):
     """Validates that all values in the iterable are greater than or
     equal to the specified min_value.
     """
@@ -425,7 +398,7 @@ class MustHaveValuesGreaterThanOrEqual(Validator):
         min_value: Number,
         *,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ):
         """
         :param min_value: The minimum value the values in the iterable
@@ -434,8 +407,7 @@ class MustHaveValuesGreaterThanOrEqual(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
         self.min_value = min_value
 
@@ -443,12 +415,12 @@ class MustHaveValuesGreaterThanOrEqual(Validator):
         fn = MustBeGreaterThanOrEqual(
             self.min_value,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
         _iterable_values_validator(values, arg_name, func=fn)
 
 
-class MustHaveValuesLessThan(Validator):
+class MustHaveValuesLessThan(CollectionValidator):
     """Validates that all values in the iterable are less than the
     specified max_value.
     """
@@ -460,7 +432,7 @@ class MustHaveValuesLessThan(Validator):
         max_value: Number,
         *,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ):
         """
         :param max_value: The maximum value the values in the iterable
@@ -469,8 +441,7 @@ class MustHaveValuesLessThan(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
         self.max_value = max_value
 
@@ -478,12 +449,12 @@ class MustHaveValuesLessThan(Validator):
         fn = MustBeLessThan(
             self.max_value,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
         _iterable_values_validator(values, arg_name, func=fn)
 
 
-class MustHaveValuesLessThanOrEqual(Validator):
+class MustHaveValuesLessThanOrEqual(CollectionValidator):
     """Validates that all values in the iterable are less than or
     equal to the specified max_value.
     """
@@ -495,7 +466,7 @@ class MustHaveValuesLessThanOrEqual(Validator):
         max_value: Number,
         *,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ):
         """
         :param max_value: The maximum value the values in the iterable
@@ -504,8 +475,7 @@ class MustHaveValuesLessThanOrEqual(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
         self.max_value = max_value
 
@@ -513,19 +483,19 @@ class MustHaveValuesLessThanOrEqual(Validator):
         fn = MustBeLessThanOrEqual(
             self.max_value,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
         _iterable_values_validator(values, arg_name, func=fn)
 
 
-class MustHaveValuesBetween(Validator):
+class MustHaveValuesBetween(CollectionValidator):
     """Validates that all values in the iterable are between the
     specified min_value and max_value.
     """
 
     DEFAULT_ERROR_MSG: Final[str] = (
-        "Values of ${arg_name}: ${arg_value} must be ${min_fn_symbol} ${min_value} "
-        "and ${max_fn_symbol} ${max_value} "
+        "Values of ${arg_name}: ${arg_value} must be ${min_fn_symbol} "
+        "${min_value} and ${max_fn_symbol} ${max_value} "
     )
 
     def __init__(
@@ -536,7 +506,7 @@ class MustHaveValuesBetween(Validator):
         min_inclusive: bool = True,
         max_inclusive: bool = True,
         err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
+        extra_err_msg_args: Optional[dict] = None,
     ):
         """
         :param min_value: The minimum value (inclusive or exclusive based
@@ -549,8 +519,7 @@ class MustHaveValuesBetween(Validator):
         """
         super().__init__(
             err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
+            extra_err_msg_args=extra_err_msg_args,
         )
         self.min_value = min_value
         self.max_value = max_value
@@ -564,6 +533,6 @@ class MustHaveValuesBetween(Validator):
             min_inclusive=self.min_inclusive,
             max_inclusive=self.max_inclusive,
             err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
+            extra_err_msg_args=self.extra_err_msg_args,
         )
         _iterable_values_validator(values, arg_name, func=fn)
