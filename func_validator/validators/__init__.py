@@ -16,7 +16,8 @@ from .collection_arg_validators import (
     MustHaveValuesLessThanOrEqual,
 )
 from .datatype_arg_validators import MustBeA
-from .dependent_arg_validator import DependsOn, MustBeTruthy, must_be_truthy
+from .dependent_arg_validator import DependsOn
+from .misc_arg_validators import MustBeTruthy, must_be_truthy
 from .numeric_arg_validators import (
     MustBeAlmostEqual,
     MustBeBetween,
