@@ -19,6 +19,10 @@ from .datatype_arg_validators import MustBeA
 from .dependent_arg_validator import DependsOn
 from .misc_arg_validators import MustBeTruthy, must_be_truthy
 from .numeric_arg_validators import (
+    must_be_positive,
+    must_be_non_positive,
+    must_be_negative,
+    must_be_non_negative,
     MustBeAlmostEqual,
     MustBeBetween,
     MustBeEqual,
@@ -55,6 +59,10 @@ __all__ = [
     # DataType Validators
     "MustBeA",
     # Numeric Validators
+    "must_be_positive",
+    "must_be_non_positive",
+    "must_be_negative",
+    "must_be_non_negative",
     "MustBeBetween",
     "MustBeEqual",
     "MustNotBeEqual",
