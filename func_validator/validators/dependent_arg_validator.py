@@ -1,137 +1,175 @@
-from typing import Final, Optional, Type
+from typing import Optional, Type, Sequence
+from collections import namedtuple
 
-from ._core import ErrorMsg, T, ValidationError, Validator
-from .numeric_arg_validators import MustBeLessThan
-
-__all__ = ["DependsOn", "MustBeProvided"]
+from ._core import T, ValidationError, Validator
 
 
-def _must_be_provided(
-    arg_value: T,
-    arg_name: str,
-    err_msg: str,
-    extra_msg_args: dict,
-):
-    if not bool(arg_value):
-        err_msg = ErrorMsg(err_msg).transform(
-            arg_value=arg_value, arg_name=arg_name, **extra_msg_args
-        )
-        raise ValidationError(err_msg)
-
-
-class MustBeProvided(Validator):
-    DEFAULT_ERROR_MSG: Final[str] = (
-        "${arg_name} must be provided when ${dep_arg_name} "
-        "has a value of ${dep_arg_value}"
-    )
-
-    def __init__(
-        self,
-        *,
-        err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
-    ) -> None:
-        super().__init__(
-            err_msg=err_msg,
-            extra_msg_args=extra_msg_args,
-            default_err_msg=self.DEFAULT_ERROR_MSG,
-        )
-
-    def __call__(self, arg_value: T, arg_name: str):
-        _must_be_provided(
-            arg_value,
-            arg_name,
-            err_msg=self.err_msg,
-            extra_msg_args=self.extra_msg_args,
-        )
+__all__ = ["DependsOn"]
 
 
 class DependsOn(Validator):
+
     """Class to indicate that a function argument depends on another
     argument.
 
-    When an argument is marked as depending on another, it implies that
-    the presence or value of one argument may influence the validation
-    or necessity of the other.
+    When an argument is marked as depending on another, it implies that the
+    presence or value of one argument may influence the validation or necessity
+    of the other.
     """
+
+    DEFAULT_ERROR_MSG = ""
+    args_metadata = namedtuple("ArgsMetadata",
+                               "validator,err_msg,value",
+                               defaults=[None])
 
     def __init__(
         self,
-        *args: str,
-        args_strategy: Type[Validator] = MustBeLessThan,
-        kw_strategy: Type[Validator] = MustBeProvided,
-        args_err_msg: Optional[str] = None,
-        kw_err_msg: Optional[str] = None,
-        extra_msg_args: Optional[dict] = None,
-        **kwargs: T,
+        *pos_args: str,
+        pos_args_validators: tuple[Type[Validator]] = (),
+        pos_args_err_msgs: tuple[str] = (),
+        kw_args_validators: Optional[dict[str, Validator]] = None,
+        kw_args_err_msgs: Optional[dict[str, str]] = None,
+        extra_err_msg_args: Optional[dict] = None,
+        **kw_args: T
     ):
-        """
-        :param args: The names of the arguments that the current argument
-                     depends on.
-        :param args_strategy: The validation strategy to apply based on
-                              the values of the dependent arguments.
-        :param kw_strategy: The validation strategy to apply when
-                            dependent arguments match specific values.
-        :param kwargs: Key-value pairs where the key is the name of the
-                       dependent argument and the value is the specific
-                       value to match for applying the strategy.
-        """
 
-        super().__init__(extra_msg_args=extra_msg_args)
-        self.args_dependencies = args
-        self.kw_dependencies = kwargs.items()
-        self.args_strategy = args_strategy
-        self.kw_strategy = kw_strategy
-        self.args_err_msg = args_err_msg or args_strategy.DEFAULT_ERROR_MSG
-        self.kw_err_msg = kw_err_msg or kw_strategy.DEFAULT_ERROR_MSG
-        self.arguments: dict = {}
+        super().__init__(extra_err_msg_args=extra_err_msg_args)
 
-    def _get_depenency_value(self, dep_arg_name: str) -> T:
+        self.pos_args = pos_args
+        self.pos_args_validators = pos_args_validators
+        self.pos_args_err_msgs = pos_args_err_msgs
+        self.kw_args_validators = (
+            {} if kw_args_validators is None else kw_args_validators
+        )
+        self.kw_args_err_msgs = (
+            {} if kw_args_err_msgs is None else kw_args_err_msgs
+        )
+        self.extra_err_msg_args = (
+            {} if extra_err_msg_args is None else extra_err_msg_args
+        )
+        self.kw_args = kw_args
+
+        # The arguments of the decorated function
+        self.arguments = {}
+
+    def __call__(self, arg_val: T, arg_name: str) -> None:
+        if len(self.pos_args) > 0:
+            self._pos_args_validation(arg_val, arg_name)
+        if len(self.kw_args) > 0:
+            self._kw_args_validation(arg_val, arg_name)
+
+    @classmethod
+    def _transform_pos_args(
+            cls,
+            pos_args: Sequence[str],
+            pos_args_validators: Sequence[Type[Validator]],
+            pos_args_err_msgs: Sequence[str],
+    ) -> dict[str, tuple]:
+        args_len = len(pos_args)
+        validators_len = len(pos_args_validators)
+        err_msgs_len = len(pos_args_err_msgs)
+
+        if args_len != validators_len:
+            err_msg = ("The length of the positional arguments (pos_args) "
+                       "should be equal to the length of the positional "
+                       "validators (pos_arg_validators)")
+            raise ValidationError(err_msg)
+
+        if err_msgs_len == 0:
+            pos_args_err_msgs = (None,) * args_len
+            err_msgs_len = args_len
+
+        if args_len != err_msgs_len:
+            err_msg = ("The length of the positional arguments (pos_args) "
+                       "should be equal to the length of the positional "
+                       "error messages (pos_args_err_msgs)")
+            raise ValidationError(err_msg)
+
+        _pos_args: dict[str, tuple] = {}
+        args = zip(pos_args, pos_args_validators, pos_args_err_msgs)
+
+        for pos_arg_name, pos_arg_validator, pos_arg_err_msg in args:
+            _pos_args[pos_arg_name] = cls.args_metadata(pos_arg_validator,
+                                                        pos_arg_err_msg)
+        return _pos_args
+
+    @classmethod
+    def _transform_kw_args(
+            cls,
+            kw_args: dict[str, T],
+            kw_args_validators: dict[str, Validator],
+            kw_args_err_msgs: dict[str, str],
+    ) -> dict[str, tuple]:
+        _kw_args: dict[str, tuple] = {}
+
+        if len(kw_args_err_msgs) == 0:
+            for kw_arg_name in kw_args:
+                kw_args_err_msgs[kw_arg_name] = None
+
+        for kw_arg_name in kw_args:
+            kw_arg_value = kw_args[kw_arg_name]
+            kw_arg_validator = kw_args_validators[kw_arg_name]
+            kw_arg_err_msg = kw_args_err_msgs[kw_arg_name]
+            _kw_args[kw_arg_name] = cls.args_metadata(kw_arg_validator,
+                                                      kw_arg_err_msg,
+                                                      kw_arg_value)
+        return _kw_args
+
+    @classmethod
+    def _get_parent_arg_value(cls, parent_arg_name: str, arguments: dict) -> T:
+        if parent_arg_name in arguments:
+            return arguments[parent_arg_name]
+
+        instance = arguments.get("self")
+
         try:
-            actual_value = self.arguments[dep_arg_name]
-        except KeyError:
-            try:
-                instance = self.arguments["self"]
-                actual_value = getattr(instance, dep_arg_name)
-            except (AttributeError, KeyError):
-                msg = f"Dependency argument '{dep_arg_name}' not found."
-                raise ValidationError(msg)
-        return actual_value
+            return getattr(instance, parent_arg_name)
+        except AttributeError:
+            err_msg = (f"Parent argument '{parent_arg_name}' was not found "
+                       f"in function arguments or instance attributes.")
+            raise ValidationError(err_msg)
 
-    def _validate_args_dependencies(self, arg_val, arg_name: str):
-        for dep_arg_name in self.args_dependencies:
-            actual_dep_arg_val = self._get_depenency_value(dep_arg_name)
-            self.extra_msg_args.update(
-                {
-                    "dep_arg_name": dep_arg_name,
-                    "dep_arg_value": actual_dep_arg_val,
-                }
-            )
-            strategy = self.args_strategy(
-                actual_dep_arg_val,
-                err_msg=self.args_err_msg,
-                extra_msg_args=self.extra_msg_args,
-            )
-            strategy(arg_val, arg_name)
+    def _pos_args_validation(self, arg_val: T, arg_name: str) -> None:
+        # positional arguments and metadata transformed
+        pos_args_trfm = self._transform_pos_args(self.pos_args,
+                                                 self.pos_args_validators,
+                                                 self.pos_args_err_msgs)
+        for parent_arg_name in pos_args_trfm:
+            pos_arg = pos_args_trfm[parent_arg_name]
+            pos_arg_value = self._get_parent_arg_value(parent_arg_name,
+                                                       self.arguments)
+            validator = pos_arg.validator
+            err_msg = pos_arg.err_msg
+            parent_arg_info = {'parent_arg_name': parent_arg_name,
+                               'parent_arg_value': pos_arg_value}
+            self.extra_err_msg_args |= parent_arg_info
+            err_msg_args = self.extra_err_msg_args
+            validator = validator(pos_arg_value,
+                                  err_msg=err_msg,
+                                  extra_err_msg_args=err_msg_args)
+            validator(arg_val, arg_name)
 
-    def _validate_kw_dependencies(self, arg_val, arg_name: str):
-        for dep_arg_name, dep_arg_val in self.kw_dependencies:
-            actual_dep_arg_val = self._get_depenency_value(dep_arg_name)
-            if actual_dep_arg_val == dep_arg_val:
-                self.extra_msg_args.update(
-                    {
-                        "dep_arg_name": dep_arg_name,
-                        "dep_arg_value": dep_arg_val,
-                    }
-                )
-                strategy = self.kw_strategy(
-                    err_msg=self.kw_err_msg,
-                    extra_msg_args=self.extra_msg_args,
-                )
-                strategy(arg_val, arg_name)
+    def _kw_args_validation(self, arg_val: T, arg_name: str) -> None:
+        # keyword arguments and metadata transformed
+        kw_args_trfm = self._transform_kw_args(self.kw_args,
+                                               self.kw_args_validators,
+                                               self.kw_args_err_msgs)
+        for parent_arg_name in kw_args_trfm:
+            kw_arg = kw_args_trfm[parent_arg_name]
+            parent_arg_value = self._get_parent_arg_value(parent_arg_name,
+                                                          self.arguments)
+            provided_parent_arg_value = kw_arg.value
+            if parent_arg_value == provided_parent_arg_value:
+                parent_arg_info = {"parent_arg_name": parent_arg_name,
+                                   "parent_arg_value": parent_arg_value}
+                validator = kw_arg.validator
+                err_msg = kw_arg.err_msg
+                self.extra_err_msg_args |= parent_arg_info
 
-    def __call__(self, arg_val, arg_name: str):
-        if self.args_dependencies:
-            self._validate_args_dependencies(arg_val, arg_name)
-        if self.kw_dependencies:
-            self._validate_kw_dependencies(arg_val, arg_name)
+                # The validator has already been created, so you need to
+                # check the err_msg before making any modification to it.
+                if err_msg:
+                    validator.err_msg = err_msg
+
+                validator.extra_err_msg_args.update(self.extra_err_msg_args)
+                validator(arg_val, arg_name)
