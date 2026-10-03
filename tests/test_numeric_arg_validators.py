@@ -31,8 +31,9 @@ class TestNumericValidator:
 
         with pytest.raises(ValidationError):
             fn(0)
-            fn(-10)
 
+        with pytest.raises(ValidationError):
+            fn(-10)
 
     def test_must_be_non_positive_validator(self):
         @validate_params
@@ -79,8 +80,9 @@ class TestNumericValidator:
 
         with pytest.raises(ValidationError):
             fn(1)
-            fn(5)
 
+        with pytest.raises(ValidationError):
+            fn(5)
 
     def test_must_be_between_validator__2(self):
         @validate_params
@@ -101,6 +103,8 @@ class TestNumericValidator:
 
         with pytest.raises(ValidationError):
             fn(2)
+
+        with pytest.raises(ValidationError):
             fn(4)
 
     def test_must_be_equal_validator(self):
@@ -132,6 +136,8 @@ class TestNumericValidator:
 
         with pytest.raises(ValidationError):
             fn(4)
+
+        with pytest.raises(ValidationError):
             fn(5)
 
     def test_must_be_greater_than_or_equal_validator(self):
@@ -154,6 +160,8 @@ class TestNumericValidator:
 
         with pytest.raises(ValidationError):
             fn(6)
+
+        with pytest.raises(ValidationError):
             fn(5)
 
     def test_must_be_less_than_or_equal_validator(self):

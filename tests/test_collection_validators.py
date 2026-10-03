@@ -37,6 +37,8 @@ class TestCollectionValidator:
 
         with pytest.raises(ValidationError):
             fn(4)
+
+        with pytest.raises(ValidationError):
             fn(0)
 
     def test_must_be_empty_validator(self):
@@ -125,6 +127,8 @@ class TestCollectionValidator:
 
         with pytest.raises(ValidationError):
             fn__1([1])
+
+        with pytest.raises(ValidationError):
             fn__1([1, 2, 3, 4, 5])
 
         @validate_params
@@ -145,6 +149,8 @@ class TestCollectionValidator:
 
         with pytest.raises(ValidationError):
             fn__2([1, 2])
+
+        with pytest.raises(ValidationError):
             fn__2([1, 2, 3, 4])
 
     def test_must_have_values_greater_than_validator(self):
@@ -219,4 +225,6 @@ class TestCollectionValidator:
 
         with pytest.raises(ValidationError):
             fn__2([2, 3])
+
+        with pytest.raises(ValidationError):
             fn__2([4, 5])

@@ -56,24 +56,22 @@ class TestTextValidator:
 
     def test_must_match_regex_errors(self):
         @validate_params
-        def fn__1(arg__1: Annotated[str, MustMatchRegex(r"\d+")]):
-            return arg__1
+        def fn__1(arg__1: Annotated[str, MustMatchRegex(r"\d+")]): ...
 
         with pytest.raises(TypeError):
             fn__1(123)
 
         @validate_params
-        def fn__2(arg__1: Annotated[str, MustMatchRegex(r"\d+")]):
-            return arg__1
+        def fn__2(arg__1: Annotated[str, MustMatchRegex(r"\d+")]): ...
 
         with pytest.raises(ValidationError):
             fn__2("abc")
 
         with pytest.raises(ValidationError):
             @validate_params
-            def fn__3(arg__1: Annotated[str,
-                                        MustMatchRegex(r"\d+", match_type="N/A")]):
-
-                pass
+            def fn__3(
+                arg__1: Annotated[str, MustMatchRegex(
+                    r"\d+", match_type="N/A")]
+            ): ...
 
             fn__3("123")
