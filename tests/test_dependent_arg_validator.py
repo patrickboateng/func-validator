@@ -87,8 +87,7 @@ class TestDependsOnValidator:
                 self.arg__1 = arg__1
 
             @property
-            def arg__1(self):
-                return self._arg__1
+            def arg__1(self): ...
 
             @arg__1.setter
             @validate_params
