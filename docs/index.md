@@ -108,11 +108,11 @@ ValidationError: val_1 must be of type <class 'list'>, got <class 'tuple'> inste
 ```python
 
 >>> from typing import Annotated
->>> from func_validator import validate_params, DependsOn, MustBePositive
+>>> from func_validator import validate_params, DependsOn, MustBePositive, MustBeTruthy
 >>> @validate_params
 ... def foundation(depth: Annotated[float, MustBePositive()],
 ...                width: Annotated[float, MustBePositive()],
-...                length: Annotated[float, DependsOn(shape="rectangle")]=None,
+...                length: Annotated[float, DependsOn(shape="rectangle", kw_args_validators={"shape": MustBeTruthy()})]=None,
 ...                shape: str = "square", ):
 ...     return (depth, width, length, shape)
 >>> foundation(10, 20, length=30, shape="rectangle")  # ✅ Correct
