@@ -157,9 +157,6 @@ class MustBePositive(NumericValidator):
         )
 
 
-must_be_positive: Final = MustBePositive()
-
-
 class MustBeNonPositive(NumericValidator):
     r"""Validates that the number is non-positive ($x \le 0$)."""
 
@@ -172,9 +169,6 @@ class MustBeNonPositive(NumericValidator):
             err_msg=self.err_msg,
             extra_err_msg_args=self.extra_err_msg_args,
         )
-
-
-must_be_non_positive: Final = MustBeNonPositive()
 
 
 class MustBeNegative(NumericValidator):
@@ -191,9 +185,6 @@ class MustBeNegative(NumericValidator):
         )
 
 
-must_be_negative: Final = MustBeNegative()
-
-
 class MustBeNonNegative(NumericValidator):
     r"""Validates that the number is non-negative ($x \ge 0$)."""
 
@@ -207,8 +198,6 @@ class MustBeNonNegative(NumericValidator):
             extra_err_msg_args=self.extra_err_msg_args,
         )
 
-
-must_be_non_negative: Final = MustBeNonNegative()
 
 # Comparison validation functions
 
@@ -425,3 +414,9 @@ class MustBeLessThanOrEqual(NumericValidator):
             err_msg=self.err_msg,
             extra_err_msg_args=self.extra_err_msg_args,
         )
+
+
+must_be_positive: Final = MustBePositive()
+must_be_non_positive: Final = MustBeNonPositive()
+must_be_negative: Final = MustBeNegative()
+must_be_non_negative: Final = MustBeNonNegative()
